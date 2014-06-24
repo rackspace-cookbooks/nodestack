@@ -1,19 +1,19 @@
 # attributes/default.rb
 
-default["nodejs_app"]["appName"] = "my_nodejs_app"
-default["nodejs_app"]["server_name"] = "defaut_server.js"
-default["nodejs_app"]["destination"] = "/var/app"
-default["nodejs_app"]["git_repo"] = nil
-default["nodejs_app"]["rev"] = "HEAD"
-default["nodejs_app"]["deploy_key"] = nil
-default["nodejs_app"]["domain"] = "localhost"
-default["nodejs_app"]["http_port"] = "80"
-default["nodejs_app"]["https_port"] = "443"
-default["nodejs_app"]["sslcert"] = nil
-default["nodejs_app"]["sslkey"] = nil
-default["nodejs_app"]["sslcacert"] = nil
+default["nodestack"]["appName"] = "my_nodejs_app"
+default["nodestack"]["server_name"] = "defaut_server.js"
+default["nodestack"]["destination"] = "/var/app"
+default["nodestack"]["git_repo"] = nil
+default["nodestack"]["rev"] = "HEAD"
+default["nodestack"]["deploy_key"] = nil
+default["nodestack"]["domain"] = "localhost"
+default["nodestack"]["http_port"] = "80"
+default["nodestack"]["https_port"] = "443"
+default["nodestack"]["sslcert"] = nil
+default["nodestack"]["sslkey"] = nil
+default["nodestack"]["sslcacert"] = nil
 #A comma separated string of packages
-default["nodejs_app"]["packages"] = ""
+default["nodestack"]["packages"] = ""
 
-set['authorization']['sudo']['users'] = ["#{node['nodejs_app']['username']}"]
+set['authorization']['sudo']['users'] = ["#{node['nodestack']['username']}"]
 node.set['authorization']['sudo']['passwordless'] = true
