@@ -1,0 +1,21 @@
+var express = require('express'),
+    pkg = require('./package.json'),
+    app = express(),
+		argv = require('optimist').argv;
+
+var http_port = parseInt(argv.http_port);
+
+// enables compression for all requests
+app.use(express.compress());
+
+// mounts and configures rest api
+
+app.get('/', function(req, res){
+  res.send('This is the landing page');
+});
+
+app.get('/hello', function(req, res){
+  res.send('Hello <%= @appUser %>!');
+});
+
+app.listen(http_port);
