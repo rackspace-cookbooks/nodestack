@@ -18,18 +18,18 @@ else
   include_recipe "apt"
 end
 
-node.set['authorization']['sudo']['users'] = ["#{node['nodejs_app']['username']}"]
+node.set['authorization']['sudo']['users'] = ["#{node['nodestack']['username']}"]
 
-databag = Chef::EncryptedDataBagItem.load(node['deployment']['id'], node['deployment']['app_id'])
-node.set['nodejs_app']['password'] = databag['nodejs_app']['password']
-node.set['nodejs_app']['deploy_key'] = databag['nodejs_app']['deploy_key']
+#databag = Chef::EncryptedDataBagItem.load(node['deployment']['id'], node['deployment']['app_id'])
+#node.set['nodestack']['password'] = databag['nodestack']['password']
+#node.set['nodestack']['deploy_key'] = databag['nodestack']['deploy_key']
 
-appUser = node['nodejs_app']['username']
-appDir = node['nodejs_app']['destination']
+appUser = node['nodestack']['username']
+appDir = node['nodestack']['destination']
 homeDir = "/home/#{appUser}"
 
 user appUser do
-  password node['nodejs_app']['password']
+  #password node['nodestack']['password']
   supports :manage_home => true
   shell "/bin/bash"
   home homeDir
@@ -51,7 +51,7 @@ end
 
 include_recipe "nodejs"
 
-if node["nodejs_app"]["git_repo"]
+if node["nodestack"]["git_repo"]
   include_recipe "nodejs_cookbook::nodejs_deploy"
 else
   include_recipe "nodejs_cookbook::nodejs_stack"
