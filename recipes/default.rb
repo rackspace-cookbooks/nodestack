@@ -56,5 +56,3 @@ if node["nodestack"]["git_repo"]
 else
   include_recipe "nodestack::nodejs_stack"
 end
-
-include_recipe "nodestack::firewall"
