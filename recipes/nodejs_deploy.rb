@@ -21,28 +21,18 @@ if key
   git_deploy_key = "-----BEGIN RSA PRIVATE KEY-----\n" + key + "-----END RSA PRIVATE KEY-----"
 end
 
-application "create nodejs application" do
-  path node["nodestack"]["destination"]
-  owner node["nodestack"]["username"]
-  repository node["nodestack"]["git_repo"]
-  revision node["nodestack"]["rev"]
-  if key
-    deploy_key git_deploy_key
-  end
-end
-
 
 execute "locally install npm packages from package.json" do
   cwd "#{node['nodestack']['destination']}/current"
   command "npm install"
-  user node['nodestack']['username']
-  environment ({'HOME' => "/home/#{node['nodestack_app']['username']}"})
+  user node['nodestack']['app_user']
+  environment ({'HOME' => "/home/#{node['nodestack']['app_user']}"})
   only_if {::File.exists?("#{node['nodestack']['destination']}/current/package.json")}
 end
 
 execute "add forever to run app as daemon" do
   command "npm install forever -g"
-  environment ({'HOME' => "/home/#{node['nodestack']['username']}"})
+  environment ({'HOME' => "/home/#{node['nodestack']['app_user']}"})
 end
 
 startAppCmd = "forever start #{node['nodestack']['server_name']}"
@@ -54,6 +44,6 @@ execute "run app" do
   cwd "#{node['nodestack']['destination']}/current"
   command startAppCmd
   user node['nodestack']['username']
-  environment ({'HOME' => "/home/#{node['nodestack']['username']}"})
+  environment ({'HOME' => "/home/#{node['nodestack']['app_user']}"})
   only_if {::File.exists?("#{node['nodestack']['destination']}/current/#{node['nodestack']['server_name']}")}
 end
