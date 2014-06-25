@@ -18,34 +18,34 @@ else
   include_recipe "apt"
 end
 
-node.set['authorization']['sudo']['users'] = ["#{node['nodestack']['username']}"]
+node.set['authorization']['sudo']['users'] = ["#{node['nodestack']['app_user']}"]
 
 #databag = Chef::EncryptedDataBagItem.load(node['deployment']['id'], node['deployment']['app_id'])
 #node.set['nodestack']['password'] = databag['nodestack']['password']
 #node.set['nodestack']['deploy_key'] = databag['nodestack']['deploy_key']
 
-appUser = node['nodestack']['username']
-appDir = node['nodestack']['destination']
-homeDir = "/home/#{appUser}"
+app_user = node['nodestack']['app_user']
+app_dir = node['nodestack']['destination']
+home_dir = "/home/#{app_user}"
 
-user appUser do
+user app_user do
   #password node['nodestack']['password']
   supports :manage_home => true
   shell "/bin/bash"
-  home homeDir
+  home home_dir
 end
 
-directory appDir do
-  owner appUser
+directory app_dir do
+  owner app_user
   mode "755"
   recursive true
 end
 
 bash "create Node directories" do
-  user appUser
+  user app_user
   code <<-EOH
     sudo mkdir -p /usr/local/{share/man,bin,lib/node,include/node,lib/node_modules}
-    sudo chown -R #{appUser} /usr/local/{share/man,bin,lib/node,include/node,lib/node_modules}
+    sudo chown -R #{app_user} /usr/local/{share/man,bin,lib/node,include/node,lib/node_modules}
   EOH
 end
 

@@ -3,7 +3,8 @@
 default["nodestack"]["appName"] = "my_nodejs_app"
 default["nodestack"]["server_name"] = "defaut_server.js"
 default["nodestack"]["destination"] = "/var/app"
-default["nodestack"]["git_repo"] = nil
+default['nodestack']['app_user'] = 'nodejs'
+default["nodestack"]["git_repo"] = 'git@github.com:jrperritt/nodeTestApp.git'
 default["nodestack"]["rev"] = "HEAD"
 default["nodestack"]["deploy_key"] = nil
 default["nodestack"]["domain"] = "localhost"
