@@ -1,0 +1,40 @@
+---
+driver:
+  name: vagrant
+  network:
+  - ["forwarded_port", {guest: 80, host: 8080}]
+
+  driver_config:
+    require_chef_omnibus: true
+
+provisioner:
+  name: chef_zero
+  client_rb:
+    environment: _default
+  attributes:
+    authorization:
+      sudo:
+        users: ['vagrant']
+        passwordless: true
+    rackspace:
+      cloudbackup:
+        enabled: false
+    platformstack:
+      cloud_monitoring:
+        enabled: false
+
+platforms:
+  - name: ubuntu-12.04
+    run_list:
+    - recipe[apt]
+  - name: centos-6.5
+    run_list:
+    - recipe[yum]
+
+suites:
+  - name: default
+    run_list:
+      - recipe[nodestack::default]
+    attributes:
+      foo:
+        bar: false
