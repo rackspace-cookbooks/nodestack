@@ -6,6 +6,11 @@
 # Copyright 2014, YOUR_COMPANY_NAME
 #
 
+include_recipe "apt"
+include_recipe "yum"
+include_recipe "build-essential"
+include_recipe "sudo"
+
 case node['platform_family']
 when "rhel", "fedora"
   include_recipe "yum"
