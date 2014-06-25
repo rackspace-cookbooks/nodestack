@@ -9,16 +9,17 @@
 include_recipe "apt"
 include_recipe "yum"
 include_recipe "build-essential"
-include_recipe "sudo"
 
 case node['platform_family']
 when "rhel", "fedora"
   include_recipe "yum"
+  include_recipe "nodejs"
 else
   include_recipe "apt"
+  include_recipe "nodejs::install_from_binary"
 end
 
-node.set['authorization']['sudo']['users'] = ["#{node['nodestack']['app_user']}"]
+#node.set['authorization']['sudo']['users'] = ["#{node['nodestack']['app_user']}"]
 
 #databag = Chef::EncryptedDataBagItem.load(node['deployment']['id'], node['deployment']['app_id'])
 #node.set['nodestack']['password'] = databag['nodestack']['password']
@@ -41,15 +42,15 @@ directory app_dir do
   recursive true
 end
 
-bash "create Node directories" do
-  user app_user
-  code <<-EOH
-    sudo mkdir -p /usr/local/{share/man,bin,lib/node,include/node,lib/node_modules}
-    sudo chown -R #{app_user} /usr/local/{share/man,bin,lib/node,include/node,lib/node_modules}
-  EOH
-end
+#bash "create Node directories" do
+  #user app_user
+  #code <<-EOH
+    #sudo mkdir -p /usr/local/{share/man,bin,lib/node,include/node,lib/node_modules}
+    #sudo chown -R #{app_user} /usr/local/{share/man,bin,lib/node,include/node,lib/node_modules}
+  #EOH
+#end
 
-include_recipe "nodejs"
+
 
 if node["nodestack"]["git_repo"]
   include_recipe "nodestack::nodejs_deploy"
