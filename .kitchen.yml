@@ -2,7 +2,8 @@
 driver:
   name: vagrant
   network:
-  - ["forwarded_port", {guest: 80, host: 8080}]
+  - ["forwarded_port", {guest: 80, host: 8000}]
+  - ["forwarded_port", {guest: 8080, host: 8080}]
 
   driver_config:
     require_chef_omnibus: true
@@ -19,6 +20,9 @@ provisioner:
     rackspace:
       cloudbackup:
         enabled: false
+      cloud_credentials:
+        username: 'racker'
+        api_key: 'secret'
     platformstack:
       cloud_monitoring:
         enabled: false
@@ -34,7 +38,5 @@ platforms:
 suites:
   - name: default
     run_list:
+      - recipe[nodestack::mysql_base]
       - recipe[nodestack::default]
-    attributes:
-      foo:
-        bar: false
