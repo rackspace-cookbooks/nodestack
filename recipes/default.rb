@@ -9,53 +9,24 @@
 include_recipe "apt"
 include_recipe "yum"
 include_recipe "build-essential"
-include_recipe "sudo"
+include_recipe "git"
 
 case node['platform_family']
 when "rhel", "fedora"
   include_recipe "yum"
+  include_recipe "nodejs"
 else
   include_recipe "apt"
+  include_recipe "nodejs::install_from_binary"
 end
 
-node.set['authorization']['sudo']['users'] = ["#{node['nodestack']['username']}"]
-
-#databag = Chef::EncryptedDataBagItem.load(node['deployment']['id'], node['deployment']['app_id'])
-#node.set['nodestack']['password'] = databag['nodestack']['password']
-#node.set['nodestack']['deploy_key'] = databag['nodestack']['deploy_key']
-
-appUser = node['nodestack']['username']
-appDir = node['nodestack']['destination']
-homeDir = "/home/#{appUser}"
-
-user appUser do
-  #password node['nodestack']['password']
+user node['nodestack']['app_user'] do
   supports :manage_home => true
   shell "/bin/bash"
-  home homeDir
+  home "/home/#{node['nodestack']['app_user']}"
 end
 
-directory appDir do
-  owner appUser
-  mode "755"
-  recursive true
-end
-
-bash "create Node directories" do
-  user appUser
-  code <<-EOH
-    sudo mkdir -p /usr/local/{share/man,bin,lib/node,include/node,lib/node_modules}
-    sudo chown -R #{appUser} /usr/local/{share/man,bin,lib/node,include/node,lib/node_modules}
-  EOH
-end
-
-include_recipe "nodejs"
-
-if node["nodestack"]["git_repo"]
-  include_recipe "nodestack::nodejs_deploy"
-else
-  include_recipe "nodestack::nodejs_stack"
-end
+include_recipe 'nodestack::application_nodejs'
 
 include_recipe 'platformstack::iptables'
 add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{node['nodestack']['http_port']} -j ACCEPT", 100, 'Allow nodejs http traffic')

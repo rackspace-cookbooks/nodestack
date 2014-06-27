@@ -7,7 +7,7 @@ description      'Installs/Configures nodestack'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          '0.1.0'
 
-version '0.0.1'
+version '0.0.2'
 
 depends 'apt'
 depends 'mysql'
@@ -33,3 +33,5 @@ depends 'yum'
 depends 'git'
 depends 'nodejs'
 depends 'ssh_known_hosts'
+depends 'application'
+depends 'application_nodejs'
