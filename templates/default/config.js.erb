@@ -1,0 +1,16 @@
+var config = {};
+
+config.node = {
+  port: <%= @listening_port %>
+};
+
+config.mysql = [
+  {
+    host: "<%= @mysql_ip %>",
+    usr: "<%= @mysql_user %>",
+    pwd: "<%= @mysql_password %>",
+  }
+
+];
+
+module.exports = config;

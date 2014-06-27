@@ -27,6 +27,20 @@ template "#{node['nodestack']['app_name']}.conf" do
   )
 end
 
+template "config.js" do
+  path node['nodestack']['app_dir'] + '/current/config.js'
+  source 'config.js.erb'
+  owner node['nodestack']['app_user']
+  group node['nodestack']['app_user']
+  mode '0644'
+  variables(
+    :listening_port => node['nodestack']['listening_port'],
+    :mysql_ip => node['nodestack']['mysql_ip'],
+    :mysql_user => node['nodestack']['app_db_user'],
+    :mysql_password => node['nodestack']['app_db_user_password']
+  )
+end
+
 service "#{node['nodestack']['app_name']}" do
   case node['platform']
   when 'ubuntu'
