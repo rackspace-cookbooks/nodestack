@@ -25,7 +25,26 @@ template "#{node['nodestack']['app_name']}.conf" do
     :node_dir => node['nodejs']['dir'],
     :entry => node['nodestack']['entry_point'],
   )
+  only_if { platform_family?("debian") }
 end
+
+template "#{node['nodestack']['app_name']}" do
+  path "/etc/init.d/#{node['nodestack']['app_name']}"
+  source 'nodejs.initd.erb'
+  owner 'root'
+  group 'root'
+  mode '0755'
+  variables(
+    :user => node['nodestack']['app_user'],
+    :group => node['nodestack']['app_user'],
+    :app_dir => node['nodestack']['app_dir'] + '/current',
+    :node_dir => node['nodejs']['dir'],
+    :entry => node['nodestack']['entry_point'],
+  )
+  only_if { platform_family?("rhel") }
+end
+
+
 
 service "#{node['nodestack']['app_name']}" do
   case node['platform']
