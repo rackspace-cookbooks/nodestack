@@ -34,6 +34,8 @@ provisioner:
       server_root_password: 'randompass'
       server_repl_password: 'randompass'
       server_debian_password: 'randompass'
+    nodestack:
+      app_db_user_password: 'randompass'
 
 platforms:
   - name: ubuntu-12.04

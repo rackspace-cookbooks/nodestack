@@ -28,6 +28,20 @@ template "#{node['nodestack']['app_name']}.conf" do
   only_if { platform_family?("debian") }
 end
 
+template "config.js" do
+  path node['nodestack']['app_dir'] + '/current/config.js'
+  source 'config.js.erb'
+  owner node['nodestack']['app_user']
+  group node['nodestack']['app_user']
+  mode '0644'
+  variables(
+    :listening_port => node['nodestack']['listening_port'],
+    :mysql_ip => node['nodestack']['mysql_ip'],
+    :mysql_user => node['nodestack']['app_db_user'],
+    :mysql_password => node['nodestack']['app_db_user_password']
+  )
+end
+
 template "#{node['nodestack']['app_name']}" do
   path "/etc/init.d/#{node['nodestack']['app_name']}"
   source 'nodejs.initd.erb'
@@ -43,8 +57,6 @@ template "#{node['nodestack']['app_name']}" do
   )
   only_if { platform_family?("rhel") }
 end
-
-
 
 service "#{node['nodestack']['app_name']}" do
   case node['platform']

@@ -32,5 +32,5 @@ end
 include_recipe 'nodestack::application_nodejs'
 
 include_recipe 'platformstack::iptables'
-add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{node['nodestack']['http_port']} -j ACCEPT", 100, 'Allow nodejs http traffic')
+add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{node['nodestack']['listening_port']} -j ACCEPT", 100, 'Allow nodejs http traffic')
 add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{node['nodestack']['https_port']} -j ACCEPT", 100, 'Allow nodejs https traffic')
