@@ -12,8 +12,8 @@ execute "install npm packages" do
   command 'npm install'
 end
 
-template "#{node['nodestack']['app_name']}.upstart.conf" do
-  path "/etc/init/#{node['nodestack']['app_name']}_nodejs.conf"
+template "#{node['nodestack']['app_name']}.conf" do
+  path "/etc/init/#{node['nodestack']['app_name']}.conf"
   source 'nodejs.upstart.conf.erb'
   owner 'root'
   group 'root'
@@ -25,4 +25,14 @@ template "#{node['nodestack']['app_name']}.upstart.conf" do
     :node_dir => node['nodejs']['dir'],
     :entry => node['nodestack']['entry_point'],
   )
+end
+
+service "#{node['nodestack']['app_name']}" do
+  case node['platform']
+  when 'ubuntu'
+    if node['platform_version'].to_f >= 9.10
+      provider Chef::Provider::Service::Upstart
+    end
+  end
+  action [ :enable, :start]
 end
