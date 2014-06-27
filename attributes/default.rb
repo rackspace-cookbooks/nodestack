@@ -1,5 +1,4 @@
 # attributes/default.rb
-
 default['nodestack']['app_name'] = 'my_nodejs_app'
 default['nodestack']['server_name'] = 'defaut_server.js'
 default['nodestack']['app_dir'] = '/var/app'

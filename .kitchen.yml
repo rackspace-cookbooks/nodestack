@@ -13,19 +13,23 @@ provisioner:
   client_rb:
     environment: _default
   attributes:
+    mysql-multi:
+      bind_ip: '127.0.0.1'
+    cloud:
+      public_ipv4: '127.0.0.1'
+    platformstack:
+      cloud_backup:
+        enabled: false
+      cloud_monitoring:
+        enabled: false
     authorization:
       sudo:
         users: ['vagrant']
         passwordless: true
     rackspace:
-      cloudbackup:
-        enabled: false
       cloud_credentials:
         username: 'racker'
         api_key: 'secret'
-    platformstack:
-      cloud_monitoring:
-        enabled: false
     mysql:
       server_root_password: 'randompass'
       server_repl_password: 'randompass'

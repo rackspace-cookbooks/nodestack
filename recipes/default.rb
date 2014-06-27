@@ -8,7 +8,10 @@
 
 include_recipe "apt"
 include_recipe "yum"
+
+node.set['build-essential']['compile_time'] = true
 include_recipe "build-essential"
+
 include_recipe "git"
 
 case node['platform_family']
