@@ -13,6 +13,8 @@ provisioner:
   client_rb:
     environment: _default
   attributes:
+    mysql-multi:
+      bind_ip: '127.0.0.1'
     cloud:
       public_ipv4: '127.0.0.1'
     platformstack:
