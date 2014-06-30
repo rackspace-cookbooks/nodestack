@@ -1,5 +1,4 @@
 include_recipe 'chef-sugar'
-include_recipe 'nodestack::default' # need nodejs installed to do this stuff
 
 if node.deep_fetch('mysql-multi', 'master')
   bindip = node['mysql-multi']['master']
