@@ -1,3 +1,5 @@
+include_recipe 'chef-sugar'
+
 application "nodejs application" do
   path node['nodestack']['app_dir']
   owner node['nodestack']['app_user']
@@ -28,6 +30,14 @@ template "#{node['nodestack']['app_name']}.conf" do
   only_if { platform_family?("debian") }
 end
 
+if node.deep_fetch('mysql-multi', 'master')
+  bindip = node['mysql-multi']['master']
+else
+  mysql = search('node', 'recipes:mysql-multi\:\:mysql_master'\
+               " AND chef_environment:#{node.chef_environment}").first
+  bindip = best_ip_for(mysql)
+end
+
 template "config.js" do
   path node['nodestack']['app_dir'] + '/current/config.js'
   source 'config.js.erb'
@@ -36,7 +46,7 @@ template "config.js" do
   mode '0644'
   variables(
     :listening_port => node['nodestack']['listening_port'],
-    :mysql_ip => node['nodestack']['mysql_ip'],
+    :mysql_ip => bindip,
     :mysql_user => node['nodestack']['app_db_user'],
     :mysql_password => node['nodestack']['app_db_user_password']
   )
