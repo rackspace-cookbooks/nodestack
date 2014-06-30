@@ -42,7 +42,7 @@ template 'config.js' do
   )
 end
 
-template "#{node['nodestack']['app_name']}" do
+template node['nodestack']['app_name'] do
   path "/etc/init.d/#{node['nodestack']['app_name']}"
   source 'nodejs.initd.erb'
   owner 'root'
@@ -58,7 +58,7 @@ template "#{node['nodestack']['app_name']}" do
   only_if { platform_family?('rhel') }
 end
 
-service "#{node['nodestack']['app_name']}" do
+service node['nodestack']['app_name'] do
   case node['platform']
   when 'ubuntu'
     if node['platform_version'].to_f >= 9.10
