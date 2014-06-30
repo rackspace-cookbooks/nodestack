@@ -32,19 +32,19 @@ else
 end
 node.default['rackspace_gluster']['config']['server']['glusters'].values[0]['replica'] = replica_count
 
-# allow application_php nodes to connect
-search_add_iptables_rules('recipe:nodestack\:\:application_php', 'INPUT', '-j ACCEPT', 70, 'web nodes access to gluster')
+# allow application_nodejs nodes to connect
+search_add_iptables_rules('recipes:nodestack\:\:application_nodejs', 'INPUT', '-j ACCEPT', 70, 'web nodes access to gluster')
 
 # dynamically generate the authorized clients
 if Chef::Config[:solo]
   Chef::Log.warn('This recipe uses search. Chef Solo does not support search.')
 else
-  gluster_servers = search('node', 'recipe:nodestack\:\:gluster')
+  gluster_servers = search('node', 'recipes:nodestack\:\:gluster OR recipes:nodestack\:\:application_nodejs')
   gluster_ips = ['127.0.0.1']
   gluster_servers.each do |gluster_server|
     gluster_ips.push best_ip_for(gluster_server)
   end
-  node.default['rackspace_gluster']['config']['server']['glusters']['Gluster Cluster 1']['auth_clients'] = gluster_ips.join(',')
+  node.default['rackspace_gluster']['config']['server']['glusters'].values[0]['auth_clients'] = gluster_ips.join(',')
 end
 
 # allow the gluster nodes to connect to eachother
