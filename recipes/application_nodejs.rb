@@ -46,7 +46,7 @@ template "config.js" do
   mode '0644'
   variables(
     listening_port: node['nodestack']['listening_port'],
-    mysql_ip: node['nodestack']['mysql_ip'],
+    mysql_ip: bindip,
     mysql_user: node['nodestack']['app_db_user'],
     mysql_password: node['nodestack']['app_db_user_password']
   )
