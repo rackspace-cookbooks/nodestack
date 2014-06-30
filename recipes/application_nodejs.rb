@@ -7,8 +7,13 @@ elsif node.deep_fetch('mysql-multi','bind_ip') and not node['mysql-multi']['bind
   # if a bind IP is set for the cluster, use it for all app nodes
   bindip = node['mysql-multi']['bind_ip']
 else
-  mysql = search('node', 'recipes:mysql-multi\:\:mysql_master'\
+  if node['mysql-multi']['master'].empty?
+    mysql = search('node', 'recipes:nodestack\:\:mysql_base'\
                " AND chef_environment:#{node.chef_environment}").first
+  else
+    mysql = search('node', 'recipes:nodestack\:\:mysql_master'\
+               " AND chef_environment:#{node.chef_environment}").first
+  end
   bindip = best_ip_for(mysql)
 end
 
