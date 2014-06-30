@@ -1,4 +1,4 @@
-application "nodejs application" do
+application 'nodejs application' do
   path node['nodestack']['app_dir']
   owner node['nodestack']['app_user']
   group node['nodestack']['app_user']
@@ -7,7 +7,7 @@ application "nodejs application" do
 
 end
 
-execute "install npm packages" do
+execute 'install npm packages' do
   cwd node['nodestack']['app_dir'] + '/current'
   command 'npm install'
 end
@@ -19,26 +19,26 @@ template "#{node['nodestack']['app_name']}.conf" do
   group 'root'
   mode '0644'
   variables(
-    :user => node['nodestack']['app_user'],
-    :group => node['nodestack']['app_user'],
-    :app_dir => node['nodestack']['app_dir'] + '/current',
-    :node_dir => node['nodejs']['dir'],
-    :entry => node['nodestack']['entry_point'],
+    user: node['nodestack']['app_user'],
+    group: node['nodestack']['app_user'],
+    app_dir: node['nodestack']['app_dir'] + '/current',
+    node_dir: node['nodejs']['dir'],
+    entry: node['nodestack']['entry_point']
   )
-  only_if { platform_family?("debian") }
+  only_if { platform_family?('debian') }
 end
 
-template "config.js" do
+template 'config.js' do
   path node['nodestack']['app_dir'] + '/current/config.js'
   source 'config.js.erb'
   owner node['nodestack']['app_user']
   group node['nodestack']['app_user']
   mode '0644'
   variables(
-    :listening_port => node['nodestack']['listening_port'],
-    :mysql_ip => node['nodestack']['mysql_ip'],
-    :mysql_user => node['nodestack']['app_db_user'],
-    :mysql_password => node['nodestack']['app_db_user_password']
+    listening_port: node['nodestack']['listening_port'],
+    mysql_ip: node['nodestack']['mysql_ip'],
+    mysql_user: node['nodestack']['app_db_user'],
+    mysql_password: node['nodestack']['app_db_user_password']
   )
 end
 
@@ -49,13 +49,13 @@ template "#{node['nodestack']['app_name']}" do
   group 'root'
   mode '0755'
   variables(
-    :user => node['nodestack']['app_user'],
-    :group => node['nodestack']['app_user'],
-    :app_dir => node['nodestack']['app_dir'] + '/current',
-    :node_dir => node['nodejs']['dir'],
-    :entry => node['nodestack']['entry_point'],
+    user: node['nodestack']['app_user'],
+    group: node['nodestack']['app_user'],
+    app_dir: node['nodestack']['app_dir'] + '/current',
+    node_dir: node['nodejs']['dir'],
+    entry: node['nodestack']['entry_point']
   )
-  only_if { platform_family?("rhel") }
+  only_if { platform_family?('rhel') }
 end
 
 service "#{node['nodestack']['app_name']}" do
@@ -65,5 +65,5 @@ service "#{node['nodestack']['app_name']}" do
       provider Chef::Provider::Service::Upstart
     end
   end
-  action [ :enable, :start]
+  action [:enable, :start]
 end

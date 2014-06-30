@@ -14,6 +14,5 @@ default['nodestack']['mysql_ip'] = '127.0.0.1'
 default['nodestack']['sslcert'] = nil
 default['nodestack']['sslkey'] = nil
 default['nodestack']['sslcacert'] = nil
-#A comma separated string of packages
+# A comma separated string of packages
 default['nodestack']['packages'] = ''
-

@@ -6,26 +6,26 @@
 # Copyright 2014, YOUR_COMPANY_NAME
 #
 
-include_recipe "apt"
-include_recipe "yum"
+include_recipe 'apt'
+include_recipe 'yum'
 
 node.set['build-essential']['compile_time'] = true
-include_recipe "build-essential"
+include_recipe 'build-essential'
 
-include_recipe "git"
+include_recipe 'git'
 
 case node['platform_family']
-when "rhel", "fedora"
-  include_recipe "yum"
-  include_recipe "nodejs"
+when 'rhel', 'fedora'
+  include_recipe 'yum'
+  include_recipe 'nodejs'
 else
-  include_recipe "apt"
-  include_recipe "nodejs::install_from_binary"
+  include_recipe 'apt'
+  include_recipe 'nodejs::install_from_binary'
 end
 
 user node['nodestack']['app_user'] do
-  supports :manage_home => true
-  shell "/bin/bash"
+  supports manage_home: true
+  shell '/bin/bash'
   home "/home/#{node['nodestack']['app_user']}"
 end
 
