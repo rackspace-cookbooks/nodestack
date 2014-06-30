@@ -64,7 +64,6 @@ template 'mysql-monitor' do
   mode '00600'
   notifies 'restart', 'service[rackspace-monitoring-agent]', 'delayed'
   action 'create'
-  only_if { node.deep_fetch('platformstack', 'cloud_monitoring', 'enabled') }
 end
 
 # allow the app nodes to connect
