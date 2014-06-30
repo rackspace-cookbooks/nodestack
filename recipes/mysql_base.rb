@@ -80,6 +80,18 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
       action %w(create grant)
     end
   end
+
+  # always do a localhost grant (fix for no search results on all-in-1 stack)
+  mysql_database_user app_name do
+    connection connection_info
+    password app_config['mysql_app_user_password']
+    host '127.0.0.1'
+    database_name app_name
+    privileges %w(create select update insert)
+    retries 2
+    retry_delay 2
+    action %w(create grant)
+  end
 end
 
 # allow the app nodes to connect
