@@ -4,9 +4,7 @@ application "nodejs application" do
   path node['nodestack']['app_dir']
   owner node['nodestack']['app_user']
   group node['nodestack']['app_user']
-
   repository node['nodestack']['git_repo']
-
 end
 
 execute 'install npm packages' do
