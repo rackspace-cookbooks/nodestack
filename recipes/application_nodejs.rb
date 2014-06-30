@@ -1,6 +1,6 @@
 include_recipe 'chef-sugar'
 
-application "nodejs application" do
+application 'nodejs application' do
   path node['nodestack']['app_dir']
   owner node['nodestack']['app_user']
   group node['nodestack']['app_user']
@@ -36,7 +36,7 @@ else
   bindip = best_ip_for(mysql)
 end
 
-template "config.js" do
+template 'config.js' do
   path node['nodestack']['app_dir'] + '/current/config.js'
   source 'config.js.erb'
   owner node['nodestack']['app_user']
