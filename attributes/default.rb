@@ -10,6 +10,7 @@ default['nodestack']['apps']['my_nodejs_app']['domain'] = 'localhost'
 default['nodestack']['apps']['my_nodejs_app']['http_port'] = '8080'
 default['nodestack']['apps']['my_nodejs_app']['https_port'] = '443'
 default['nodestack']['apps']['my_nodejs_app']['mysql_ip'] = '127.0.0.1'
+default['nodestack']['apps']['my_nodejs_app']['mysql_app_user_password'] = 'randompass'
 default['nodestack']['apps']['my_nodejs_app']['sslcert'] = nil
 default['nodestack']['apps']['my_nodejs_app']['sslkey'] = nil
 default['nodestack']['apps']['my_nodejs_app']['sslcacert'] = nil

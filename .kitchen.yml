@@ -13,6 +13,8 @@ provisioner:
   client_rb:
     environment: _default
   attributes:
+    holland:
+      enabled: false
     mysql-multi:
       bind_ip: '127.0.0.1'
     cloud:
@@ -50,3 +52,6 @@ suites:
     run_list:
       - recipe[nodestack::mysql_base]
       - recipe[nodestack::default]
+  - name: mysql
+    run_list:
+      - recipe[nodestack::mysql_base]

@@ -53,8 +53,9 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     variables(
       http_port: app_config['http_port'],
       mysql_ip: bindip,
-      mysql_user: app_config['app_db_user'],
-      mysql_password: app_config['app_db_user_password']
+      mysql_user: app_name,
+      mysql_password: app_config['mysql_app_user_password'],
+      mysql_db_name: app_name
     )
   end
 
