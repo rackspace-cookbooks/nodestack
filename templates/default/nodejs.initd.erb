@@ -11,6 +11,12 @@ USER="<%= @user %>"
 GROUP="<%= @group %>"
 
 DAEMON="<%= @node_dir %>/bin/node"
+
+# nodejs cookbook is wrong if binary package is used :(
+if [ ! -f "$DAEMON" ] ; then
+  DAEMON="/usr/bin/node"
+fi
+
 ROOT_DIR="<%= @app_dir %>"
 
 SERVER="<%= @entry %>"
