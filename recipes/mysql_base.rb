@@ -27,7 +27,7 @@ include_recipe 'platformstack::monitors'
 
 include_recipe 'mysql::server'
 
-include_recipe 'mysql-multi::mysql_base'
+include_recipe 'mysql-multi'
 
 connection_info = {
   host: 'localhost',
