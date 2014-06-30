@@ -30,9 +30,6 @@ template "#{node['nodestack']['app_name']}.conf" do
   only_if { platform_family?('debian') }
 end
 
-<<<<<<< HEAD
-template 'config.js' do
-=======
 if node.deep_fetch('mysql-multi', 'master')
   bindip = node['mysql-multi']['master']
 else
@@ -42,24 +39,16 @@ else
 end
 
 template "config.js" do
->>>>>>> e822a04eff342d4310b196600c256c7a4016c148
   path node['nodestack']['app_dir'] + '/current/config.js'
   source 'config.js.erb'
   owner node['nodestack']['app_user']
   group node['nodestack']['app_user']
   mode '0644'
   variables(
-<<<<<<< HEAD
     listening_port: node['nodestack']['listening_port'],
     mysql_ip: node['nodestack']['mysql_ip'],
     mysql_user: node['nodestack']['app_db_user'],
     mysql_password: node['nodestack']['app_db_user_password']
-=======
-    :listening_port => node['nodestack']['listening_port'],
-    :mysql_ip => bindip,
-    :mysql_user => node['nodestack']['app_db_user'],
-    :mysql_password => node['nodestack']['app_db_user_password']
->>>>>>> e822a04eff342d4310b196600c256c7a4016c148
   )
 end
 
