@@ -74,7 +74,7 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
       password app_config['mysql_app_user_password']
       host best_ip_for(app_node)
       database_name app_name
-      privileges %w(select update insert)
+      privileges %w(create select update insert)
       retries 2
       retry_delay 2
       action %w(create grant)
