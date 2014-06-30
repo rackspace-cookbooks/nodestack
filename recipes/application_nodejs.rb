@@ -1,7 +1,11 @@
 include_recipe 'chef-sugar'
 
-if node.deep_fetch('mysql-multi', 'master')
+# mysql-multi defaults to default['mysql-mutli']['master'] = ''
+if node.deep_fetch('mysql-multi', 'master') and not node['mysql-multi']['master'].empty?
   bindip = node['mysql-multi']['master']
+elsif node.deep_fetch('mysql-multi','bind_ip') and not node['mysql-multi']['bind_ip'].empty?
+  # if a bind IP is set for the cluster, use it for all app nodes
+  bindip = node['mysql-multi']['bind_ip']
 else
   mysql = search('node', 'recipes:mysql-multi\:\:mysql_master'\
                " AND chef_environment:#{node.chef_environment}").first
