@@ -66,5 +66,21 @@ template 'mysql-monitor' do
   action 'create'
 end
 
+node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
+  app_nodes = search(:node, 'recipes:nodestack\:\:application_nodejs' << " AND chef_environment:#{node.chef_environment}")
+  app_nodes.each do |app_node|
+    mysql_database_user app_name do
+      connection connection_info
+      password app_config['mysql_app_user_password']
+      host best_ip_for(app_node)
+      database_name app_name
+      privileges %w(select update insert)
+      retries 2
+      retry_delay 2
+      action %w(create grant)
+    end
+  end
+end
+
 # allow the app nodes to connect
 search_add_iptables_rules('recipes:nodestack\:\:application_nodejs' << " AND chef_environment:#{node.chef_environment}", 'INPUT', '-p tcp --dport 3306 -j ACCEPT', 9998, 'allow app nodes to connect')

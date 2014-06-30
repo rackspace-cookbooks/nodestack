@@ -1,9 +1,6 @@
 ---
 driver:
   name: vagrant
-  network:
-  - ["forwarded_port", {guest: 80, host: 8000}]
-  - ["forwarded_port", {guest: 8080, host: 8080}]
 
   driver_config:
     require_chef_omnibus: true
@@ -13,6 +10,8 @@ provisioner:
   client_rb:
     environment: _default
   attributes:
+    holland:
+      enabled: false
     mysql-multi:
       bind_ip: '127.0.0.1'
     cloud:
@@ -50,3 +49,6 @@ suites:
     run_list:
       - recipe[nodestack::mysql_base]
       - recipe[nodestack::default]
+  - name: mysql
+    run_list:
+      - recipe[nodestack::mysql_base]
