@@ -1,9 +1,10 @@
+# Encoding: utf-8
 include_recipe 'chef-sugar'
 
 # mysql-multi defaults to default['mysql-mutli']['master'] = ''
-if node.deep_fetch('mysql-multi', 'master') and not node['mysql-multi']['master'].empty?
+if node.deep_fetch('mysql-multi', 'master') && !node['mysql-multi']['master'].empty?
   bindip = node['mysql-multi']['master']
-elsif node.deep_fetch('mysql-multi','bind_ip') and not node['mysql-multi']['bind_ip'].empty?
+elsif node.deep_fetch('mysql-multi', 'bind_ip') && !node['mysql-multi']['bind_ip'].empty?
   # if a bind IP is set for the cluster, use it for all app nodes
   bindip = node['mysql-multi']['bind_ip']
 else
@@ -68,7 +69,7 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     )
   end
 
-  template "#{app_name}" do
+  template app_name do
     path "/etc/init.d/#{app_name}"
     source 'nodejs.initd.erb'
     owner 'root'

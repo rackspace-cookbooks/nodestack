@@ -1,3 +1,4 @@
+# Encoding: utf-8
 # attributes/default.rb
 default['nodestack']['apps']['my_nodejs_app']['server_name'] = 'defaut_server.js'
 default['nodestack']['apps']['my_nodejs_app']['app_dir'] = '/var/app'
