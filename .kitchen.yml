@@ -13,6 +13,9 @@ provisioner:
   client_rb:
     environment: _default
   attributes:
+    apt:
+      compiletime: true
+      compile_time_update: true
     holland:
       enabled: false
     mysql-multi:
