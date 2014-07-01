@@ -1,3 +1,4 @@
+# Encoding: utf-8
 include_recipe 'firewall'
 
 firewall_rule 'ssh' do
@@ -5,7 +6,7 @@ firewall_rule 'ssh' do
   action 'allow'
 end
 
-node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
+node['nodestack']['apps'].each_pair do |_app_name, app_config| # each app loop
   firewall_rule 'http' do
     port app_config['http_port'].to_i
     action 'allow'

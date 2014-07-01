@@ -27,7 +27,7 @@ include_recipe 'nodestack::application_nodejs'
 
 include_recipe 'platformstack::iptables'
 
-node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
+node['nodestack']['apps'].each_pair do |_app_name, app_config| # each app loop
   add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{app_config['http_port']} -j ACCEPT", 100, 'Allow nodejs http traffic')
   add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{app_config['https_port']} -j ACCEPT", 100, 'Allow nodejs https traffic')
 end
