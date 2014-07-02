@@ -6,46 +6,52 @@ Requirements
 ------------
 
 #### cookbooks
-```text
-apt
-mysql
-mysql-multi
-database
-chef-sugar
-apt
-mysql
-database
-chef-sugar
-elasticsearch
-apache2, ~> 1.10
-memcached
-openssl
-redisio
-varnish
-rackspace_gluster
-platformstack
-mongodb
-build-essential
-java
-yum
-git
-nodejs
-ssh_known_hosts
-application
-application_nodejs
-```
+- apt
+- mysql
+- mysql-multi
+- database
+- chef-sugar
+- apt
+- mysql
+- database
+- chef-sugar
+- elasticsearch
+- apache2, ~> 1.10
+- memcached
+- openssl
+- redisio
+- varnish
+- rackspace_gluster
+- platformstack
+- mongodb
+- build-essential
+- java
+- yum
+- git
+- nodejs
+- ssh_known_hosts
+- application
+
 
 Attributes
 ----------
 
 `node['nodestack']['apps']['my_nodejs_app']['app_dir']` path where the application will be deployed
+
 `node['nodestack']['apps']['my_nodejs_app']['app_user']` OS user that will be used to run the app
+
 `node['nodestack']['apps']['my_nodejs_app']['git_repo']` Git repository where the code lives.
+
 `node['nodestack']['apps']['my_nodejs_app']['entry_point']` the .js file that will be ran as the server.
+
 `node['nodestack']['apps']['my_nodejs_app']['rev']` Code revision that should be used. Example: HEAD
+
 `node['nodestack']['apps']['my_nodejs_app']['deploy_key']` SSH key to pull the code from the git repo. You don't need this if you use https instead of git.
+
 `node['nodestack']['apps']['my_nodejs_app']['http_port']` HTTP port for the NodeJS app
+
 `node['nodestack']['apps']['my_nodejs_app']['https_port']` HTTPS port for the NodeJS app
+
 `node['nodestack']['apps']['my_nodejs_app']['mysql_app_user_password']` Password for the mysql user. The user is named after `node['nodestack']['apps']['my_nodejs_app']['app_user']`
 
 
