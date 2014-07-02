@@ -33,7 +33,6 @@ nodejs
 ssh_known_hosts
 application
 application_nodejs
-firewall
 ```
 
 Attributes
