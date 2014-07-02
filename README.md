@@ -57,7 +57,7 @@ Attributes
 
 Usage
 -----
-To deploy a app node these is how a `nodejs_app` role would look like:
+To deploy an app node these is how a `nodejs_app` role would look like:
 ```text
 $ knife role show nodejs_app
 chef_type:           role
