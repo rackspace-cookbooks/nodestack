@@ -18,6 +18,21 @@ else
   bindip = best_ip_for(mysql)
 end
 
+%w( 'forever-agent'
+    'coffee-script'
+    'grunt-contrib-watch'
+    'pm2'
+    'nodemon' ).each do |npm_pkg|
+  execute "install #{npm_pkg}" do
+    command "npm install -g #{npm_pkg}"
+    not_if { installed?(npm_pkg) }
+  end
+end
+
+execute 'pm2 startup centos' do
+  not_if { ::File.exist?('/etc/init.d/pm2-init.sh') }
+end
+
 node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
 
   user app_config['app_user'] do
@@ -33,25 +48,18 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     repository app_config['git_repo']
   end
 
+  nodestack_app app_name do
+    path app_config['app_dir'] + '/current'
+    js app_config['entry_point']
+    user app_config['app_user']
+    group app_config['app_user']
+    port app_config['http_port']
+    action 'create'
+  end
+
   execute 'install npm packages' do
     cwd app_config['app_dir'] + '/current'
     command 'npm install'
-  end
-
-  template "#{app_name}.conf" do
-    path "/etc/init/#{app_name}.conf"
-    source 'nodejs.upstart.conf.erb'
-    owner 'root'
-    group 'root'
-    mode '0644'
-    variables(
-      user: app_config['app_user'],
-      group: app_config['app_user'],
-      app_dir: app_config['app_dir'] + '/current',
-      node_dir: node['nodejs']['dir'],
-      entry: app_config['entry_point']
-    )
-    only_if { platform_family?('debian') }
   end
 
   template 'config.js' do
@@ -68,31 +76,4 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
       mysql_db_name: app_name
     )
   end
-
-  template app_name do
-    path "/etc/init.d/#{app_name}"
-    source 'nodejs.initd.erb'
-    owner 'root'
-    group 'root'
-    mode '0755'
-    variables(
-      user: app_config['app_user'],
-      group: app_config['app_user'],
-      app_dir: app_config['app_dir'] + '/current',
-      node_dir: node['nodejs']['dir'],
-      entry: app_config['entry_point']
-    )
-    only_if { platform_family?('rhel') }
-  end
-
-  service app_name do
-    case node['platform']
-    when 'ubuntu'
-      if node['platform_version'].to_f >= 9.10
-        provider Chef::Provider::Service::Upstart
-      end
-    end
-    action [:enable, :start]
-  end
-
 end # end each app loop
