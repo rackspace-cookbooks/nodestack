@@ -5,24 +5,19 @@
 #
 # Copyright 2014, YOUR_COMPANY_NAME
 #
-
-include_recipe 'apt'
-include_recipe 'yum'
-
-node.set['build-essential']['compile_time'] = true
-include_recipe 'build-essential'
-
-include_recipe 'git'
-
 case node['platform_family']
 when 'rhel', 'fedora'
   include_recipe 'yum'
-  include_recipe 'nodejs'
 else
+  node.set['apt']['compile_time_update'] = true
   include_recipe 'apt'
-  include_recipe 'nodejs::install_from_binary'
 end
 
+node.set['build-essential']['compile_time'] = true
+include_recipe 'build-essential'
+include_recipe 'git'
+include_recipe 'nodejs::nodejs_from_source'
+include_recipe 'nodejs::npm_from_source'
 include_recipe 'nodestack::application_nodejs'
 
 include_recipe 'platformstack::iptables'
