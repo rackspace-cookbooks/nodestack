@@ -68,7 +68,14 @@ template 'mysql-monitor' do
 end
 
 node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
-  app_nodes = search(:node, 'recipes:nodestack\:\:application_nodejs' << " AND chef_environment:#{node.chef_environment}")
+
+  if Chef::Config[:solo]
+    Chef::Log.warn('This recipe uses search. Chef Solo does not support search.')
+    app_nodes = []
+  else
+    app_nodes = search(:node, 'recipes:nodestack\:\:application_nodejs' << " AND chef_environment:#{node.chef_environment}")
+  end
+
   app_nodes.each do |app_node|
     mysql_database_user app_name do
       connection connection_info
@@ -96,4 +103,5 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
 end
 
 # allow the app nodes to connect
-search_add_iptables_rules('recipes:nodestack\:\:application_nodejs' << " AND chef_environment:#{node.chef_environment}", 'INPUT', '-p tcp --dport 3306 -j ACCEPT', 9998, 'allow app nodes to connect')
+searchterm = 'recipes:nodestack\:\:application_nodejs' << " AND chef_environment:#{node.chef_environment}"
+search_add_iptables_rules(searchterm, 'INPUT', '-p tcp --dport 3306 -j ACCEPT', 9998, 'allow app nodes to connect')
