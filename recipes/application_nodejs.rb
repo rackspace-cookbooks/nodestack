@@ -1,8 +1,13 @@
 # Encoding: utf-8
+# Copyright 2014, Rackspace
+
 include_recipe 'chef-sugar'
 
 # mysql-multi defaults to default['mysql-mutli']['master'] = ''
-if node.deep_fetch('mysql-multi', 'master') && !node['mysql-multi']['master'].empty?
+if Chef::Config[:solo] # FC003
+  Chef::Log.warn('This recipe uses search. Chef Solo does not support search.')
+  bindip = '127.0.0.1'
+elsif node.deep_fetch('mysql-multi', 'master') && !node['mysql-multi']['master'].empty?
   bindip = node['mysql-multi']['master']
 elsif node.deep_fetch('mysql-multi', 'bind_ip') && !node['mysql-multi']['bind_ip'].empty?
   # if a bind IP is set for the cluster, use it for all app nodes

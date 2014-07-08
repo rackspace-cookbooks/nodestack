@@ -7,8 +7,14 @@ namespace :style do
   RuboCop::RakeTask.new(:ruby)
 
   require 'foodcritic'
+  require 'foodcritic/rackspace/rules/version' # ensure loaded
   desc 'Run Chef style checks'
-  FoodCritic::Rake::LintTask.new(:chef)
+  FoodCritic::Rake::LintTask.new(:chef) do |t|
+    # 'search_gems' doesn't work, but :search_gems does
+    # rubocop:disable Style/HashSyntax
+    t.options = { :search_gems => true }
+    # rubocop:enable Style/HashSyntax
+  end
 end
 
 desc 'Run all style checks'
@@ -25,16 +31,16 @@ end
 
 require 'rspec/core/rake_task'
 desc 'Run ChefSpec unit tests'
-RSpec::Core::RakeTask.new(:spec) do |t, _args|
+RSpec::Core::RakeTask.new(:spec) do |t, args|
   t.rspec_opts = 'test/unit/spec'
 end
 
 # The default rake task should just run it all
-task default: %w(style spec integration)
+task default: ['style', 'spec', 'integration']
 
 begin
   require 'kitchen/rake_tasks'
   Kitchen::RakeTasks.new
   rescue LoadError
-  puts '>>>>> Kitchen gem not loaded, omitting tasks' unless ENV['CI']
+    puts '>>>>> Kitchen gem not loaded, omitting tasks' unless ENV['CI']
 end
