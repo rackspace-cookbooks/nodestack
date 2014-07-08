@@ -73,7 +73,10 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     Chef::Log.warn('This recipe uses search. Chef Solo does not support search.')
     app_nodes = []
   else
-    app_nodes = search(:node, 'recipes:nodestack\:\:application_nodejs' << " AND chef_environment:#{node.chef_environment}")
+    app_nodes = search(
+      :node, 
+      "recipes:nodestack\:\:application_nodejs AND chef_environment:#{node.chef_environment}"
+    )
   end
 
   app_nodes.each do |app_node|
