@@ -75,7 +75,7 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
   else
     app_nodes = search(
       :node, 
-      "recipes:nodestack\:\:application_nodejs AND chef_environment:#{node.chef_environment}"
+      "recipes:nodestack\\:\\:application_nodejs AND chef_environment:#{node.chef_environment}"
     )
   end
 
@@ -107,7 +107,7 @@ end
 
 # allow the app nodes to connect
 search_add_iptables_rules(
-  "recipes:nodestack\:\:application_nodejs AND chef_environment:#{node.chef_environment}",
+  "recipes:nodestack\\:\\:application_nodejs AND chef_environment:#{node.chef_environment}",
   'INPUT',
   '-p tcp --dport 3306 -j ACCEPT',
   9998,
