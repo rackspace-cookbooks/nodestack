@@ -1,11 +1,12 @@
 #!/bin/bash
 
-cd <%= @path %>/webroot
+cd <%= @path %>
 
 npm install
 
 pm2 delete <%= @name %>
-PORT=<%= @port %> pm2 start <%= @js %> \
+PORT=<%= @port %>
+pm2 start <%= @js %> \
     -n <%= @name %> \
     -e ../logs/err-nodejs.log \
     -o ../logs/output-nodejs.log \

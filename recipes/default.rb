@@ -13,6 +13,7 @@ else
   include_recipe 'apt'
 end
 
+node.set['nodejs']['install_method'] = 'source'
 node.set['build-essential']['compile_time'] = true
 include_recipe 'build-essential'
 include_recipe 'git'

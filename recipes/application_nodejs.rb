@@ -48,15 +48,6 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     repository app_config['git_repo']
   end
 
-  nodestack_app app_name do
-    path app_config['app_dir'] + '/current'
-    js app_config['entry_point']
-    user app_config['app_user']
-    group app_config['app_user']
-    port app_config['http_port']
-    action 'create'
-  end
-
   execute 'install npm packages' do
     cwd app_config['app_dir'] + '/current'
     command 'npm install'
@@ -75,5 +66,14 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
       mysql_password: app_config['mysql_app_user_password'],
       mysql_db_name: app_name
     )
+  end
+
+  nodestack_app app_name do
+    path app_config['app_dir'] + '/current'
+    js app_config['app_dir'] + '/current/' + app_config['entry_point']
+    user app_config['app_user']
+    group app_config['app_user']
+    port app_config['http_port']
+    action 'create'
   end
 end # end each app loop
