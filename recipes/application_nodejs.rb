@@ -29,8 +29,10 @@ end
   end
 end
 
-execute 'pm2 startup centos' do
-  not_if { ::File.exist?('/etc/init.d/pm2-init.sh') }
+if rhel?
+  execute 'pm2 startup centos' do
+    not_if { ::File.exist?('/etc/init.d/pm2-init.sh') }
+  end
 end
 
 node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
