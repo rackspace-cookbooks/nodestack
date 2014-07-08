@@ -103,5 +103,10 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
 end
 
 # allow the app nodes to connect
-searchterm = 'recipes:nodestack\:\:application_nodejs' << " AND chef_environment:#{node.chef_environment}"
-search_add_iptables_rules(searchterm, 'INPUT', '-p tcp --dport 3306 -j ACCEPT', 9998, 'allow app nodes to connect')
+search_add_iptables_rules(
+  "recipes:nodestack\:\:application_nodejs AND chef_environment:#{node.chef_environment}",
+  'INPUT',
+  '-p tcp --dport 3306 -j ACCEPT',
+  9998,
+  'allow app nodes to connect'
+)
