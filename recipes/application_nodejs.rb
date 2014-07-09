@@ -75,6 +75,11 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     )
   end
 
+  directory "#{app_config['app_dir']}/releases/logs" do
+    owner app_config['app_user']
+    group app_config['app_user']
+  end
+
   nodestack_app app_name do
     path app_config['app_dir'] + '/current'
     js app_config['app_dir'] + '/current/' + app_config['entry_point']
