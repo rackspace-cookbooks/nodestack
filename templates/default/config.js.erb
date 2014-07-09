@@ -4,13 +4,15 @@ config.node = {
   port: <%= @http_port %>
 };
 
+<%- unless @mysql.nil? -%>
 config.mysql = [
   {
-    host: "<%= @mysql_ip %>",
+    host: "<%= node['mysql-multi']['master'] %>",
     usr: "<%= @mysql_user %>",
     pwd: "<%= @mysql_password %>",
     db_name: "<%= @mysql_db_name %>",
   }
+<%- end -%>
 
 ];
 
