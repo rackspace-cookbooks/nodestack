@@ -20,6 +20,20 @@
 
 include_recipe 'chef-sugar'
 
+case node['platform_family']
+when 'rhel', 'fedora'
+  include_recipe 'yum'
+else
+  node.set['apt']['compile_time_update'] = true
+  include_recipe 'apt'
+end
+
+node.set['nodejs']['install_method'] = 'source'
+node.set['build-essential']['compile_time'] = 'source'
+%w(nodejs::nodejs_from_source nodejs::npm_from_source git build-essential platformstack::monitors platformstack::iptables apt).each do |recipe|
+  include_recipe recipe
+end
+
 mysql_node = search('node', 'recipes:nodestack\:\:mysql_master' << " AND chef_environment:#{node.chef_environment}").first
 
 node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
@@ -98,5 +112,8 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     end
     action [:enable, :start]
   end
+
+  add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{app_config['http_port']} -j ACCEPT", 100, "Allow nodejs http traffic for #{app_name}")
+  add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{app_config['https_port']} -j ACCEPT", 100, "Allow nodejs https traffic for #{app_name}")
 
 end # end each app loop

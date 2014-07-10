@@ -54,7 +54,7 @@ suites:
   - name: default
     run_list:
       - recipe[nodestack::mysql_master]
-      - recipe[nodestack::default]
+      - recipe[nodestack::application_nodejs]
   - name: mysql
     run_list:
       - recipe[nodestack::mysql_base]
