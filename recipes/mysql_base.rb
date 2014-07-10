@@ -74,7 +74,7 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     app_nodes = []
   else
     app_nodes = search(
-      :node, 
+      :node,
       "recipes:nodestack\\:\\:application_nodejs AND chef_environment:#{node.chef_environment}"
     )
   end
