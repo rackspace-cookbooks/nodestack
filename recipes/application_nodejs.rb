@@ -30,7 +30,7 @@ end
 
 node.set['nodejs']['install_method'] = 'source'
 node.set['build-essential']['compile_time'] = 'source'
-%w(nodejs::nodejs_from_source nodejs::npm_from_source git build-essential platformstack::monitors platformstack::iptables apt).each do |recipe|
+%w(nodejs::install_from_source nodejs::npm git build-essential platformstack::monitors platformstack::iptables apt).each do |recipe|
   include_recipe recipe
 end
 
