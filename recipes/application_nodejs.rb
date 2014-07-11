@@ -3,25 +3,7 @@
 
 include_recipe 'chef-sugar'
 
-# mysql-multi defaults to default['mysql-mutli']['master'] = ''
-if Chef::Config[:solo] # FC003
-  Chef::Log.warn('This recipe uses search. Chef Solo does not support search.')
-  bindip = '127.0.0.1'
-elsif node.deep_fetch('mysql-multi', 'master') && !node['mysql-multi']['master'].empty?
-  bindip = node['mysql-multi']['master']
-elsif node.deep_fetch('mysql-multi', 'bind_ip') && !node['mysql-multi']['bind_ip'].empty?
-  # if a bind IP is set for the cluster, use it for all app nodes
-  bindip = node['mysql-multi']['bind_ip']
-else
-  if node['mysql-multi']['master'].empty?
-    mysql = search('node', 'recipes:nodestack\:\:mysql_base'\
-               " AND chef_environment:#{node.chef_environment}").first
-  else
-    mysql = search('node', 'recipes:nodestack\:\:mysql_master'\
-               " AND chef_environment:#{node.chef_environment}").first
-  end
-  bindip = best_ip_for(mysql)
-end
+mysql_node = search('node', 'recipes:nodestack\:\:mysql_master' << " AND chef_environment:#{node.chef_environment}").first
 
 node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
 
@@ -46,7 +28,7 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     mode '0644'
     variables(
       http_port: app_config['http_port'],
-      mysql_ip: bindip,
+      mysql: mysql_node.respond_to?('deep_fetch') == true ? mysql_node : nil,
       mysql_user: app_name,
       mysql_password: app_config['mysql_app_user_password'],
       mysql_db_name: app_name

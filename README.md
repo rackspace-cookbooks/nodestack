@@ -86,7 +86,7 @@ override_attributes:
 run_list:
   recipe[platformstack::default]
   recipe[rackops_rolebook::rack_user]
-  recipe[nodestack::mysql_base]
+  recipe[nodestack::mysql_master]
 ```
 
 These are the minimum environment variables that would be needed:
@@ -101,6 +101,8 @@ name:                nodejs
 override_attributes:
   mysql:
     server_root_password: randompass
+  mysql-multi:
+    master: 10.x.x.x
   nodestack:
     app_name: beer_survey
     git_repo: https://github.com/jrperritt/beer-survey.git
@@ -121,8 +123,7 @@ Contributing
 
 License and Authors
 -------------------
-- Author:: Marco A Morales (marco.morales@rackspace.com)
-- Author:: Martin Smith (martin.smith@rackspace.com)
+- Author:: Rackspace DevOps (devops@rackspace.com)
 
 ```text
 Copyright 2014, Rackspace, US Inc.
