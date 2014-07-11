@@ -1,10 +1,10 @@
 #!upstart
 description "Node.js Application Server"
 
-start on (local-filesystems and net-device-up IFACE!=lo)
-stop on [!12345]
+start on startup
+stop on shutdown
 
-console log
+expect fork
 
 <% unless @user.nil? -%>
 setuid <%= @user %>
@@ -13,4 +13,18 @@ setuid <%= @user %>
 setgid <%= @group %>
 <% end -%>
 chdir <%= @app_dir %>
-exec <%= @node_dir %>/bin/node <%= @entry %>
+
+script
+  cd <%= @app_dir %>
+  exec forever start \
+    --pidFile <%= @app_dir %>/forever.pid \
+    --minUptime 5000 \
+    --spinSleepTime 2000 \
+    -a \
+    -l <%= @app_dir %>/<%= @app_name %>.log \
+    <%= @app_dir %>/<%= @entry %>
+end script
+
+pre-stop script
+  exec forever stop <%= @app_dir %>/<%= @entry %>
+end script

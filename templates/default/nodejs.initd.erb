@@ -28,7 +28,7 @@ do_start()
 {
         if [ ! -f "$LOCK_FILE" ] ; then
                 echo -n $"Starting $SERVER: "
-                runuser -l "$USER" -c "( cd $ROOT_DIR && $DAEMON $SERVER >> $LOG_FILE & ) &" && echo_success || echo_failure
+                runuser -l "$USER" -c "( cd $ROOT_DIR && forever start $SERVER >> $LOG_FILE & ) &" && echo_success || echo_failure
                 RETVAL=$?
                 echo
                 [ $RETVAL -eq 0 ] && touch $LOCK_FILE
@@ -40,8 +40,7 @@ do_start()
 do_stop()
 {
         echo -n $"Stopping $SERVER: "
-        pid=`ps -aefw | grep "$DAEMON $SERVER" | grep -v " grep " | awk '{print $2}'`
-        kill -9 $pid > /dev/null 2>&1 && echo_success || echo_failure
+        forever stop $SERVER > /dev/null 2>&1 && echo_success || echo_failure
         RETVAL=$?
         echo
         [ $RETVAL -eq 0 ]
