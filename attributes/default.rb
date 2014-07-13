@@ -2,7 +2,7 @@
 # attributes/default.rb
 default['nodestack']['apps']['my_nodejs_app']['app_dir'] = '/var/app'
 default['nodestack']['apps']['my_nodejs_app']['app_user'] = 'nodejs'
-default['nodestack']['apps']['my_nodejs_app']['git_repo'] = 'https://github.com/jrperritt/beer-survey.git'
+default['nodestack']['apps']['my_nodejs_app']['git_repo'] = 'https://github.com/ccoenraets/directory-rest-nodejs.git'
 default['nodestack']['apps']['my_nodejs_app']['entry_point'] = 'server.js'
 default['nodestack']['apps']['my_nodejs_app']['rev'] = 'HEAD'
 default['nodestack']['apps']['my_nodejs_app']['deploy_key'] = nil
