@@ -35,6 +35,7 @@ node.set['build-essential']['compile_time'] = 'source'
 end
 
 mysql_node = search('node', 'recipes:nodestack\:\:mysql_master' << " AND chef_environment:#{node.chef_environment}").first
+mongo_node = search('node', 'recipes:nodestack\:\:mongodb_standalone' << " AND chef_environment:#{node.chef_environment}").first
 
 node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
 
@@ -83,7 +84,9 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
       mysql: mysql_node.respond_to?('deep_fetch') == true ? mysql_node : nil,
       mysql_user: app_name,
       mysql_password: app_config['mysql_app_user_password'],
-      mysql_db_name: app_name
+      mysql_db_name: app_name,
+      mongo: mongo_node.respond_to?('deep_fetch') == true ? mongo_node : nil,
+      mongo_host: app_config['mongo_host']
     )
   end
 
