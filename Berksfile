@@ -10,6 +10,6 @@ cookbook 'tomcat', git: 'https://github.com/opscode-cookbooks/tomcat.git', tag: 
 cookbook 'cron', git: 'git@github.com:rackspace-cookbooks/cron.git'
 cookbook 'mysql-multi', git: 'git@github.com:rackspace-cookbooks/mysql-multi.git'
 cookbook 'rackspace_gluster', git: 'git@github.com:rackspace-cookbooks/rackspace_gluster.git'
-cookbook 'nodejs', git: 'git@github.com:mdxp/nodejs-cookbook.git'
+cookbook 'nodejs', git: 'git@github.com:redguide/nodejs.git'
 
 metadata
