@@ -71,18 +71,18 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
 
   execute 'locally install npm packages from package.json' do
     cwd "#{app_config['app_dir']}/current"
-    command "npm install"
-    environment ({'HOME' => "/home/#{app_config['app_user']}"})
-    only_if {::File.exists?("#{app_config['app_dir']}/current/package.json")}
+    command 'npm install'
+    environment ({'HOME' => "/home/#{ app_config['app_user'] }"})
+    only_if {::File.exists?("#{ app_config['app_dir'] }/current/package.json")}
   end
 
-  execute "add forever to run app as daemon" do
+  execute 'add forever to run app as daemon' do
     cwd "#{app_config['app_dir']}/current"
-    command "npm install forever -g"
-    environment ({'HOME' => "/home/#{app_config['app_user']}"})
+    command 'npm install forever -g'
+    environment ({'HOME' => "/home/#{ app_config['app_user'] }"})
   end
 
-template app_name do
+  template app_name do
     path "/etc/init.d/#{app_name}"
     source 'nodejs.initd.erb'
     owner 'root'
@@ -117,7 +117,7 @@ template app_name do
   service app_name do
     case node['platform']
     when 'ubuntu'
-        provider Chef::Provider::Service::Upstart
+      provider Chef::Provider::Service::Upstart
     end
     action [:enable, :start]
   end
