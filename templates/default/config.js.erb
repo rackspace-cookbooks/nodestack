@@ -5,15 +5,22 @@ config.node = {
 };
 
 <%- unless @mysql.nil? -%>
-config.mysql = [
+config.mysql =
   {
     host: "<%= node['mysql-multi']['master'] %>",
     usr: "<%= @mysql_user %>",
     pwd: "<%= @mysql_password %>",
     db_name: "<%= @mysql_db_name %>",
-  }
+  };
 <%- end -%>
 
-];
+<%- unless @mongo.nil? -%>
+config.mongo =
+  {
+    host: "<%= @mongo_host %>",
+    port: <%= node['mongodb']['port'] %>
+  };
+<%- end -%>
+
 
 module.exports = config;
