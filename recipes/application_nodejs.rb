@@ -30,7 +30,7 @@ end
 
 node.set['nodejs']['install_method'] = 'source'
 node.set['build-essential']['compile_time'] = 'source'
-%w(nodejs::install_from_source nodejs::npm git build-essential platformstack::monitors platformstack::iptables apt).each do |recipe|
+%w(nodejs::nodejs_from_source nodejs::npm_from_source git build-essential platformstack::monitors platformstack::iptables apt).each do |recipe|
   include_recipe recipe
 end
 
@@ -52,27 +52,6 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     repository app_config['git_repo']
   end
 
-  execute 'install npm packages' do
-    cwd app_config['app_dir'] + '/current'
-    command 'npm install'
-  end
-
-  template "#{app_name}.conf" do
-    path "/etc/init/#{app_name}.conf"
-    source 'nodejs.upstart.conf.erb'
-    owner 'root'
-    group 'root'
-    mode '0644'
-    variables(
-      user: app_config['app_user'],
-      group: app_config['app_user'],
-      app_dir: app_config['app_dir'] + '/current',
-      node_dir: node['nodejs']['dir'],
-      entry: app_config['entry_point']
-    )
-    only_if { platform_family?('debian') }
-  end
-
   template 'config.js' do
     path app_config['app_dir'] + '/current/config.js'
     source 'config.js.erb'
@@ -90,6 +69,19 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     )
   end
 
+  execute 'locally install npm packages from package.json' do
+    cwd "#{app_config['app_dir']}/current"
+    command 'npm install'
+    environment ({'HOME' => "/home/#{ app_config['app_user'] }"})
+    only_if {::File.exists?("#{ app_config['app_dir'] }/current/package.json")}
+  end
+
+  execute 'add forever to run app as daemon' do
+    cwd "#{app_config['app_dir']}/current"
+    command 'npm install forever -g'
+    environment ({'HOME' => "/home/#{ app_config['app_user'] }"})
+  end
+
   template app_name do
     path "/etc/init.d/#{app_name}"
     source 'nodejs.initd.erb'
@@ -100,18 +92,32 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
       user: app_config['app_user'],
       group: app_config['app_user'],
       app_dir: app_config['app_dir'] + '/current',
-      node_dir: node['nodejs']['dir'],
       entry: app_config['entry_point']
     )
     only_if { platform_family?('rhel') }
   end
 
+  template "#{app_name}.conf" do
+    path "/etc/init/#{app_name}.conf"
+    source 'nodejs.upstart.conf.erb'
+    owner 'root'
+    group 'root'
+    mode '0644'
+    variables(
+      user: app_config['app_user'],
+      group: app_config['app_user'],
+      app_dir: app_config['app_dir'] + '/current',
+      node_dir: node['nodejs']['dir'],
+      entry: app_config['entry_point'],
+      app_name: app_name
+    )
+    only_if { platform_family?('debian') }
+  end
+
   service app_name do
     case node['platform']
     when 'ubuntu'
-      if node['platform_version'].to_f >= 9.10
-        provider Chef::Provider::Service::Upstart
-      end
+      provider Chef::Provider::Service::Upstart
     end
     action [:enable, :start]
   end

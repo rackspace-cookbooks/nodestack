@@ -2,6 +2,10 @@
 
 require_relative 'spec_helper'
 
-describe 'default' do
-  it { pending 'write some tests' }
+describe port(8080) do
+  it { should be_listening }
+end
+
+describe port(3306) do
+  it { should be_listening }
 end
