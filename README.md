@@ -2,6 +2,8 @@ nodestack Cookbook
 ==================
 This cookbook deploys a NodeJS applitcation stack.
 
+The NodeJS app will be deployed using [forever](https://github.com/nodejitsu/forever) to keep the app running in case it crashes, but we actually use init/upstart scripts to call forever and start/stop the NodeJS app.
+
 Requirements
 ------------
 
@@ -36,6 +38,8 @@ Requirements
 Attributes
 ----------
 
+####Note: the 'my_nodejs_app' defines the name of the app, please change this to something more relevant to the customer.
+
 `node['nodestack']['apps']['my_nodejs_app']['app_dir']` path where the application will be deployed
 
 `node['nodestack']['apps']['my_nodejs_app']['app_user']` OS user that will be used to run the app
@@ -69,8 +73,8 @@ name:                nodejs_app
 override_attributes:
 run_list:
   recipe[platformstack::default]
-  recipe[rackops_rolebook::rack_user]
-  recipe[nodestack::default]
+  recipe[rackops_rolebook::default]
+  recipe[nodestack::application_nodejs]
 ```
 
 To deploy a app node these is how a `nodejs_mysql` role would look like:
@@ -85,8 +89,24 @@ name:                nodejs_mysql
 override_attributes:
 run_list:
   recipe[platformstack::default]
-  recipe[rackops_rolebook::rack_user]
+  recipe[rackops_rolebook::default]
   recipe[nodestack::mysql_master]
+```
+
+To deploy a mongo node these is how a `nodejs_mongo` role would look like:
+```text
+$ knife role show nodejs_mysql
+chef_type:           role
+default_attributes:
+description:
+env_run_lists:
+json_class:          Chef::Role
+name:                nodejs_mysql
+override_attributes:
+run_list:
+  recipe[platformstack::default]
+  recipe[rackops_rolebook::default]
+  recipe[nodestack::mongodb_standalone]
 ```
 
 These are the minimum environment variables that would be needed:
