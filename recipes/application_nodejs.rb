@@ -155,7 +155,6 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     action [:enable, :start]
   end
 
-  add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{app_config['http_port']} -j ACCEPT", 100, "Allow nodejs http traffic for #{app_name}")
-  add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{app_config['https_port']} -j ACCEPT", 100, "Allow nodejs https traffic for #{app_name}")
+  add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{app_config['port']} -j ACCEPT", 100, "Allow nodejs http traffic for #{app_name}")
 
 end # end each app loop
