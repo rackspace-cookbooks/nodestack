@@ -74,6 +74,7 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
       mode 0600
       owner app_name
       group app_name
+      cookbook node['nodestack']['cookbook']
     end
   end
 

@@ -13,6 +13,7 @@ provisioner:
   client_rb:
     environment: _default
   attributes:
+    demo: true
     holland:
       enabled: false
     mysql-multi:
