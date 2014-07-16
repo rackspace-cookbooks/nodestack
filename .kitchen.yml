@@ -13,6 +13,10 @@ provisioner:
   client_rb:
     environment: _default
   attributes:
+    openssh:
+      client:
+        '*':
+          strict_host_key_checking: no
     holland:
       enabled: false
     mysql-multi:
