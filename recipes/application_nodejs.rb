@@ -63,6 +63,9 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
       mode 0700
       owner app_name
       group app_name
+      variables(
+        git_repo_domain: app_config['git_repo_domain']
+      )
     end
 
     template 'deploy key' do
