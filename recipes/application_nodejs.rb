@@ -56,7 +56,14 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
 
   if app_config['ssh_auth']
     key_path = "/home/#{app_name}/.ssh/id_rsa"
-    Chef::Log.warn('key path: '+ key_path)
+
+    template 'ssh config with strict host check disabled' do
+      source 'ssh_config.erb'
+      path '/home/' + app_name + '/.ssh/config'
+      mode 0700
+      owner app_name
+      group app_name
+    end
 
     template 'deploy key' do
       source app_name + '_private_key'
