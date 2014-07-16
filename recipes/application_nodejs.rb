@@ -37,12 +37,34 @@ end
 mysql_node = search('node', 'recipes:nodestack\:\:mysql_master' << " AND chef_environment:#{node.chef_environment}").first
 mongo_node = search('node', 'recipes:nodestack\:\:mongodb_standalone' << " AND chef_environment:#{node.chef_environment}").first
 
+key_path = ''
+
 node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
 
   user app_config['app_user'] do
     supports manage_home: true
     shell '/bin/bash'
     home "/home/#{app_config['app_user']}"
+  end
+
+  directory "/home/#{app_config['app_user']}/.ssh" do
+    owner app_config['app_user']
+    group app_config['app_user']
+    mode 0700
+    action :create
+  end
+
+  if app_config['ssh_auth']
+    key_path = "/home/#{app_config['app_name']}/.ssh/id_rsa"
+    Chef::Log.warn('key path: '+ key_path)
+
+    template 'deploy key' do
+      source app_name + '_private_key'
+      path key_path
+      mode 0600
+      owner app_config['app_user']
+      group app_config['app_user']
+    end
   end
 
   application 'nodejs application' do
