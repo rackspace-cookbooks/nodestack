@@ -37,26 +37,55 @@ end
 mysql_node = search('node', 'recipes:nodestack\:\:mysql_master' << " AND chef_environment:#{node.chef_environment}").first
 mongo_node = search('node', 'recipes:nodestack\:\:mongodb_standalone' << " AND chef_environment:#{node.chef_environment}").first
 
+key_path = ''
+
 node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
 
-  user app_config['app_user'] do
+  user app_name do
     supports manage_home: true
     shell '/bin/bash'
-    home "/home/#{app_config['app_user']}"
+    home "/home/#{app_name}"
+  end
+
+  directory "/home/#{app_name}/.ssh" do
+    owner app_name
+    group app_name
+    mode 0700
+    action :create
+  end
+
+  if app_config['ssh_auth']
+    key_path = "/home/#{app_name}/.ssh/id_rsa"
+
+    template 'ssh config with strict host check disabled' do
+      source 'ssh_config.erb'
+      path '/home/' + app_name + '/.ssh/config'
+      mode 0700
+      owner app_name
+      group app_name
+    end
+
+    template 'deploy key' do
+      source app_name + '_private_key'
+      path key_path
+      mode 0600
+      owner app_name
+      group app_name
+    end
   end
 
   application 'nodejs application' do
     path app_config['app_dir']
-    owner app_config['app_user']
-    group app_config['app_user']
+    owner app_name
+    group app_name
     repository app_config['git_repo']
   end
 
   template 'config.js' do
     path app_config['app_dir'] + '/current/config.js'
     source 'config.js.erb'
-    owner app_config['app_user']
-    group app_config['app_user']
+    owner app_name
+    group app_name
     mode '0644'
     variables(
       http_port: app_config['http_port'],
@@ -72,14 +101,14 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
   execute 'locally install npm packages from package.json' do
     cwd "#{app_config['app_dir']}/current"
     command 'npm install'
-    environment ({'HOME' => "/home/#{ app_config['app_user'] }"})
+    environment ({'HOME' => "/home/#{ app_name }"})
     only_if {::File.exists?("#{ app_config['app_dir'] }/current/package.json")}
   end
 
   execute 'add forever to run app as daemon' do
     cwd "#{app_config['app_dir']}/current"
     command 'npm install forever -g'
-    environment ({'HOME' => "/home/#{ app_config['app_user'] }"})
+    environment ({'HOME' => "/home/#{ app_name }"})
   end
 
   template app_name do
@@ -89,8 +118,8 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     group 'root'
     mode '0755'
     variables(
-      user: app_config['app_user'],
-      group: app_config['app_user'],
+      user: app_name,
+      group: app_name,
       app_dir: app_config['app_dir'] + '/current',
       entry: app_config['entry_point']
     )
@@ -104,8 +133,8 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     group 'root'
     mode '0644'
     variables(
-      user: app_config['app_user'],
-      group: app_config['app_user'],
+      user: app_name,
+      group: app_name,
       app_dir: app_config['app_dir'] + '/current',
       node_dir: node['nodejs']['dir'],
       entry: app_config['entry_point'],
