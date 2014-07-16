@@ -12,4 +12,5 @@ if node['demo']
   default['nodestack']['apps']['my_nodejs_app']['mysql_app_user_password'] = 'randompass'
   default['nodestack']['apps']['my_nodejs_app']['mongo_host'] = '127.0.0.1'
   default['mongodb']['port']   = 27_017
+  default['nodestack']['cookbook'] = 'nodestack'
 end
