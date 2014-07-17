@@ -102,12 +102,12 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     )
   end
 
-  execute 'locally install npm packages from package.json' do
-    cwd "#{app_config['app_dir']}/current"
-    command 'npm install'
-    environment ({'HOME' => "/home/#{ app_name }"})
-    only_if {::File.exists?("#{ app_config['app_dir'] }/current/package.json")}
-  end
+#  execute 'locally install npm packages from package.json' do
+#    cwd "#{app_config['app_dir']}/current"
+#    command 'npm install'
+#    environment ({'HOME' => "/home/#{ app_name }"})
+#    only_if {::File.exists?("#{ app_config['app_dir'] }/current/package.json")}
+#  end
 
   execute 'add forever to run app as daemon' do
     cwd "#{app_config['app_dir']}/current"
