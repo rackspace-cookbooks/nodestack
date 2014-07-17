@@ -48,6 +48,8 @@ Attributes
 
 `node['nodestack']['apps']['my_nodejs_app']['git_repo_domain']` The domain name for the git repo. Example: `github.com`
 
+`node['nodestack']['apps']['my_nodejs_app']['ssh_auth']` `true/false` - Are we using git+ssh to deploy the application?
+
 `node['nodestack']['apps']['my_nodejs_app']['entry_point']` the .js file that will be ran as the server.
 
 `node['nodestack']['apps']['my_nodejs_app']['rev']` Code revision that should be used. Example: HEAD
