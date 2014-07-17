@@ -92,7 +92,7 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     group app_name
     mode '0644'
     variables(
-      http_port: app_config['http_port'],
+      http_port: app_config['port_local'],
       mysql: mysql_node.respond_to?('deep_fetch') == true ? mysql_node : nil,
       mysql_user: app_name,
       mysql_password: app_config['mysql_app_user_password'],
@@ -155,6 +155,11 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     action [:enable, :start]
   end
 
-  add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{app_config['port']} -j ACCEPT", 100, "Allow nodejs http traffic for #{app_name}")
+  add_iptables_rule('PREROUTING', "-p tcp --dport #{app_config['port']} -j REDIRECT --to-port #{app_config['port_local']}",
+                    50, "Redirect traffic for NodeJSapp #{app_name}")
+  add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{app_config['port']} -j ACCEPT",
+                    100, "Allow nodejs traffic for #{app_name}")
+  add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{app_config['port_local']} -j ACCEPT",
+                    100, "Allow nodejs traffic for #{app_name}")
 
 end # end each app loop

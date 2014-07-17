@@ -8,7 +8,8 @@ if node['demo']
   default['nodestack']['apps']['my_nodejs_app']['npm'] = true
   default['nodestack']['apps']['my_nodejs_app']['rev'] = 'HEAD'
   default['nodestack']['apps']['my_nodejs_app']['ssh_auth'] = true
-  default['nodestack']['apps']['my_nodejs_app']['port'] = '8080'
+  default['nodestack']['apps']['my_nodejs_app']['port'] = '80'
+  default['nodestack']['apps']['my_nodejs_app']['port_local'] = '8080'
   default['nodestack']['apps']['my_nodejs_app']['mysql_app_user_password'] = 'randompass'
   default['nodestack']['apps']['my_nodejs_app']['mongo_host'] = '127.0.0.1'
   default['mongodb']['port']   = 27_017
