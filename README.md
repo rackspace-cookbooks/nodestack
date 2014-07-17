@@ -46,17 +46,21 @@ Attributes
 
 `node['nodestack']['apps']['my_nodejs_app']['git_repo']` Git repository where the code lives.
 
+`node['nodestack']['apps']['my_nodejs_app']['git_repo_domain']` The domain name for the git repo. Example: `github.com`
+
+`node['nodestack']['apps']['my_nodejs_app']['ssh_auth']` `true/false` - Are we using git+ssh to deploy the application?
+
 `node['nodestack']['apps']['my_nodejs_app']['entry_point']` the .js file that will be ran as the server.
 
 `node['nodestack']['apps']['my_nodejs_app']['rev']` Code revision that should be used. Example: HEAD
 
+`node['nodestack']['apps']['my_nodejs_app']['npm']` `true/false` - Wether we should run `npm install` during a deployment.
+
 `node['nodestack']['apps']['my_nodejs_app']['deploy_key']` SSH key to pull the code from the git repo. You don't need this if you use https instead of git.
 
-`node['nodestack']['apps']['my_nodejs_app']['http_port']` HTTP port for the NodeJS app
+`node['nodestack']['apps']['my_nodejs_app']['port']` For now, we can't bind the well known ports, so we're redirecting. This is we would like the app to listen to.
 
-`node['nodestack']['apps']['my_nodejs_app']['https_port']` HTTPS port for the NodeJS app
-
-`node['nodestack']['apps']['my_nodejs_app']['mysql_app_user_password']` Password for the mysql user. The user is named after `node['nodestack']['apps']['my_nodejs_app']['app_user']`
+`node['nodestack']['apps']['my_nodejs_app']['port_local']` This is the port the app really listens to.
 
 
 Usage
