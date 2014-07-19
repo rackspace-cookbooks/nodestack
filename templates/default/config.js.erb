@@ -1,26 +1,13 @@
 var config = {};
 
-config.node = {
-  port: <%= @http_port %>
+config = {
+  <% @config_js.each_pair do | directive, config | %>
+    <% if config.is_a?(Integer) %>
+        <%= directive %>: <%= config %>,
+    <% else %>
+        <%= directive %>: "<%= config %>",
+    <% end %>
+  <% end %>
 };
-
-<%- unless @mysql.nil? -%>
-config.mysql =
-  {
-    host: "<%= node['mysql-multi']['master'] %>",
-    usr: "<%= @mysql_user %>",
-    pwd: "<%= @mysql_password %>",
-    db_name: "<%= @mysql_db_name %>",
-  };
-<%- end -%>
-
-<%- unless @mongo.nil? -%>
-config.mongo =
-  {
-    host: "<%= @mongo_host %>",
-    port: <%= node['mongodb']['port'] %>
-  };
-<%- end -%>
-
 
 module.exports = config;

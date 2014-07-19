@@ -92,13 +92,7 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     group app_name
     mode '0644'
     variables(
-      http_port: app_config['port_local'],
-      mysql: mysql_node.respond_to?('deep_fetch') == true ? mysql_node : nil,
-      mysql_user: app_name,
-      mysql_password: app_config['mysql_app_user_password'],
-      mysql_db_name: app_name,
-      mongo: mongo_node.respond_to?('deep_fetch') == true ? mongo_node : nil,
-      mongo_host: app_config['mongo_host']
+      config_js: app_config['config_js']
     )
   end
 
