@@ -21,7 +21,7 @@
 case node['platform_family']
 when 'rhel', 'fedora'
   package_name = 'libcap'
-when
+when 'debian'
   package_name = 'libcap2-bin'
 end
 
