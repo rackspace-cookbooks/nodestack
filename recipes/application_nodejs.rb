@@ -79,7 +79,6 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
   end
 
   application 'nodejs application' do
-    restart_command "service #{app_name} restart"
     path app_config['app_dir']
     owner app_name
     group app_name
