@@ -30,7 +30,7 @@ end
 
 node.set['nodejs']['install_method'] = 'source'
 node.set['build-essential']['compile_time'] = 'source'
-%w(nodejs::nodejs_from_source nodejs::npm_from_source git build-essential platformstack::monitors platformstack::iptables apt).each do |recipe|
+%w(nodejs::nodejs_from_source nodejs::npm_from_source git build-essential platformstack::monitors platformstack::iptables apt nodestack::setcap).each do |recipe|
   include_recipe recipe
 end
 
@@ -78,13 +78,6 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     end
   end
 
-  application 'nodejs application' do
-    path app_config['app_dir']
-    owner app_name
-    group app_name
-    repository app_config['git_repo']
-  end
-
   template 'config.js' do
     path app_config['app_dir'] + '/current/config.js'
     source 'config.js.erb'
@@ -94,6 +87,14 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     variables(
       config_js: app_config['config_js']
     )
+  end
+
+  application 'nodejs application' do
+    restart_command "service #{app_name} restart"
+    path app_config['app_dir']
+    owner app_name
+    group app_name
+    repository app_config['git_repo']
   end
 
   execute 'locally install npm packages from package.json' do
@@ -149,11 +150,7 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     action [:enable, :start]
   end
 
-  add_iptables_rule('PREROUTING', "-p tcp --dport #{app_config['port']} -j REDIRECT --to-port #{app_config['port_local']}",
-                    50, "Redirect traffic for NodeJSapp #{app_name}")
-  add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{app_config['port']} -j ACCEPT",
-                    100, "Allow nodejs traffic for #{app_name}")
-  add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{app_config['port_local']} -j ACCEPT",
+  add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{app_config['config_js']['port']} -j ACCEPT",
                     100, "Allow nodejs traffic for #{app_name}")
 
 end # end each app loop
