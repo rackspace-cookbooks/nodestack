@@ -30,7 +30,7 @@ end
 
 node.set['nodejs']['install_method'] = 'source'
 node.set['build-essential']['compile_time'] = 'source'
-%w(nodejs::nodejs_from_source nodejs::npm_from_source git build-essential platformstack::monitors platformstack::iptables apt).each do |recipe|
+%w(nodejs::nodejs_from_source nodejs::npm_from_source git build-essential platformstack::monitors platformstack::iptables apt nodestack::setcap).each do |recipe|
   include_recipe recipe
 end
 
@@ -92,13 +92,7 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     group app_name
     mode '0644'
     variables(
-      http_port: app_config['port_local'],
-      mysql: mysql_node.respond_to?('deep_fetch') == true ? mysql_node : nil,
-      mysql_user: app_name,
-      mysql_password: app_config['mysql_app_user_password'],
-      mysql_db_name: app_name,
-      mongo: mongo_node.respond_to?('deep_fetch') == true ? mongo_node : nil,
-      mongo_host: app_config['mongo_host']
+      config_js: app_config['config_js']
     )
   end
 
@@ -155,11 +149,7 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     action [:enable, :start]
   end
 
-  add_iptables_rule('PREROUTING', "-p tcp --dport #{app_config['port']} -j REDIRECT --to-port #{app_config['port_local']}",
-                    50, "Redirect traffic for NodeJSapp #{app_name}")
-  add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{app_config['port']} -j ACCEPT",
-                    100, "Allow nodejs traffic for #{app_name}")
-  add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{app_config['port_local']} -j ACCEPT",
+  add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{app_config['config_js']['port']} -j ACCEPT",
                     100, "Allow nodejs traffic for #{app_name}")
 
 end # end each app loop

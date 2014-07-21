@@ -24,8 +24,14 @@ require 'kitchen'
 desc 'Run Test Kitchen integration tests'
 task :integration do
   Kitchen.logger = Kitchen.default_file_logger
+  sh 'kitchen test -c'
+end
+
+desc 'Destroy test kitchen instances'
+task :destroy do
+  Kitchen.logger = Kitchen.default_file_logger
   Kitchen::Config.new.instances.each do |instance|
-    instance.test(:always)
+    instance.destroy
   end
 end
 
