@@ -100,6 +100,7 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     cwd "#{app_config['app_dir']}/current"
     command 'npm install'
     environment ({'HOME' => "/home/#{ app_name }"})
+    user app_name
     only_if {::File.exists?("#{ app_config['app_dir'] }/current/package.json") && app_config['npm']}
   end
 
