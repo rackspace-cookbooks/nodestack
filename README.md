@@ -67,7 +67,7 @@ var config = require('./config');
 app.listen(config.port);
 ```
 
-`node['nodestack']['apps']['my_nodejs_app']['config_js']['port']` This is the only `config_js` attribute the cookbook expects to have my default, this is the port the app listens on.
+`node['nodestack']['apps']['my_nodejs_app']['config_js']['port']` This is the only `config_js` attribute the cookbook expects to have by default, this is the port the app listens on.
 
 
 Usage
