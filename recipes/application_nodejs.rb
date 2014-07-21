@@ -78,6 +78,14 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     end
   end
 
+  application 'nodejs application' do
+    restart_command "service #{app_name} restart"
+    path app_config['app_dir']
+    owner app_name
+    group app_name
+    repository app_config['git_repo']
+  end
+
   template 'config.js' do
     path app_config['app_dir'] + '/current/config.js'
     source 'config.js.erb'
@@ -87,14 +95,6 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     variables(
       config_js: app_config['config_js']
     )
-  end
-
-  application 'nodejs application' do
-    restart_command "service #{app_name} restart"
-    path app_config['app_dir']
-    owner app_name
-    group app_name
-    repository app_config['git_repo']
   end
 
   execute 'locally install npm packages from package.json' do
