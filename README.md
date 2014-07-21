@@ -42,8 +42,6 @@ Attributes
 
 `node['nodestack']['apps']['my_nodejs_app']['app_dir']` path where the application will be deployed
 
-`node['nodestack']['apps']['my_nodejs_app']['app_user']` OS user that will be used to run the app
-
 `node['nodestack']['apps']['my_nodejs_app']['git_repo']` Git repository where the code lives.
 
 `node['nodestack']['apps']['my_nodejs_app']['git_repo_domain']` The domain name for the git repo. Example: `github.com`
@@ -56,11 +54,20 @@ Attributes
 
 `node['nodestack']['apps']['my_nodejs_app']['npm']` `true/false` - Wether we should run `npm install` during a deployment.
 
-`node['nodestack']['apps']['my_nodejs_app']['deploy_key']` SSH key to pull the code from the git repo. You don't need this if you use https instead of git.
+`node['nodestack']['apps']['my_nodejs_app']['config_js']`= {} - This config hash contains writes the config.js file to be read by the application. Whatever attributes are set through this hash will be available to the application, Example:
 
-`node['nodestack']['apps']['my_nodejs_app']['port']` For now, we can't bind the well known ports, so we're redirecting. This is we would like the app to listen to.
+Attribute:
+```ruby
+default['nodestack']['apps']['my_nodejs_app']['config_js']['port'] = 80
+```
 
-`node['nodestack']['apps']['my_nodejs_app']['port_local']` This is the port the app really listens to.
+Node.js app:
+```javascript
+var config = require('./config');
+app.listen(config.port);
+```
+
+`node['nodestack']['apps']['my_nodejs_app']['config_js']['port']` This is the only `config_js` attribute the cookbook expects to have my default, this is the port the app listens on.
 
 
 Usage
