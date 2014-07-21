@@ -83,6 +83,7 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     owner app_name
     group app_name
     repository app_config['git_repo']
+    revision app_config['git_rev']
   end
 
   template 'config.js' do
