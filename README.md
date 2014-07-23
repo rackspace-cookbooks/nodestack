@@ -54,6 +54,8 @@ Attributes
 
 `node['nodestack']['apps']['my_nodejs_app']['npm']` `true/false` - Wether we should run `npm install` during a deployment.
 
+`node['nodestack']['apps']['my_nodejs_app']['config_file']` `true/false` - Wether the coobook will write a config.js from the following config hash.
+
 `node['nodestack']['apps']['my_nodejs_app']['config_js']`= {} - This config hash contains writes the config.js file to be read by the application. Whatever attributes are set through this hash will be available to the application, Example:
 
 Attribute:
@@ -69,6 +71,7 @@ app.listen(config.port);
 
 `node['nodestack']['apps']['my_nodejs_app']['config_js']['port']` This is the only `config_js` attribute the cookbook expects to have by default, this is the port the app listens on.
 
+`node['nodestack']['apps']['my_nodejs_app']['env']`= {} - This config hash contains environment variables that will be available to the application.
 
 Usage
 -----
