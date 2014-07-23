@@ -39,7 +39,9 @@ mongo_node = search('node', 'recipes:nodestack\:\:mongodb_standalone' << " AND c
 
 key_path = ''
 
-node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
+node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
+
+  app_config = node['nodestack']['apps'][app_name]
 
   user app_name do
     supports manage_home: true
