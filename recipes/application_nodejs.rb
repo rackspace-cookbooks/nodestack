@@ -86,6 +86,12 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     revision app_config['git_rev']
   end
 
+  app_config['env'].each_pair do |variable, value|
+    magic_shell_environment variable do
+      value value
+    end
+  end
+
   template 'config.js' do
     path app_config['app_dir'] + '/current/config.js'
     source 'config.js.erb'
