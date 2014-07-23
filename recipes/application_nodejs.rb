@@ -86,6 +86,12 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     revision app_config['git_rev']
   end
 
+  app_config['env'].each_pair do |variable, value|
+    magic_shell_environment variable do
+      value value
+    end
+  end
+
   template 'config.js' do
     path app_config['app_dir'] + '/current/config.js'
     source 'config.js.erb'
@@ -95,6 +101,7 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     variables(
       config_js: app_config['config_js']
     )
+    only_if {app_config['config_file']}
   end
 
   execute 'locally install npm packages from package.json' do
@@ -149,6 +156,10 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
       provider Chef::Provider::Service::Upstart
     end
     action [:enable, :start]
+  end
+
+  execute 'restart app with service' do
+    command "service #{app_name} restart"
   end
 
   add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{app_config['config_js']['port']} -j ACCEPT",
