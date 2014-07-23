@@ -95,6 +95,7 @@ node['nodestack']['apps'].each_pair do |app_name, app_config| # each app loop
     variables(
       config_js: app_config['config_js']
     )
+    only_if {app_config['config_file']}
   end
 
   execute 'locally install npm packages from package.json' do
