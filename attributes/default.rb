@@ -1,6 +1,7 @@
 # Encoding: utf-8
 # attributes/default.rb
 if node['demo']
+  default['nodestack']['apps_to_deploy'] = ['my_nodejs_app']
   default['nodestack']['apps']['my_nodejs_app']['app_dir'] = '/var/app'
   default['nodestack']['apps']['my_nodejs_app']['git_repo'] = 'git@github.com:marcoamorales/directory-rest-nodejs.git'
   default['nodestack']['apps']['my_nodejs_app']['git_rev'] = 'HEAD'
