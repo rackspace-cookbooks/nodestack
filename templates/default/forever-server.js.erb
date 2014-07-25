@@ -1,0 +1,14 @@
+var forever = require('forever'),
+    child = new(forever.Monitor)('app.js', {
+        'silent': false,
+        'pidFile': '<%= @app_dir %>/pids/app.pid',
+        'watch': true,
+        'watchDirectory': '<%= @app_dir %>',      // Top-level directory to watch from.
+        'watchIgnoreDotFiles': true, // whether to ignore dot files
+        'watchIgnorePatterns': [], // array of glob patterns to ignore, merged with contents of watchDirectory + '/.foreverignore' file
+        'logFile': '<%= @app_dir %>/logs/forever.log', // Path to log output from forever process (when daemonized)
+        'outFile': '<%= @app_dir %>/logs/forever.out', // Path to log output from child stdout
+        'errFile': '<%= @app_dir %>/logs/forever.err'
+    });
+child.start();
+forever.startServer(child);

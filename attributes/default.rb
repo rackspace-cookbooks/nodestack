@@ -5,7 +5,7 @@ if node['demo']
   default['nodestack']['apps_to_deploy'] = ['my_nodejs_app']
   default['nodestack']['apps']['my_nodejs_app']['app_dir'] = '/var/app'
   default['nodestack']['apps']['my_nodejs_app']['git_repo'] = 'git@github.com:marcoamorales/node-hello-world.git'
-  default['nodestack']['apps']['my_nodejs_app']['git_rev'] = '0.0.1'
+  default['nodestack']['apps']['my_nodejs_app']['git_rev'] = 'HEAD'
   default['nodestack']['apps']['my_nodejs_app']['git_repo_domain'] = 'github.com'
   default['nodestack']['apps']['my_nodejs_app']['entry_point'] = 'server.js'
   default['nodestack']['apps']['my_nodejs_app']['npm'] = true
