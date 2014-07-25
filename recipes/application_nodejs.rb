@@ -141,8 +141,8 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
   app_config['env'].each_pair do |variable, value|
     magic_shell_environment variable do
       value value
+      notifies :restart, "service[#{app_name}]", :delayed
     end
-    notifies :restart, "service[#{app_name}]", :delayed
   end
 
   application 'nodejs application' do
