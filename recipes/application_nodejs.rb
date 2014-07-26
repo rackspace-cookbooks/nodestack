@@ -109,8 +109,9 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
   execute 'locally install npm packages from package.json' do
     cwd "#{app_config['app_dir']}/current"
     command 'npm install'
-    environment ({'HOME' => "/home/#{ app_name }"})
+    environment 'HOME' => "/home/#{ app_name }", 'USER' => app_name
     user app_name
+    group app_name
     only_if {::File.exists?("#{ app_config['app_dir'] }/current/package.json") && app_config['npm']}
   end
 
