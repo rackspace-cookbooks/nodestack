@@ -41,7 +41,7 @@ script
   <% end %>
     echo $PORT
     chdir $HOME
-    exec /usr/local/bin/node <%= @entry %> > <%= @app_dir %>/logs/node.log &
+    exec <%= @binary_path %> <%= @entry %> > <%= @app_dir %>/logs/node.log &
 end script
 
 #post-start script

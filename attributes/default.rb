@@ -1,6 +1,7 @@
 # Encoding: utf-8
 # attributes/default.rb
-default['nodejs']['install_method'] = 'binary'
+default['nodejs']['install_method'] = 'package'
+default['nodestack']['binary_path'] = '/usr/bin/nodejs'
 if node['demo']
   default['nodestack']['apps_to_deploy'] = ['my_nodejs_app']
   default['nodestack']['apps']['my_nodejs_app']['app_dir'] = '/var/app'
