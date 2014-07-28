@@ -30,6 +30,6 @@ package package_name do
 end
 
 execute 'grant permissions to bind to low ports' do
-  command "setcap cap_net_bind_service=+ep #{node['nodestack']['binary_path']"
+  command "setcap cap_net_bind_service=+ep #{node['nodestack']['binary_path']}"
   user 'root'
 end
