@@ -118,7 +118,6 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
   execute 'add forever to run app as daemon' do
     cwd "#{app_config['app_dir']}/current"
     command 'npm install forever -g'
-    environment ({'HOME' => "/home/#{ app_name }"})
   end
 
   template app_name do
