@@ -34,6 +34,7 @@ Requirements
 - nodejs
 - ssh_known_hosts
 - application
+- magic_shell
 
 
 Attributes
@@ -41,7 +42,7 @@ Attributes
 
 ####Note: the 'my_nodejs_app' defines the name of the app, please change this to something more relevant to the customer.
 
-`node['nodestack']['apps_to_deploy'] = []` - This array defines the application names to deploy.
+`node['nodestack']['apps_to_deploy']` - This array defines the application names to deploy.
 
 `node['nodestack']['apps']['my_nodejs_app']['app_dir']` path where the application will be deployed
 
@@ -75,6 +76,14 @@ app.listen(config.port);
 `node['nodestack']['apps']['my_nodejs_app']['config_js']['port']` This is the only `config_js` attribute the cookbook expects to have by default, this is the port the app listens on.
 
 `node['nodestack']['apps']['my_nodejs_app']['env']`= {} - This config hash contains environment variables that will be available to the application.
+
+How to deploy an Node.js application with Nodestack
+----
+
+There's a couple of things that need to be considered when deploying an application with this cookbook, in other words, the app must be setup in a specific way.
+This cookbook will deploy an application by running a simple server.js Node.js app, which in turn will run the Node.js application that is going to be deployed. This server.js application will monitor any changes on the application files and reload itself if it finds any changes. There's also other options that can be implemented in the future, like the amount of child processes.
+
+One important thing to note is that the application's entry point must not be `server.js`. It can be anything else but `server.js`.
 
 Usage
 -----
