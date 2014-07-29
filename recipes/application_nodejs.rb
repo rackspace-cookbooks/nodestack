@@ -117,9 +117,11 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     mode '0755'
     variables(
       user: app_name,
-      group: app_name,
-      app_dir: app_config['app_dir'] + '/current',
-      entry: app_config['entry_point']
+      binary_path: node['nodestack']['binary_path'],
+      app_dir: app_config['app_dir'],
+      entry: app_config['entry_point'],
+      app_name: app_name,
+      env: app_config['env']
     )
     only_if { platform_family?('rhel') }
   end
