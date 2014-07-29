@@ -102,7 +102,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
       user: app_name,
       binary_path: node['nodestack']['binary_path'],
       app_dir: app_config['app_dir'],
-      entry: app_config['entry_point'],
+      entry: 'server.js',
       app_name: app_name,
       env: app_config['env']
     )
@@ -119,7 +119,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
       user: app_name,
       binary_path: node['nodestack']['binary_path'],
       app_dir: app_config['app_dir'],
-      entry: app_config['entry_point'],
+      entry: 'server.js',
       app_name: app_name,
       env: app_config['env']
     )
@@ -191,7 +191,8 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     group app_name
     mode '0644'
     variables(
-      app_dir: app_config['app_dir']
+      app_dir: app_config['app_dir'],
+      entry_point: app_config['entry_point']
   )
   end
 

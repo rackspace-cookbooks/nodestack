@@ -1,5 +1,5 @@
 var forever = require('forever'),
-    child = new(forever.Monitor)('<%= @app_dir %>/current/app.js', {
+    child = new(forever.Monitor)('<%= @app_dir %>/current/<%= @entry_point %>', {
         'silent': false,
         'pidFile': '<%= @app_dir %>/pids/app.pid',
         'watch': true,
