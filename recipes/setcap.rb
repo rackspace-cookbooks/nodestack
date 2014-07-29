@@ -21,17 +21,22 @@
 case node['platform_family']
 when 'rhel', 'fedora'
   package_name = 'libcap'
-  setcap_command = "setcap cap_net_bind_service=+ep $(readlink #{node['nodestack']['binary_path']})"
 when 'debian'
   package_name = 'libcap2-bin'
-  setcap_command = "setcap cap_net_bind_service=+ep #{node['nodestack']['binary_path']}"
 end
 
 package package_name do
   action 'install'
 end
 
-execute 'grant permissions to bind to low ports' do
-  command setcap_command
+execute 'grant permissions to bind to low ports if path is binary' do
+  command "setcap cap_net_bind_service=+ep #{node['nodestack']['binary_path']}"
   user 'root'
+  not_if "test -L #{node['nodestack']['binary_path']}"
+end
+
+execute 'grant permissions to bind to low ports if path is symlink' do
+  command "setcap cap_net_bind_service=+ep $(readlink #{node['nodestack']['binary_path']})"
+  user 'root'
+  only_if "test -L #{node['nodestack']['binary_path']}"
 end
