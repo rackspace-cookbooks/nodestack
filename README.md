@@ -14,7 +14,8 @@ Requirements
 - database
 - chef-sugar
 - apt
-- mysql
+- mysql-multi
+- pg-multi
 - database
 - chef-sugar
 - elasticsearch
@@ -93,7 +94,7 @@ run_list:
   recipe[nodestack::application_nodejs]
 ```
 
-To deploy a app node these is how a `nodejs_mysql` role would look like:
+To deploy a standalone db for an app node these is how a `nodejs_mysql` role would look like:
 ```text
 $ knife role show nodejs_mysql
 chef_type:           role
@@ -106,18 +107,18 @@ override_attributes:
 run_list:
   recipe[platformstack::default]
   recipe[rackops_rolebook::default]
-  recipe[nodestack::mysql_master]
+  recipe[nodestack::mysql_base]
 ```
 
 To deploy a mongo node these is how a `nodejs_mongo` role would look like:
 ```text
-$ knife role show nodejs_mysql
+$ knife role show nodejs_mongo
 chef_type:           role
 default_attributes:
 description:
 env_run_lists:
 json_class:          Chef::Role
-name:                nodejs_mysql
+name:                nodejs_mongo
 override_attributes:
 run_list:
   recipe[platformstack::default]
@@ -152,6 +153,98 @@ override_attributes:
       api_key:  xxx
       username: xxx
 ```
+
+* Building MySQL cluster for nodestack.
+
+Ensure the following attributes are set within environment or wrapper cookbook.
+
+```
+['mysql']['server_repl_password'] = 'rootlogin'
+['mysql']['server_repl_password'] = 'replicantlogin'
+['mysql-multi']['master'] = '1.2.3.4'
+['mysql-multi']['slaves'] = ['5.6.7.8']
+```
+
+MySQL Master node:
+```text
+$ knife role show nodejs_mysql_master
+chef_type:           role
+default_attributes:
+description:
+env_run_lists:
+json_class:          Chef::Role
+name:                nodejs_mysql_master
+override_attributes:
+run_list:
+  recipe[platformstack::default]
+  recipe[rackops_rolebook::default]
+  recipe[nodestack::mysql_master]
+```
+
+MySQL Slave node:
+```text
+$ knife role show nodejs_mysql_slave
+chef_type:           role
+default_attributes:
+description:
+env_run_lists:
+json_class:          Chef::Role
+name:                nodejs_mysql_slave
+override_attributes:
+run_list:
+  recipe[platformstack::default]
+  recipe[rackops_rolebook::default]
+  recipe[nodestack::mysql_slave]
+```
+
+* Building a PostgreSQL cluster for nodestack.
+
+Ensure the following attributes are set within environment or wrapper cookbook.
+
+```
+['postgresql']['version'] = '9.3' 
+['postgresql']['password'] = 'postgresdefault'
+['pg-multi']['replication']['password'] = 'useagudpasswd'
+['pg-multi']['master_ip'] = '1.2.3.4'
+['pg-multi']['slave_ip'] = ['5.6.7.8']
+
+Depending on OS one of the following two must be set:
+['postgresql']['enable_pdgd_yum'] = true  (Redhat Family)
+['postgresql']['enable_pdgd_apt'] = true  (Debian Family)
+```
+
+PostgreSQL Master node:
+```text
+$ knife role show nodejs_postgresql_master
+chef_type:           role
+default_attributes:
+description:
+env_run_lists:
+json_class:          Chef::Role
+name:                nodejs_postgresql_master
+override_attributes:
+run_list:
+  recipe[platformstack::default]
+  recipe[rackops_rolebook::default]
+  recipe[nodestack::postgresql_master]
+```
+
+PostgreSQL Slave node:
+```text
+$ knife role show nodejs_postgresql_slave
+chef_type:           role
+default_attributes:
+description:
+env_run_lists:
+json_class:          Chef::Role
+name:                nodejs_postgresql_slave
+override_attributes:
+run_list:
+  recipe[platformstack::default]
+  recipe[rackops_rolebook::default]
+  recipe[nodestack::postgresql_slave]
+```
+
 
 Contributing
 ------------
