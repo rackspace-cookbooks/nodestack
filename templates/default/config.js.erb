@@ -1,13 +1,5 @@
 var config = {};
 
-config = {
-  <% @config_js.each_pair do | directive, config | %>
-    <% if config.is_a?(Integer) %>
-        <%= directive %>: <%= config %>,
-    <% else %>
-        <%= directive %>: "<%= config %>",
-    <% end %>
-  <% end %>
-};
+config = <%= @config_js.to_json %>;
 
 module.exports = config;
