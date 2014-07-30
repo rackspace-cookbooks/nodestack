@@ -51,8 +51,4 @@ platforms:
 suites:
   - name: default
     run_list:
-      - recipe[nodestack::mongodb_standalone]
       - recipe[nodestack::application_nodejs]
-  - name: mysql
-    run_list:
-      - recipe[nodestack::mysql_base]

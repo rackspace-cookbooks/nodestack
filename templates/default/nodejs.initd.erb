@@ -10,25 +10,26 @@
 USER="<%= @user %>"
 GROUP="<%= @group %>"
 
-DAEMON="<%= @node_dir %>/bin/node"
+DAEMON="<%= @binary_path %>"
 
 # nodejs cookbook is wrong if binary package is used :(
 if [ ! -f "$DAEMON" ] ; then
   DAEMON="/usr/bin/node"
 fi
 
-ROOT_DIR="<%= @app_dir %>"
+ROOT_DIR="<%= @app_dir %>/current"
 
-SERVER="<%= @entry %>"
-LOG_FILE="$ROOT_DIR/app.js.log"
+SERVER="$ROOT_DIR/<%= @entry %>"
+LOG_FILE="<%= @app_dir %>/logs/node.log"
 
 LOCK_FILE="/var/lock/subsys/node-server"
 
 do_start()
 {
+        export HOME=$ROOT_DIR
         if [ ! -f "$LOCK_FILE" ] ; then
                 echo -n $"Starting $SERVER: "
-                runuser -l "$USER" -c "( cd $ROOT_DIR && forever start $SERVER >> $LOG_FILE & ) &" && echo_success || echo_failure
+                runuser -l "$USER" -c "$DAEMON $SERVER >> $LOG_FILE &" && echo_success || echo_failure
                 RETVAL=$?
                 echo
                 [ $RETVAL -eq 0 ] && touch $LOCK_FILE
@@ -40,11 +41,11 @@ do_start()
 do_stop()
 {
         echo -n $"Stopping $SERVER: "
-        forever stop $SERVER > /dev/null 2>&1 && echo_success || echo_failure
+        pid=`ps -aefw | grep "$DAEMON $SERVER" | grep -v " grep " | awk '{print $2}'`
+        kill -9 $pid > /dev/null 2>&1 && echo_success || echo_failure
         RETVAL=$?
         echo
-        [ $RETVAL -eq 0 ]
-        rm -f $LOCK_FILE
+        [ $RETVAL -eq 0 ] && rm -f $LOCK_FILE
 }
 
 case "$1" in

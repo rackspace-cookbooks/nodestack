@@ -1,30 +1,50 @@
-#!upstart
-description "Node.js Application Server"
+# This is an upstart (http://upstart.ubuntu.com/) script
+# to run the node.js server on system boot and make it
+# manageable with commands such as
+# 'start node-app' and 'stop node-app'
+#
+# This script is to be placed in /etc/init to work with upstart.
+#
+# Internally the 'initctl' command is used to manage:
+# initctl help
+# initctl status node-app
+# initctl reload node-app
+# initctl start node-app
 
-start on startup
-stop on shutdown
+description "node.js forever server for node-app"
+version "1.0"
 
 expect fork
 
-<% unless @user.nil? -%>
+# used to be: start on startup
+# until we found some mounts weren't ready yet while booting:
+
+start on started mountall
+stop on shutdown
+
+# Automatically Respawn:
+respawn
+respawn limit 99 5
+
 setuid <%= @user %>
-<% end -%>
-<% unless @group.nil? -%>
-setgid <%= @group %>
-<% end -%>
-chdir <%= @app_dir %>
+setgid <%= @user %>
+
+env HOME=<%= @app_dir %>/current
+<% @env.each_pair do | variable, value | %>
+env <%= variable %>=<%= value %>
+<% end %>
 
 script
-  cd <%= @app_dir %>
-  exec forever start \
-    --pidFile <%= @app_dir %>/forever.pid \
-    --minUptime 5000 \
-    --spinSleepTime 2000 \
-    -a \
-    -l <%= @app_dir %>/<%= @app_name %>.log \
-    <%= @app_dir %>/<%= @entry %>
+    export HOME=$HOME
+  <% @env.each_pair do | variable, value | %>
+    export <%= variable %>=$<%= variable %>
+  <% end %>
+    echo $PORT
+    chdir $HOME
+    exec <%= @binary_path %> <%= @entry %> > <%= @app_dir %>/logs/node.log &
 end script
 
-pre-stop script
-  exec forever stop <%= @app_dir %>/<%= @entry %>
-end script
+#post-start script
+#   # Optionally put a script here that will notifiy you node has (re)started
+#   # /root/bin/hoptoad.sh "node.js has started!"
+#end script

@@ -28,9 +28,8 @@ else
   include_recipe 'apt'
 end
 
-node.set['nodejs']['install_method'] = 'source'
 node.set['build-essential']['compile_time'] = 'source'
-%w(nodejs::nodejs_from_source nodejs::npm_from_source git build-essential platformstack::monitors platformstack::iptables apt nodestack::setcap).each do |recipe|
+%w(nodejs nodejs::npm git build-essential platformstack::monitors platformstack::iptables apt nodestack::setcap).each do |recipe|
   include_recipe recipe
 end
 
@@ -47,6 +46,19 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     supports manage_home: true
     shell '/bin/bash'
     home "/home/#{app_name}"
+  end
+
+  sudo app_name do
+    user app_name
+    nopasswd true
+    commands ["/sbin/restart #{app_name}", "/sbin/start #{app_name}", "/sbin/stop #{app_name}"]
+  end
+
+  directory "/home/#{app_name}/.npm" do
+    owner app_name
+    group app_name
+    mode 0755
+    action :create
   end
 
   directory "/home/#{app_name}/.ssh" do
@@ -80,18 +92,68 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     end
   end
 
+  template "#{app_name}.conf" do
+    path "/etc/init/#{app_name}.conf"
+    source 'nodejs.upstart.conf.erb'
+    owner 'root'
+    group 'root'
+    mode '0644'
+    variables(
+      user: app_name,
+      binary_path: node['nodestack']['binary_path'],
+      app_dir: app_config['app_dir'],
+      entry: 'server.js',
+      app_name: app_name,
+      env: app_config['env']
+    )
+    only_if { platform_family?('debian') }
+  end
+
+  template app_name do
+    path "/etc/init.d/#{app_name}"
+    source 'nodejs.initd.erb'
+    owner 'root'
+    group 'root'
+    mode '0755'
+    variables(
+      user: app_name,
+      binary_path: node['nodestack']['binary_path'],
+      app_dir: app_config['app_dir'],
+      entry: 'server.js',
+      app_name: app_name,
+      env: app_config['env']
+    )
+    only_if { platform_family?('rhel') }
+  end
+
+  directory "#{app_config['app_dir']}/logs" do
+    owner app_name
+    group app_name
+    recursive true
+    mode 0755
+    action :create
+  end
+
+  directory "#{app_config['app_dir']}/pids" do
+    owner app_name
+    group app_name
+    mode 0755
+    action :create
+  end
+
+  app_config['env'].each_pair do |variable, value|
+    magic_shell_environment variable do
+      value value
+      notifies :restart, "service[#{app_name}]", :delayed
+    end
+  end
+
   application 'nodejs application' do
     path app_config['app_dir']
     owner app_name
     group app_name
     repository app_config['git_repo']
     revision app_config['git_rev']
-  end
-
-  app_config['env'].each_pair do |variable, value|
-    magic_shell_environment variable do
-      value value
-    end
   end
 
   template 'config.js' do
@@ -117,39 +179,21 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
 
   execute 'add forever to run app as daemon' do
     cwd "#{app_config['app_dir']}/current"
-    command 'npm install forever -g'
+    user app_name
+    command 'npm install forever'
+    environment ({'HOME' => "/home/#{ app_name }"})
   end
 
-  template app_name do
-    path "/etc/init.d/#{app_name}"
-    source 'nodejs.initd.erb'
-    owner 'root'
-    group 'root'
-    mode '0755'
-    variables(
-      user: app_name,
-      group: app_name,
-      app_dir: app_config['app_dir'] + '/current',
-      entry: app_config['entry_point']
-    )
-    only_if { platform_family?('rhel') }
-  end
-
-  template "#{app_name}.conf" do
-    path "/etc/init/#{app_name}.conf"
-    source 'nodejs.upstart.conf.erb'
-    owner 'root'
-    group 'root'
+  template "server.js for forever" do
+    path "#{app_config['app_dir']}/current/server.js"
+    source 'forever-server.js.erb'
+    owner app_name
+    group app_name
     mode '0644'
     variables(
-      user: app_name,
-      group: app_name,
-      app_dir: app_config['app_dir'] + '/current',
-      node_dir: node['nodejs']['dir'],
-      entry: app_config['entry_point'],
-      app_name: app_name
-    )
-    only_if { platform_family?('debian') }
+      app_dir: app_config['app_dir'],
+      entry_point: app_config['entry_point']
+  )
   end
 
   service app_name do
@@ -158,10 +202,6 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
       provider Chef::Provider::Service::Upstart
     end
     action [:enable, :start]
-  end
-
-  execute 'restart app with service' do
-    command "service #{app_name} restart"
   end
 
   add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{app_config['config_js']['port']} -j ACCEPT",
