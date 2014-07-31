@@ -52,9 +52,7 @@ Attributes
 
 `node['nodestack']['apps']['my_nodejs_app']['git_repo_domain']` The domain name for the git repo. Example: `github.com`
 
-`node['nodestack']['apps']['my_nodejs_app']['ssh_auth']` `true/false` - Are we using git+ssh to deploy the application?
-
-`node['nodestack']['apps']['my_nodejs_app']['entry_point']` the .js file that will be ran as the server.
+`node['nodestack']['apps']['my_nodejs_app']['entry_point']` the .js file that will be ran as the server. This cannot be `server.js`
 
 `node['nodestack']['apps']['my_nodejs_app']['npm']` `true/false` - Wether we should run `npm install` during a deployment.
 
@@ -85,6 +83,18 @@ There's a couple of things that need to be considered when deploying an applicat
 This cookbook will deploy an application by running a simple server.js Node.js app, which in turn will run the Node.js application that is going to be deployed. This server.js application will monitor any changes on the application files and reload itself if it finds any changes. There's also other options that can be implemented in the future, like the amount of child processes.
 
 One important thing to note is that the application's entry point must not be `server.js`. It can be anything else but `server.js`.
+
+## Encrypted Data Bags
+
+### Attributes expected from an encrypted databag:
+
+`config = {}` Configuration hash with all the information that the application needs
+
+`ssh_deployment_key ={}` SSH private key for deployment.
+
+**It's important to name the databag with the `app_name` and then `_databag`**
+
+This cookbook uses encrypted databags to fill in the config.js file for the application. This `config.js` file is where you would usually include credentials for third party services, API keys, database passwords, etc. The data bag also stores the deployment private key.
 
 Usage
 -----
