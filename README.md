@@ -58,20 +58,6 @@ Attributes
 
 `node['nodestack']['apps']['my_nodejs_app']['config_file']` `true/false` - Wether the coobook will write a config.js from the following config hash.
 
-`node['nodestack']['apps']['my_nodejs_app']['config_js']`= {} - This config hash contains writes the config.js file to be read by the application. Whatever attributes are set through this hash will be available to the application, Example:
-
-Attribute:
-```ruby
-default['nodestack']['apps']['my_nodejs_app']['config_js']['port'] = 80
-```
-
-Node.js app:
-```javascript
-var config = require('./config');
-app.listen(config.port);
-```
-
-
 `node['nodestack']['apps']['my_nodejs_app']['env']`= {} - This config hash contains environment variables that will be available to the application.
 
 `node['nodestack']['apps']['my_nodejs_app']['env']['PORT']` This is the only `env` attribute the cookbook expects to have by default, this is the port the app listens on.
