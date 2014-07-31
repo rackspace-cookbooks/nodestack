@@ -39,6 +39,9 @@ provisioner:
       server_debian_password: 'randompass'
     nodestack:
       app_db_user_password: 'randompass'
+      binary_path: '/usr/local/bin/node'
+    nodejs:
+      install_method: 'binary'
 
 platforms:
   - name: ubuntu-12.04
@@ -50,5 +53,7 @@ platforms:
 
 suites:
   - name: default
+    data_bags_path: 'test/integration/default/data_bags'
+    encrypted_data_bag_secret_key_path: 'test/integration/default/encrypted_data_bag_secret'
     run_list:
       - recipe[nodestack::application_nodejs]

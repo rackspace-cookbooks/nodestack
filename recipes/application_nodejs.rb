@@ -36,11 +36,12 @@ end
 mysql_node = search('node', 'recipes:nodestack\:\:mysql_master' << " AND chef_environment:#{node.chef_environment}").first
 mongo_node = search('node', 'recipes:nodestack\:\:mongodb_standalone' << " AND chef_environment:#{node.chef_environment}").first
 
-key_path = ''
 
 node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
 
   app_config = node['nodestack']['apps'][app_name]
+
+  encrypted_databag = Chef::EncryptedDataBagItem.load("#{app_name}_databag", 'secrets')
 
   user app_name do
     supports manage_home: true
@@ -68,29 +69,16 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     action :create
   end
 
-  if app_config['ssh_auth']
-    key_path = "/home/#{app_name}/.ssh/id_rsa"
-
-    template 'ssh config with strict host check disabled' do
-      source 'ssh_config.erb'
-      path '/home/' + app_name + '/.ssh/config'
-      mode 0700
-      owner app_name
-      group app_name
-      variables(
-        git_repo_domain: app_config['git_repo_domain']
-      )
-    end
-
-    template 'deploy key' do
-      source app_name + '_private_key'
-      path key_path
-      mode 0600
-      owner app_name
-      group app_name
-      cookbook node['nodestack']['cookbook']
-    end
-  end
+  template 'ssh config with strict host check disabled' do
+    source 'ssh_config.erb'
+    path '/home/' + app_name + '/.ssh/config'
+    mode 0700
+    owner app_name
+    group app_name
+    variables(
+      git_repo_domain: app_config['git_repo_domain']
+    )
+   end
 
   template "#{app_name}.conf" do
     path "/etc/init/#{app_name}.conf"
@@ -152,6 +140,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     path app_config['app_dir']
     owner app_name
     group app_name
+    deploy_key encrypted_databag['ssh_deployment_key']
     repository app_config['git_repo']
     revision app_config['git_rev']
   end
@@ -163,7 +152,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     group app_name
     mode '0644'
     variables(
-      config_js: app_config['config_js']
+      config_js: encrypted_databag['config']
     )
     only_if {app_config['config_file']}
   end
@@ -204,7 +193,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     action [:enable, :start]
   end
 
-  add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{app_config['config_js']['port']} -j ACCEPT",
+  add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{app_config['env']['PORT']} -j ACCEPT",
                     100, "Allow nodejs traffic for #{app_name}")
 
 end # end each app loop
