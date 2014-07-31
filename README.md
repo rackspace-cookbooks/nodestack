@@ -76,7 +76,7 @@ One important thing to note is that the application's entry point must not be `s
 
 `config = {}` Configuration hash with all the information that the application needs
 
-`ssh_deployment_key ={}` SSH private key for deployment.
+`ssh_deployment_key =''` SSH private key for deployment.
 
 **It's important to name the databag with the `app_name` and then `_databag`**
 
