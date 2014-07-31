@@ -20,8 +20,8 @@ if node['demo']
   default['nodestack']['apps']['my_nodejs_app']['config_file'] = true
   default['nodestack']['apps']['my_nodejs_app']['config_js']['port'] =  '80'
   default['nodestack']['apps']['my_nodejs_app']['config_js']['mysql_password'] =  'randompass'
-  default['nodestack']['apps']['my_nodejs_app']['config_js']['mongo_host'] =  '127.0.0.1'
-  default['nodestack']['apps']['my_nodejs_app']['config_js']['mongo_port'] = 27_017
+  default['nodestack']['apps']['my_nodejs_app']['config_js']['mongo']['host'] =  '127.0.0.1'
+  default['nodestack']['apps']['my_nodejs_app']['config_js']['mongo']['port'] =  27_017
   default['nodestack']['apps']['my_nodejs_app']['env']['PORT'] = '80'
   default['nodestack']['apps']['my_nodejs_app']['env']['MONGO_PORT'] = '27017'
   default['nodestack']['cookbook'] = 'nodestack'
