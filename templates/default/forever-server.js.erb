@@ -3,7 +3,7 @@ var forever = require('forever'),
         'silent': false,
         'pidFile': '<%= @app_dir %>/pids/app.pid',
         'watch': true,
-        'watchDirectory': '<%= @app_dir %>',      // Top-level directory to watch from.
+        'watchDirectory': '<%= @app_dir %>/current',      // Top-level directory to watch from.
         'watchIgnoreDotFiles': true, // whether to ignore dot files
         'watchIgnorePatterns': [], // array of glob patterns to ignore, merged with contents of watchDirectory + '/.foreverignore' file
         'logFile': '<%= @app_dir %>/logs/forever.log', // Path to log output from forever process (when daemonized)
