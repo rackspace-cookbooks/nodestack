@@ -55,7 +55,7 @@ platforms:
     - recipe[yum]
 
 suites:
-  - name: default
+  - name: application_nodejs
     data_bags_path: 'test/integration/default/data_bags'
     encrypted_data_bag_secret_key_path: 'test/integration/default/encrypted_data_bag_secret'
     run_list:
