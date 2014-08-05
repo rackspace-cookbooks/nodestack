@@ -41,7 +41,10 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
 
   app_config = node['nodestack']['apps'][app_name]
 
+
   encrypted_databag = Chef::EncryptedDataBagItem.load("#{app_name}_databag", 'secrets')
+  env = node.chef_environment
+  encrypted_environment = encrypted_databag['environments']["#{node.chef_environment}"]
 
   user app_name do
     supports manage_home: true
@@ -140,7 +143,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     path app_config['app_dir']
     owner app_name
     group app_name
-    deploy_key encrypted_databag['ssh_deployment_key']
+    deploy_key encrypted_environment['ssh_deployment_key']
     repository app_config['git_repo']
     revision app_config['git_rev']
   end
@@ -152,7 +155,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     group app_name
     mode '0644'
     variables(
-      config_js: encrypted_databag['config']
+      config_js: encrypted_environment['config']
     )
     only_if {app_config['config_file']}
   end
