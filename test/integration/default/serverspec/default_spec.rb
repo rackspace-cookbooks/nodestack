@@ -14,7 +14,7 @@ describe file('/home/my_nodejs_app/.npm') do
 end
 
 describe file('/home/my_nodejs_app/.ssh/config') do
-  its('content') { should match /StrictHostKeyChecking false/ }
+  its('content') { should match 'StrictHostKeyChecking false' }
 end
 
 describe port(80) do
@@ -32,6 +32,5 @@ end
 
 describe process('node') do
   it { should be_running }
-  its('args') { should match /server.js/ }
+  its('args') { should match 'server.js' }
 end
-
