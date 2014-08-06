@@ -42,9 +42,8 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
   app_config = node['nodestack']['apps'][app_name]
 
 
-  encrypted_databag = Chef::EncryptedDataBagItem.load("#{app_name}_databag", 'secrets')
-  env = node.chef_environment
-  encrypted_environment = encrypted_databag['environments']["#{node.chef_environment}"]
+  encrypted_databag = Chef::EncryptedDataBagItem.load("#{app_name}_databag", 'config')
+  encrypted_environment = encrypted_databag[node.chef_environment]
 
   user app_name do
     supports manage_home: true
