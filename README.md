@@ -74,13 +74,35 @@ One important thing to note is that the application's entry point must not be `s
 
 ### Attributes expected from an encrypted databag:
 
+This cookbook uses encrypted databags to fill in the config.js file for the application. This `config.js` file is where you would usually include credentials for third party services, API keys, database passwords, etc. The data bag also stores the deployment private key.
+The top level key in the databag represents the environment.
+
+Example of the contents of a databag:
+
+```json
+{
+  "id": "config",
+  "staging": {
+    "ssh_deployment_key": "-----BEGIN RSA PRIVATE KEY-----\Ia+q5KO/FfGc2pD2bt2Vh9Tjg==\n-----END RSA PRIVATE KEY-----",
+    "config": {
+      "mysql": {
+        "password": "randompass"
+      },
+      "mongo": {
+        "host": "192.168.1.1",
+        "port": 27027
+      }
+    }
+  }
+}
+```
+
 `config = {}` Configuration hash with all the information that the application needs
 
 `ssh_deployment_key =''` SSH private key for deployment.
 
 **It's important to name the databag with the `app_name` and then `_databag`**
 
-This cookbook uses encrypted databags to fill in the config.js file for the application. This `config.js` file is where you would usually include credentials for third party services, API keys, database passwords, etc. The data bag also stores the deployment private key.
 
 Usage
 -----
