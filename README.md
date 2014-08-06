@@ -101,7 +101,7 @@ Example of the contents of a databag:
 
 `ssh_deployment_key =''` SSH private key for deployment.
 
-**It's important to name the databag with the `app_name` and then `_databag`** (See here)[####Note: the 'my_nodejs_app' defines the name of the app, please change this to something more relevant to the customer.]
+**It's important to name the databag with the `app_name` and then `_databag`** [See here](####Note: the 'my_nodejs_app' defines the name of the app, please change this to something more relevant to the customer.)
 
 
 Usage
@@ -230,7 +230,7 @@ run_list:
 Ensure the following attributes are set within environment or wrapper cookbook.
 
 ```
-['postgresql']['version'] = '9.3' 
+['postgresql']['version'] = '9.3'
 ['postgresql']['password'] = 'postgresdefault'
 ['pg-multi']['replication']['password'] = 'useagudpasswd'
 ['pg-multi']['master_ip'] = '1.2.3.4'
