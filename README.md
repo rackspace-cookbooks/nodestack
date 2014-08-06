@@ -72,15 +72,37 @@ One important thing to note is that the application's entry point must not be `s
 
 ## Encrypted Data Bags
 
-### Attributes expected from an encrypted databag:
+This cookbook uses encrypted databags to fill in the config.js file for the application. This `config.js` file is where you would usually include credentials for third party services, API keys, database passwords, etc. The data bag also stores the deployment private key.
+The top level key in the databag represents the environment.
+
+Example of the contents of a databag:
+
+```json
+{
+  "id": "config",
+  "staging": {
+    "ssh_deployment_key": "-----BEGIN RSA PRIVATE KEY-----\Ia+q5KO/FfGc2pD2bt2Vh9Tjg==\n-----END RSA PRIVATE KEY-----",
+    "config": {
+      "mysql": {
+        "password": "randompass"
+      },
+      "mongo": {
+        "host": "192.168.1.1",
+        "port": 27027
+      }
+    }
+  }
+}
+```
+
+#### Attributes expected from an encrypted databag:
 
 `config = {}` Configuration hash with all the information that the application needs
 
 `ssh_deployment_key =''` SSH private key for deployment.
 
-**It's important to name the databag with the `app_name` and then `_databag`**
+**It's important to name the databag with the `app_name` and then `_databag`** [See here](####Note: the 'my_nodejs_app' defines the name of the app, please change this to something more relevant to the customer.)
 
-This cookbook uses encrypted databags to fill in the config.js file for the application. This `config.js` file is where you would usually include credentials for third party services, API keys, database passwords, etc. The data bag also stores the deployment private key.
 
 Usage
 -----
@@ -208,7 +230,7 @@ run_list:
 Ensure the following attributes are set within environment or wrapper cookbook.
 
 ```
-['postgresql']['version'] = '9.3' 
+['postgresql']['version'] = '9.3'
 ['postgresql']['password'] = 'postgresdefault'
 ['pg-multi']['replication']['password'] = 'useagudpasswd'
 ['pg-multi']['master_ip'] = '1.2.3.4'
