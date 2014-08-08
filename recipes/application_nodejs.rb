@@ -102,6 +102,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     mode '0755'
     variables(
       user: app_name,
+      app_name: app_name,
       binary_path: node['nodestack']['binary_path'],
       app_dir: app_config['app_dir'],
       entry: 'server.js',
@@ -154,7 +155,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     only_if { app_config['config_file'] }
   end
 
-  execute 'locally install npm packages from package.json' do
+  execute 'Install npm packages from package.json' do
     cwd "#{app_config['app_dir']}/current"
     command 'npm install'
     environment 'HOME' => "/home/#{ app_name }", 'USER' => app_name
@@ -163,15 +164,15 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     only_if { ::File.exists?("#{ app_config['app_dir'] }/current/package.json") && app_config['npm'] }
   end
 
-  execute 'add forever to run app as daemon' do
-    cwd "#{app_config['app_dir']}/current"
+  execute 'npm install forever' do
+    cwd "#{app_config['app_dir']}"
     user app_name
     command 'npm install forever'
     environment 'HOME' => "/home/#{ app_name }"
   end
 
   template 'server.js for forever' do
-    path "#{app_config['app_dir']}/current/server.js"
+    path "#{app_config['app_dir']}/server.js"
     source 'forever-server.js.erb'
     owner app_name
     group app_name
@@ -180,6 +181,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
       app_dir: app_config['app_dir'],
       entry_point: app_config['entry_point']
   )
+    notifies 'restart', "service[#{app_name}]", 'delayed'
   end
 
   service app_name do

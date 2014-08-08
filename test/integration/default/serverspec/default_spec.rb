@@ -32,5 +32,5 @@ end
 
 describe process('node') do
   it { should be_running }
-  its('args') { should match 'server.js' }
+  its('args') { should match 'server.js|app.js' }
 end

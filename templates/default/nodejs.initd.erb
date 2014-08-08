@@ -12,17 +12,12 @@ GROUP="<%= @group %>"
 
 DAEMON="<%= @binary_path %>"
 
-# nodejs cookbook is wrong if binary package is used :(
-if [ ! -f "$DAEMON" ] ; then
-  DAEMON="/usr/bin/node"
-fi
-
-ROOT_DIR="<%= @app_dir %>/current"
+ROOT_DIR="<%= @app_dir %>"
 
 SERVER="$ROOT_DIR/<%= @entry %>"
 LOG_FILE="<%= @app_dir %>/logs/node.log"
 
-LOCK_FILE="/var/lock/subsys/node-server"
+LOCK_FILE="/var/lock/subsys/<%= @app_name %>"
 
 do_start()
 {
