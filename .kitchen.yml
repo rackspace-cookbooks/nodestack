@@ -11,7 +11,7 @@ driver:
 provisioner:
   name: chef_zero
   client_rb:
-    environment: _default
+    environment: demo
   attributes:
     demo: true
     holland:

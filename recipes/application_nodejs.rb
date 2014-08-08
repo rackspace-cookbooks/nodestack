@@ -33,15 +33,12 @@ node.set['build-essential']['compile_time'] = 'source'
   include_recipe recipe
 end
 
-mysql_node = search('node', 'recipes:nodestack\:\:mysql_master' << " AND chef_environment:#{node.chef_environment}").first
-mongo_node = search('node', 'recipes:nodestack\:\:mongodb_standalone' << " AND chef_environment:#{node.chef_environment}").first
-
-
 node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
 
   app_config = node['nodestack']['apps'][app_name]
 
-  encrypted_databag = Chef::EncryptedDataBagItem.load("#{app_name}_databag", 'secrets')
+  encrypted_databag = Chef::EncryptedDataBagItem.load("#{app_name}_databag", 'config')
+  encrypted_environment = encrypted_databag[node.chef_environment]
 
   user app_name do
     supports manage_home: true
@@ -78,7 +75,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     variables(
       git_repo_domain: app_config['git_repo_domain']
     )
-   end
+  end
 
   template "#{app_name}.conf" do
     path "/etc/init/#{app_name}.conf"
@@ -140,7 +137,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     path app_config['app_dir']
     owner app_name
     group app_name
-    deploy_key encrypted_databag['ssh_deployment_key']
+    deploy_key encrypted_environment['ssh_deployment_key']
     repository app_config['git_repo']
     revision app_config['git_rev']
   end
@@ -152,9 +149,9 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     group app_name
     mode '0644'
     variables(
-      config_js: encrypted_databag['config']
+      config_js: encrypted_environment['config']
     )
-    only_if {app_config['config_file']}
+    only_if { app_config['config_file'] }
   end
 
   execute 'locally install npm packages from package.json' do
@@ -163,17 +160,17 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     environment 'HOME' => "/home/#{ app_name }", 'USER' => app_name
     user app_name
     group app_name
-    only_if {::File.exists?("#{ app_config['app_dir'] }/current/package.json") && app_config['npm']}
+    only_if { ::File.exists?("#{ app_config['app_dir'] }/current/package.json") && app_config['npm'] }
   end
 
   execute 'add forever to run app as daemon' do
     cwd "#{app_config['app_dir']}/current"
     user app_name
     command 'npm install forever'
-    environment ({'HOME' => "/home/#{ app_name }"})
+    environment 'HOME' => "/home/#{ app_name }"
   end
 
-  template "server.js for forever" do
+  template 'server.js for forever' do
     path "#{app_config['app_dir']}/current/server.js"
     source 'forever-server.js.erb'
     owner app_name
