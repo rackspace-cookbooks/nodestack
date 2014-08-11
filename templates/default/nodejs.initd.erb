@@ -19,6 +19,12 @@ LOG_FILE="<%= @app_dir %>/logs/node.log"
 
 LOCK_FILE="/var/lock/subsys/<%= @app_name %>"
 
+env_variables(){
+<% @env.each_pair do | variable, value | %>
+source /etc/profile.d/<%= variable %>.sh
+<% end %>
+}
+
 do_start()
 {
         export HOME=$ROOT_DIR
@@ -45,6 +51,7 @@ do_stop()
 
 case "$1" in
         start)
+                env_variables
                 do_start
                 ;;
         stop)
