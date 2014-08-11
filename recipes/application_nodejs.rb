@@ -92,6 +92,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
       env: app_config['env']
     )
     only_if { platform_family?('debian') }
+    notifies 'restart', "service[#{app_name}]", 'delayed'
   end
 
   template app_name do
@@ -110,6 +111,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
       env: app_config['env']
     )
     only_if { platform_family?('rhel') }
+    notifies 'restart', "service[#{app_name}]", 'delayed'
   end
 
   directory "#{app_config['app_dir']}/logs" do

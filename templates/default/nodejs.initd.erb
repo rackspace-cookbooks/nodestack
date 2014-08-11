@@ -54,6 +54,9 @@ case "$1" in
                 do_stop
                 do_start
                 ;;
+        status)
+                status $BINARY
+                ;;
         *)
                 echo "Usage: $0 {start|stop|restart}"
                 RETVAL=1
