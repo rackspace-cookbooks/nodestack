@@ -52,7 +52,7 @@ Attributes
 
 `node['nodestack']['apps']['my_nodejs_app']['git_repo_domain']` The domain name for the git repo. Example: `github.com`
 
-`node['nodestack']['apps']['my_nodejs_app']['entry_point']` the .js file that will be ran as the server. This cannot be `server.js`
+`node['nodestack']['apps']['my_nodejs_app']['entry_point']` the .js file that will be ran as the server.
 
 `node['nodestack']['apps']['my_nodejs_app']['npm']` `true/false` - Wether we should run `npm install` during a deployment.
 
@@ -67,8 +67,6 @@ How to deploy an Node.js application with Nodestack
 
 There's a couple of things that need to be considered when deploying an application with this cookbook, in other words, the app must be setup in a specific way.
 This cookbook will deploy an application by running a simple server.js Node.js app, which in turn will run the Node.js application that is going to be deployed. This server.js application will monitor any changes on the application files and reload itself if it finds any changes. There's also other options that can be implemented in the future, like the amount of child processes.
-
-One important thing to note is that the application's entry point must not be `server.js`. It can be anything else but `server.js`.
 
 ## Encrypted Data Bags
 
@@ -273,6 +271,33 @@ run_list:
   recipe[nodestack::postgresql_slave]
 ```
 
+New Relic Monitoring
+--------------------
+
+To configure New Relic, make sure the `node['newrelic']['license']`
+attribute is set and include the `platformstack` cookbook in your run_list.
+
+New Relic monitoring plugins can be configured by including the `newrelic::meetme-plugin`
+recipe in your run_list and setting the following attribute hash in an application
+cookbook:
+
+```ruby
+node.override['newrelic']['meetme-plugin']['services'] = {
+  "memcached": {
+    "name": "localhost",
+    "host":  "host",
+    "port":  11211
+  },
+  "elasticsearch": {
+    "name": "clustername",
+    "host": "localhost",
+    "port": 9200
+  }
+}
+```
+
+More examples can be found [here](https://github.com/escapestudios-cookbooks/newrelic#meetme-pluginrb)
+and [here](https://github.com/MeetMe/newrelic-plugin-agent#configuration-example).
 
 Contributing
 ------------

@@ -29,7 +29,7 @@ respawn limit 99 5
 setuid <%= @user %>
 setgid <%= @user %>
 
-env HOME=<%= @app_dir %>/current
+env HOME=<%= @app_dir %>
 <% @env.each_pair do | variable, value | %>
 env <%= variable %>=<%= value %>
 <% end %>

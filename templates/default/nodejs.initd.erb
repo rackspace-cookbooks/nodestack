@@ -10,26 +10,27 @@
 USER="<%= @user %>"
 GROUP="<%= @group %>"
 
-DAEMON="<%= @binary_path %>"
+BINARY="<%= @binary_path %>"
 
-# nodejs cookbook is wrong if binary package is used :(
-if [ ! -f "$DAEMON" ] ; then
-  DAEMON="/usr/bin/node"
-fi
-
-ROOT_DIR="<%= @app_dir %>/current"
+ROOT_DIR="<%= @app_dir %>"
 
 SERVER="$ROOT_DIR/<%= @entry %>"
 LOG_FILE="<%= @app_dir %>/logs/node.log"
 
-LOCK_FILE="/var/lock/subsys/node-server"
+LOCK_FILE="/var/lock/subsys/<%= @app_name %>"
+
+env_variables(){
+<% @env.each_pair do | variable, value | %>
+source /etc/profile.d/<%= variable %>.sh
+<% end %>
+}
 
 do_start()
 {
         export HOME=$ROOT_DIR
         if [ ! -f "$LOCK_FILE" ] ; then
                 echo -n $"Starting $SERVER: "
-                runuser -l "$USER" -c "$DAEMON $SERVER >> $LOG_FILE &" && echo_success || echo_failure
+                daemon --user "$USER" "$BINARY $SERVER >> $LOG_FILE &" && echo_success || echo_failure
                 RETVAL=$?
                 echo
                 [ $RETVAL -eq 0 ] && touch $LOCK_FILE
@@ -42,7 +43,7 @@ do_stop()
 {
         echo -n $"Stopping $SERVER: "
         pid=`ps -aefw | grep "$DAEMON $SERVER" | grep -v " grep " | awk '{print $2}'`
-        kill -9 $pid > /dev/null 2>&1 && echo_success || echo_failure
+        pkill -TERM -P $pid > /dev/null 2>&1 && echo_success || echo_failure
         RETVAL=$?
         echo
         [ $RETVAL -eq 0 ] && rm -f $LOCK_FILE
@@ -50,6 +51,7 @@ do_stop()
 
 case "$1" in
         start)
+                env_variables
                 do_start
                 ;;
         stop)
@@ -60,7 +62,7 @@ case "$1" in
                 do_start
                 ;;
         status)
-                status $DAEMON
+                status $BINARY
                 ;;
         *)
                 echo "Usage: $0 {start|stop|restart}"
