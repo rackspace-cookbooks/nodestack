@@ -163,11 +163,11 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     environment 'HOME' => "/home/#{ app_name }", 'USER' => app_name
     user app_name
     group app_name
-    only_if { ::File.exists?("#{ app_config['app_dir'] }/current/package.json") && app_config['npm'] }
+    only_if { ::File.exist?("#{ app_config['app_dir'] }/current/package.json") && app_config['npm'] }
   end
 
   execute 'npm install forever' do
-    cwd "#{app_config['app_dir']}"
+    cwd app_config['app_dir']
     user app_name
     command 'npm install forever'
     environment 'HOME' => "/home/#{ app_name }"
