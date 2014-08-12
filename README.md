@@ -271,6 +271,33 @@ run_list:
   recipe[nodestack::postgresql_slave]
 ```
 
+New Relic Monitoring
+--------------------
+
+To configure New Relic, make sure the `node['newrelic']['license']`
+attribute is set and include the `platformstack` cookbook in your run_list.
+
+New Relic monitoring plugins can be configured by including the `newrelic::meetme-plugin`
+recipe in your run_list and setting the following attribute hash in an application
+cookbook:
+
+```ruby
+node.override['newrelic']['meetme-plugin']['services'] = {
+  "memcached": {
+    "name": "localhost",
+    "host":  "host",
+    "port":  11211
+  },
+  "elasticsearch": {
+    "name": "clustername",
+    "host": "localhost",
+    "port": 9200
+  }
+}
+```
+
+More examples can be found [here](https://github.com/escapestudios-cookbooks/newrelic#meetme-pluginrb)
+and [here](https://github.com/MeetMe/newrelic-plugin-agent#configuration-example).
 
 Contributing
 ------------
