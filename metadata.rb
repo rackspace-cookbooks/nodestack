@@ -5,11 +5,7 @@ maintainer_email 'rackspace-cookbooks@rackspace.com'
 license 'Apache 2.0'
 description 'Installs/Configures nodestack'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-<<<<<<< HEAD
-version '0.8.3'
-=======
-version '0.8.4'
->>>>>>> c3db81bc7f9e2ec18d341badb111eace9f58e130
+version '0.8.5'
 
 depends 'apt'
 depends 'mysql'
