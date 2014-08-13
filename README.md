@@ -62,6 +62,8 @@ Attributes
 
 `node['nodestack']['apps']['my_nodejs_app']['env']['PORT']` This is the only `env` attribute the cookbook expects to have by default, this is the port the app listens on.
 
+`node['nodestack']['forever']['watch_ignore_patterns'] = ['*.log', '*.logs']` This is a list of patterns that will be ignored and not watched by forever-monitor. Forever-monitor watches the code directory (in the demo app `/var/app/current`) and will reload the application if it notices any changes in the files.
+
 How to deploy an Node.js application with Nodestack
 ----
 

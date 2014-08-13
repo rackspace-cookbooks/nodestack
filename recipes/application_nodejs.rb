@@ -181,6 +181,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     mode '0644'
     variables(
       app_dir: app_config['app_dir'],
+      ignore_patterns: node['nodestack']['forever']['watch_ignore_patterns'],
       entry_point: app_config['entry_point']
   )
     notifies 'restart', "service[#{app_name}]", 'delayed'

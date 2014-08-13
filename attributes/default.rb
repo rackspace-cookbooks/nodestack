@@ -21,3 +21,5 @@ if node['demo']
   default['nodestack']['apps']['my_nodejs_app']['env']['MONGO_PORT'] = '27017'
   default['nodestack']['cookbook'] = 'nodestack'
 end
+
+default['nodestack']['forever']['watch_ignore_patterns'] = ['*.log', '*.logs']
