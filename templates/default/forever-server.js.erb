@@ -6,7 +6,7 @@ var child = new(forever.Monitor)('<%= @app_dir %>/current/<%= @entry_point %>', 
         watch: true,
         watchDirectory: '<%= @app_dir %>/current',      // Top-level directory to watch from.
         watchIgnoreDotFiles: true, // whether to ignore dot files
-        watchIgnorePatterns: [], // array of glob patterns to ignore, merged with contents of watchDirectory + '/.foreverignore' file
+        watchIgnorePatterns: [<% @ignore_patterns.each do | pattern | %>'<%= pattern %>', <% end %>], // array of glob patterns to ignore, merged with contents of watchDirectory + '/.foreverignore' file
         logFile: '<%= @app_dir %>/logs/forever.log', // Path to log output from forever process (when daemonized)
         outFile: '<%= @app_dir %>/logs/forever.out', // Path to log output from child stdout
         errFile: '<%= @app_dir %>/logs/forever.err'
