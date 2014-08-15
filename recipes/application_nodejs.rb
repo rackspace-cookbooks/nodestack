@@ -195,6 +195,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     case node['platform']
     when 'ubuntu'
       provider Chef::Provider::Service::Upstart
+      restart_command "stop #{app_name} && start #{app_name}"
     end
     action [:enable, :start]
   end
