@@ -18,7 +18,7 @@
 # limitations under the License.
 #
 
-default['nodestack']['cloud_monitoring']['remote_http']['disabled'] = false
+default['nodestack']['cloud_monitoring']['remote_http']['disabled'] = true
 default['nodestack']['cloud_monitoring']['remote_http']['alarm'] = false
 default['nodestack']['cloud_monitoring']['remote_http']['period'] = 60
 default['nodestack']['cloud_monitoring']['remote_http']['timeout'] = 15
