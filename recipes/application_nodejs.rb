@@ -201,7 +201,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     variables(
       port: app_config['env']['PORT'],
       app_name: app_name,
-      body: app_config['monitoring']['body'],
+      body: app_config['monitoring']['body']
     )
     notifies 'restart', 'service[rackspace-monitoring-agent]', 'delayed'
     action 'create'
