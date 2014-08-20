@@ -14,14 +14,14 @@ monitoring_zones_poll:
   - mzord
   - mziad
 details:
-  hostname: <%= @server_name %>
+  hostname: <%= @app_name %>
   method: GET
-  body:
+  body: '<%= @body %>'
   url: http://<%= "#{node['cloud']['public_ipv4']}:#{@port}" %>
-<% if node['phpstack']['cloud_monitoring']['remote_http']['alarm'] == true %>
+<% if node['nodestack']['cloud_monitoring']['remote_http']['alarm'] == true %>
 alarms:
   http-check:
-    label: Remote HTTP check on <%= "#{node['cloud']['public_ipv4']} port #{@port} for #{@server_name}" %>
+    label: Remote HTTP check on <%= "#{node['cloud']['public_ipv4']} port #{@port} for #{@app_name}" %>
     notification_plan_id: npTechnicalContactsEmail
     criteria: |
       if (metric['code'] regex '4[0-9][0-9]') {

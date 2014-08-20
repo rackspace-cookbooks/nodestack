@@ -191,6 +191,23 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     notifies 'restart', "service[#{app_name}]", 'delayed'
   end
 
+  template "http-monitor-#{app_name}" do
+    cookbook 'nodestack'
+    source 'monitoring-remote-http.yaml.erb'
+    path "/etc/rackspace-monitoring-agent.conf.d/#{app_name}-http-monitor.yaml"
+    owner 'root'
+    group 'root'
+    mode '0644'
+    variables(
+      port: app_config['env']['PORT'],
+      app_name: app_name,
+      body: app_config['monitoring']['body'],
+    )
+    notifies 'restart', 'service[rackspace-monitoring-agent]', 'delayed'
+    action 'create'
+    only_if { node.deep_fetch('platformstack', 'cloud_monitoring', 'enabled') }
+  end
+
   service app_name do
     case node['platform']
     when 'ubuntu'

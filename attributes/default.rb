@@ -19,6 +19,7 @@ if node['demo']
   default['nodestack']['apps']['my_nodejs_app']['config_file'] = true
   default['nodestack']['apps']['my_nodejs_app']['env']['PORT'] = '80'
   default['nodestack']['apps']['my_nodejs_app']['env']['MONGO_PORT'] = '27017'
+  default['nodestack']['apps']['my_nodejs_app']['monitoring']['body'] = 'Hello World!'
   default['nodestack']['cookbook'] = 'nodestack'
 end
 
