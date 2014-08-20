@@ -3,9 +3,10 @@ nodestack CHANGELOG
 
 This file is used to list changes made in each version of the nodestack cookbook.
 
-0.1.0
+0.8.9
 -----
-- [your_name] - Initial release of nodestack
+- Marco Morales - Added HTTP monitor check
+
 
 - - -
 Check the [Markdown Syntax Guide](http://daringfireball.net/projects/markdown/syntax) for help with Markdown.
