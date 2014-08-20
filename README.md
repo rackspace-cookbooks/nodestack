@@ -62,6 +62,8 @@ Attributes
 
 `node['nodestack']['apps']['my_nodejs_app']['env']['PORT']` This is the only `env` attribute the cookbook expects to have by default, this is the port the app listens on.
 
+`node['nodestack']['apps']['my_nodejs_app']['monitoring']['body']` Text that will be matched from the GET request
+
 `node['nodestack']['forever']['watch_ignore_patterns'] = ['*.log', '*.logs']` This is a list of patterns that will be ignored and not watched by forever-monitor. Forever-monitor watches the code directory (in the demo app `/var/app/current`) and will reload the application if it notices any changes in the files.
 
 How to deploy an Node.js application with Nodestack
@@ -101,8 +103,7 @@ Example of the contents of a databag:
 
 `ssh_deployment_key =''` SSH private key for deployment.
 
-**It's important to name the databag with the `app_name` and then `_databag`** [See here](####Note: the 'my_nodejs_app' defines the name of the app, please change this to something more relevant to the customer.)
-
+**It's important to name the databag with the `app_name` and then `_databag`**
 
 Usage
 -----
@@ -272,6 +273,18 @@ run_list:
   recipe[rackops_rolebook::default]
   recipe[nodestack::postgresql_slave]
 ```
+
+Cloud Monitoring
+-----------
+
+To enable monitoring you need to set `node['platformstack']['cloud_monitoring']['enabled'] = true`. This will setup the OS monitors like filesystem, CPU, memory, networking, etc.
+
+To enable HTTP checks for a Node.js app deployed with Nodestack, set the `node['nodestack']['cloud_monitoring']['remote_http']['disabled'] = false`.
+
+`default['nodestack']['cloud_monitoring']['remote_http']['disabled']` Enable/disable remote HTTP monitoring.
+`default['nodestack']['cloud_monitoring']['remote_http']['alarm']` Enable/disable alarm notifications.
+`default['nodestack']['cloud_monitoring']['remote_http']['period']` Seconds value on how often the check will be performed.
+`default['nodestack']['cloud_monitoring']['remote_http']['timeout']` Seconds value on the timeout before the check fails.
 
 New Relic Monitoring
 --------------------
