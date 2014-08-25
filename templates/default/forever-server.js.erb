@@ -9,7 +9,10 @@ var child = new(forever.Monitor)('<%= @app_dir %>/current/<%= @entry_point %>', 
         watchIgnorePatterns: [<% @ignore_patterns.each do | pattern | %>'<%= pattern %>', <% end %>], // array of glob patterns to ignore, merged with contents of watchDirectory + '/.foreverignore' file
         logFile: '<%= @app_dir %>/logs/forever.log', // Path to log output from forever process (when daemonized)
         outFile: '<%= @app_dir %>/logs/forever.out', // Path to log output from child stdout
-        errFile: '<%= @app_dir %>/logs/forever.err'
+	errFile: '<%= @app_dir %>/logs/forever.err',
+	// Generally speaking, we should always kill the process and all it's children.
+	// This resolves issues with scripts using the "cluster" module, among other things.
+	killTree: true
 });
 
 child.on('watch:restart', function(info) {
