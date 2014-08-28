@@ -111,7 +111,27 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
       app_name: app_name,
       env: app_config['env']
     )
-    only_if { platform_family?('rhel') }
+    only_if { node['platform_family'] == 'rhel' and node['platform_version'].to_f < 7.0 }
+    notifies 'restart', "service[#{app_name}]", 'delayed'
+  end
+
+  template app_name do
+    path "/etc/systemd/system/#{app_name}.service"
+    source 'nodejs.service.erb'
+    owner 'root'
+    group 'root'
+    mode '0755'
+    variables(
+      user: app_name,
+      app_name: app_name,
+      binary_path: node['nodestack']['binary_path'],
+      app_dir: app_config['app_dir'],
+      entry: 'server.js',
+      app_name: app_name,
+      env: app_config['env']
+    )
+    only_if { node['platform_family'] == 'rhel' and node['platform_version'].to_f >= 7.0 }
+    notifies 'reload', "service[#{app_name}]", 'immediately'
     notifies 'restart', "service[#{app_name}]", 'delayed'
   end
 
@@ -210,10 +230,13 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
   end
 
   service app_name do
-    case node['platform']
-    when 'ubuntu'
+    case node['init_package']
+    when 'upstart'
       provider Chef::Provider::Service::Upstart
       restart_command "stop #{app_name} && start #{app_name}"
+    when 'systemd'
+      provider Chef::Provider::Service::Systemd
+      reload_command "systemctl daemon-reload"
     end
     action [:enable, :start]
   end

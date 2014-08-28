@@ -6,10 +6,10 @@ Type=simple
 User=<%= @user %>
 Group=<%= @group %>
 WorkingDirectory=<%= @app_dir %>
-Environment=<% @env.each_pair do | variable, value | %><%= variable %>="<%= value %>" <% end %>
+Environment=<% @env.each_pair do | variable, value | %><%= variable %>=<%= value %> <% end %>
 
 PIDFile=/var/run/<%= @app_name %>.pid
-ExecStart=<%= @binary_path %> <%= @entry %>
+ExecStart=<%= @binary_path %> <%= @entry %> >> <%= @app_dir %>/logs/node.log &
 
 [Install]
 WantedBy=multi-user.target
