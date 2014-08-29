@@ -3,6 +3,10 @@ nodestack CHANGELOG
 
 This file is used to list changes made in each version of the nodestack cookbook.
 
+0.8.13
+-----
+- Marco Morales - Added support for CentOS 7.
+
 0.8.12
 ------
 - Bob Garza - Forever logs are now being appended instead of being overwritten.
