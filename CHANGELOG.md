@@ -3,6 +3,10 @@ nodestack CHANGELOG
 
 This file is used to list changes made in each version of the nodestack cookbook.
 
+0.8.10
+----
+- Seandon Mooy - Added logic to cleanup child processes during code deployments https://github.com/AutomationSupport/nodestack/pull/119
+
 0.8.9
 -----
 - Marco Morales - Added HTTP monitor check
