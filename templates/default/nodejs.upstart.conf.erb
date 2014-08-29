@@ -48,3 +48,10 @@ end script
 #   # Optionally put a script here that will notifiy you node has (re)started
 #   # /root/bin/hoptoad.sh "node.js has started!"
 #end script
+
+# Kill child processes which forever will miss due to symlink changes
+post-stop script
+    for p in $(pgrep -u <%= @user %> -f "<%= @binary_path %> <%= @app_dir %>/current/<%= @entry_point %>"); do
+        kill $p
+    done
+end script
