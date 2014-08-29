@@ -24,4 +24,10 @@ child.on('exit:code', function(code) {
         console.error('Forever detected script exited with code ' + code);
 });
 
-child.start();
+var pid = child.start().child.pid;
+
+process.on('SIGTERM', function () {
+        console.error('Sending kill signals to ' + pid);
+        process.kill(pid, 'SIGTERM');
+        process.exit();
+});
