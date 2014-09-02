@@ -20,8 +20,6 @@
 
 require 'json'
 
-include_recipe 'chef-sugar'
-
 case node['platform_family']
 when 'rhel', 'fedora'
   include_recipe 'yum'
@@ -29,6 +27,8 @@ else
   node.set['apt']['compile_time_update'] = true
   include_recipe 'apt'
 end
+
+include_recipe 'chef-sugar'
 
 %w(nodejs nodejs::npm git build-essential platformstack::monitors platformstack::iptables apt nodestack::setcap).each do |recipe|
   include_recipe recipe
