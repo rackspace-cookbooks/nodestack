@@ -30,7 +30,6 @@ else
   include_recipe 'apt'
 end
 
-node.set['build-essential']['compile_time'] = 'source'
 %w(nodejs nodejs::npm git build-essential platformstack::monitors platformstack::iptables apt nodestack::setcap).each do |recipe|
   include_recipe recipe
 end
