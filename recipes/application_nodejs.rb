@@ -111,7 +111,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
       app_name: app_name,
       env: app_config['env']
     )
-    only_if { node['platform_family'] == 'rhel' and node['platform_version'].to_f < 7.0 }
+    only_if { node['platform_family'] == 'rhel' && node['platform_version'].to_f < 7.0 }
     notifies 'restart', "service[#{app_name}]", 'delayed'
   end
 
@@ -130,7 +130,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
       app_name: app_name,
       env: app_config['env']
     )
-    only_if { node['platform_family'] == 'rhel' and node['platform_version'].to_f >= 7.0 }
+    only_if { node['platform_family'] == 'rhel' && node['platform_version'].to_f >= 7.0 }
     notifies 'reload', "service[#{app_name}]", 'immediately'
     notifies 'restart', "service[#{app_name}]", 'delayed'
   end
@@ -239,7 +239,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     when 'redhat', 'centos'
       if node['init_package'] == 'systemd'
         provider Chef::Provider::Service::Systemd
-        reload_command "systemctl daemon-reload"
+        reload_command 'systemctl daemon-reload'
         action [:enable, :start]
       end
     end

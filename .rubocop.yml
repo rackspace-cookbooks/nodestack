@@ -40,5 +40,5 @@ UnusedBlockArgument:
 
 # Don't complain about Guardfile
 AllCops:
-  Excludes:
+  Exclude:
     - 'Guardfile'
