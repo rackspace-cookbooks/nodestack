@@ -18,6 +18,8 @@
 # limitations under the License.
 #
 
+require 'json'
+
 include_recipe 'chef-sugar'
 
 case node['platform_family']
