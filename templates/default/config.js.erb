@@ -1,5 +1,5 @@
 var config = {};
 
-config = <%= @config_js.to_json %>;
+config = <%= JSON.pretty_generate(@config_js) %>
 
 module.exports = config;
