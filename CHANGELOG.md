@@ -3,6 +3,10 @@ nodestack CHANGELOG
 
 This file is used to list changes made in each version of the nodestack cookbook.
 
+0.8.12
+------
+- Bob Garza - Forever logs are now being appended instead of being overwritten.
+
 0.8.11
 ------
 - Sheppy Reno - Check for attributes prior to setting iptables rules.
