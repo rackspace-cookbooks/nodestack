@@ -19,7 +19,7 @@ expect fork
 # used to be: start on startup
 # until we found some mounts weren't ready yet while booting:
 
-start on started mountall
+start on filesystem and started networking
 stop on shutdown
 
 # Automatically Respawn:
