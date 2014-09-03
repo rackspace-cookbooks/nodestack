@@ -12,7 +12,9 @@ include_recipe 'platformstack::monitors'
 include_recipe 'pg-multi'
 
 # allow traffic to postgresql port for local addresses only
-add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{node['postgresql']['config']['port']} -j ACCEPT", 9999, 'Open port for postgresql')
+if node['postgresql']['config']['port']
+  add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{node['postgresql']['config']['port']} -j ACCEPT", 9999, 'Open port for postgresql')
+end
 
 directory '/usr/lib/rackspace-monitoring-agent/plugins/' do
   owner 'root'

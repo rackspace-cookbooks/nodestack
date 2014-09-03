@@ -219,6 +219,6 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
   end
 
   add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{app_config['env']['PORT']} -j ACCEPT",
-                    100, "Allow nodejs traffic for #{app_name}")
+                    100, "Allow nodejs traffic for #{app_name}") if app_config['env']['PORT']
 
 end # end each app loop
