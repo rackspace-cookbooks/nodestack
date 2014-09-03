@@ -18,7 +18,7 @@
 # limitations under the License.
 #
 
-include_recipe 'chef-sugar'
+require 'json'
 
 case node['platform_family']
 when 'rhel', 'fedora'
@@ -28,7 +28,8 @@ else
   include_recipe 'apt'
 end
 
-node.set['build-essential']['compile_time'] = 'source'
+include_recipe 'chef-sugar'
+
 %w(nodejs nodejs::npm git build-essential platformstack::monitors platformstack::iptables apt nodestack::setcap).each do |recipe|
   include_recipe recipe
 end
@@ -77,7 +78,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     )
   end
 
-  template "#{app_name}.conf" do
+  template "#{app_name}.conf for Upstart" do
     path "/etc/init/#{app_name}.conf"
     source 'nodejs.upstart.conf.erb'
     owner 'root'
@@ -110,7 +111,27 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
       app_name: app_name,
       env: app_config['env']
     )
-    only_if { platform_family?('rhel') }
+    only_if { node['platform_family'] == 'rhel' && node['platform_version'].to_f < 7.0 }
+    notifies 'restart', "service[#{app_name}]", 'delayed'
+  end
+
+  template app_name do
+    path "/etc/systemd/system/#{app_name}.service"
+    source 'nodejs.service.erb'
+    owner 'root'
+    group 'root'
+    mode '0755'
+    variables(
+      user: app_name,
+      app_name: app_name,
+      binary_path: node['nodestack']['binary_path'],
+      app_dir: app_config['app_dir'],
+      entry: 'server.js',
+      app_name: app_name,
+      env: app_config['env']
+    )
+    only_if { node['platform_family'] == 'rhel' && node['platform_version'].to_f >= 7.0 }
+    notifies 'reload', "service[#{app_name}]", 'immediately'
     notifies 'restart', "service[#{app_name}]", 'delayed'
   end
 
@@ -212,12 +233,18 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     case node['platform']
     when 'ubuntu'
       provider Chef::Provider::Service::Upstart
-      restart_command "stop #{app_name} && start #{app_name}"
+      restart_command "/sbin/initctl stop #{app_name} && /sbin/initctl start #{app_name}"
+      init_command "/etc/init/#{app_name}"
+    when 'redhat', 'centos'
+      if node['init_package'] == 'systemd'
+        provider Chef::Provider::Service::Systemd
+        reload_command 'systemctl daemon-reload'
+      end
     end
-    action [:enable, :start]
+    action ['enable', 'start']
   end
 
   add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{app_config['env']['PORT']} -j ACCEPT",
-                    100, "Allow nodejs traffic for #{app_name}")
+                    100, "Allow nodejs traffic for #{app_name}") if app_config['env']['PORT']
 
 end # end each app loop

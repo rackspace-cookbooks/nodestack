@@ -21,7 +21,9 @@
 include_recipe 'platformstack::iptables'
 include_recipe 'memcached'
 
-memcache_port = node['memcached']['port']
+if node['memcached']['port']
+  memcache_port = node['memcached']['port']
 
-add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{memcache_port} -j ACCEPT", 9999, 'Open TCP port for memcache')
-add_iptables_rule('INPUT', "-m udp -p udp --dport #{memcache_port} -j ACCEPT", 9999, 'Open UDP port for memcache')
+  add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{memcache_port} -j ACCEPT", 9999, 'Open TCP port for memcache')
+  add_iptables_rule('INPUT', "-m udp -p udp --dport #{memcache_port} -j ACCEPT", 9999, 'Open UDP port for memcache')
+end
