@@ -13,7 +13,7 @@ Vagrant.configure('2') do |config|
     }
 
     chef.run_list = [
-        'recipe[nodestack::default]'
+      'recipe[nodestack::default]'
     ]
   end
 end
