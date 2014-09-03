@@ -235,14 +235,13 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
       provider Chef::Provider::Service::Upstart
       restart_command "/sbin/initctl stop #{app_name} && /sbin/initctl start #{app_name}"
       init_command "/etc/init/#{app_name}"
-      action ['enable', 'start']
     when 'redhat', 'centos'
       if node['init_package'] == 'systemd'
         provider Chef::Provider::Service::Systemd
         reload_command 'systemctl daemon-reload'
-        action [:enable, :start]
       end
     end
+    action ['enable', 'start']
   end
 
   add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{app_config['env']['PORT']} -j ACCEPT",
