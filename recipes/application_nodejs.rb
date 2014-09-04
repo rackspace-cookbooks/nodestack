@@ -28,15 +28,24 @@ else
   include_recipe 'apt'
 end
 
-include_recipe 'chef-sugar'
-
-%w(nodejs nodejs::npm git build-essential platformstack::monitors platformstack::iptables apt nodestack::setcap).each do |recipe|
-  include_recipe recipe
-end
+%w(
+  chef-sugar
+  nodejs
+  nodejs::npm
+  git
+  build-essential
+  platformstack::monitors
+  platformstack::iptables
+  nodestack::setcap
+).each { |recipe| include_recipe recipe }
 
 node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
 
   app_config = node['nodestack']['apps'][app_name]
+
+  # Cleanup multiple strings referring to
+  # "#{app_config['app_dir']/current/foo"
+  app_deploy_dir = "#{app_config['app_dir']}/current"
 
   encrypted_databag = Chef::EncryptedDataBagItem.load("#{app_name}_databag", 'config')
   encrypted_environment = encrypted_databag[node.chef_environment]
@@ -69,7 +78,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
 
   template 'ssh config with strict host check disabled' do
     source 'ssh_config.erb'
-    path '/home/' + app_name + '/.ssh/config'
+    path "/home/#{app_name}/.ssh/config"
     mode 0700
     owner app_name
     group app_name
@@ -167,7 +176,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
   end
 
   template 'config.js' do
-    path app_config['app_dir'] + '/current/config.js'
+    path "#{app_deploy_dir}/config.js"
     source 'config.js.erb'
     owner app_name
     group app_name
@@ -183,12 +192,12 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
   end
 
   execute 'Install npm packages from package.json' do
-    cwd "#{app_config['app_dir']}/current"
+    cwd app_deploy_dir
     command 'npm-install-retry --wait 60 --attempts 5'
     environment 'HOME' => "/home/#{ app_name }", 'USER' => app_name
     user app_name
     group app_name
-    only_if { ::File.exist?("#{ app_config['app_dir'] }/current/package.json") && app_config['npm'] }
+    only_if { ::File.exist?("#{ app_deploy_dir }/package.json") && app_config['npm'] }
   end
 
   execute 'npm install forever' do
