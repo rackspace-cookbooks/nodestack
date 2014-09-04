@@ -9,5 +9,6 @@ cookbook 'tomcat', git: 'https://github.com/opscode-cookbooks/tomcat.git', tag: 
 cookbook 'cron', git: 'git@github.com:rackspace-cookbooks/cron.git'
 cookbook 'pg-multi', git: 'git@github.com:rackspace-cookbooks/pg-multi.git'
 cookbook 'rackspace_gluster', git: 'git@github.com:rackspace-cookbooks/rackspace_gluster.git'
+cookbook 'logrotate', git: 'git@github.com:stevendanna/logrotate.git'
 
 metadata
