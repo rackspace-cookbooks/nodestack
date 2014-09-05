@@ -35,6 +35,7 @@ Requirements
 - ssh_known_hosts
 - application
 - magic_shell
+- logrotate
 
 
 Attributes
@@ -313,6 +314,18 @@ node.override['newrelic']['meetme-plugin']['services'] = {
 
 More examples can be found [here](https://github.com/escapestudios-cookbooks/newrelic#meetme-pluginrb)
 and [here](https://github.com/MeetMe/newrelic-plugin-agent#configuration-example).
+
+Logrotate
+---------
+logrotate is now enabled, by default, for customer app(forever.[log|out|err]) log files.
+The logrotate recipe iterates over every item(app_name) in the node['nodestack']['apps_to_deploy'] list 
+and creates a configuration file. i.e /etc/logrotate.d/my_nodejs_app
+
+NOTE: The logrotate recipe does not rotate custom log files, so make sure the customer's app uses STDOUT and STDERR.
+
+Configuration examples can be found [here](https://supermarket.getchef.com/cookbooks/logrotate)
+and [here](https://github.com/stevendanna/logrotate)
+
 
 Contributing
 ------------
