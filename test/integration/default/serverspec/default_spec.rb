@@ -34,3 +34,10 @@ describe process('node') do
   it { should be_running }
   its('args') { should match 'server.js|app.js' }
 end
+
+describe file('/etc/logrotate.d/my_nodejs_app') do
+  it { should be_mode 644 }
+  it { should be_owned_by 'root' }
+  it { should be_grouped_into 'root' }
+  it { should be_file }
+end
