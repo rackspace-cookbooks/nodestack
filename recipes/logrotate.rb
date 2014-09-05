@@ -28,7 +28,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
 
   logrotate_app "#{app_name}" do
 	  cookbook	'logrotate'
-      frequency	'daily'
+	  frequency	'daily'
 	  path		[logfile, outfile, errfile]
 	  create	"644 #{app_name} #{app_name}"
 	  rotate	10
