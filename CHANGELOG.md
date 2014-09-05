@@ -2,6 +2,11 @@ nodestack CHANGELOG
 ===================
 
 This file is used to list changes made in each version of the nodestack cookbook.
+
+0.9.0
+-----
+- Bob Garza - Added logrotate recipe and included in application_nodejs.rb.  Configures logrotate, by default, for daily rotation of forever.(err|out|log)
+
 0.8.15
 ------
 - Sheppy Reno - Cleanup application_nodejs.rb

@@ -215,3 +215,6 @@ end # end each app loop
 
 # Add monitoring
 include_recipe 'nodestack::cloudmonitoring' if node.deep_fetch('platformstack', 'cloud_monitoring', 'enabled')
+
+# Add logrotate
+include_recipe 'nodestack::logrotate'
