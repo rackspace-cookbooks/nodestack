@@ -28,9 +28,8 @@ else
   include_recipe 'apt'
 end
 
-include_recipe 'chef-sugar'
-
-%w(nodejs nodejs::npm git build-essential platformstack::monitors platformstack::iptables apt nodestack::setcap).each do |recipe|
+%w(chef-sugar nodejs nodejs::npm git build-essential platformstack::monitors platformstack::iptables nodestack::setcap
+).each do |recipe|
   include_recipe recipe
 end
 
@@ -38,9 +37,14 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
 
   app_config = node['nodestack']['apps'][app_name]
 
+  # Cleanup multiple strings referring to
+  # "#{app_config['app_dir']/current/foo"
+  app_deploy_dir = "#{app_config['app_dir']}/current"
+
   encrypted_databag = Chef::EncryptedDataBagItem.load("#{app_name}_databag", 'config')
   encrypted_environment = encrypted_databag[node.chef_environment]
 
+  # Setup User
   user app_name do
     supports manage_home: true
     shell '/bin/bash'
@@ -69,7 +73,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
 
   template 'ssh config with strict host check disabled' do
     source 'ssh_config.erb'
-    path '/home/' + app_name + '/.ssh/config'
+    path "/home/#{app_name}/.ssh/config"
     mode 0700
     owner app_name
     group app_name
@@ -78,29 +82,26 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     )
   end
 
-  template "#{app_name}.conf for Upstart" do
-    path "/etc/init/#{app_name}.conf"
-    source 'nodejs.upstart.conf.erb'
-    owner 'root'
-    group 'root'
-    mode '0644'
-    variables(
-      user: app_name,
-      binary_path: node['nodestack']['binary_path'],
-      app_dir: app_config['app_dir'],
-      entry: 'server.js',
-      app_name: app_name,
-      env: app_config['env']
-    )
-    only_if { platform_family?('debian') }
-    notifies 'restart', "service[#{app_name}]", 'delayed'
+  # Setup Service
+  # Service resources vary by platform
+  case node['platform_family']
+  when 'debian'
+    init_path = "/etc/init/#{app_name}.conf"
+    init_source = 'nodejs.upstart.conf.erb'
+  when 'rhel'
+    # RHEL/CentOS has a new service system in 7+
+    if node['platform_version'].to_f < 7.0
+      init_path = "/etc/init.d/#{app_name}"
+      init_source = 'nodejs.initd.erb'
+    else
+      init_path = "/etc/systemd/system/#{app_name}.service"
+      init_source = 'nodejs.service.erb'
+    end
   end
 
   template app_name do
-    path "/etc/init.d/#{app_name}"
-    source 'nodejs.initd.erb'
-    owner 'root'
-    group 'root'
+    path init_path
+    source init_source
     mode '0755'
     variables(
       user: app_name,
@@ -111,43 +112,19 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
       app_name: app_name,
       env: app_config['env']
     )
-    only_if { node['platform_family'] == 'rhel' && node['platform_version'].to_f < 7.0 }
-    notifies 'restart', "service[#{app_name}]", 'delayed'
-  end
-
-  template app_name do
-    path "/etc/systemd/system/#{app_name}.service"
-    source 'nodejs.service.erb'
-    owner 'root'
-    group 'root'
-    mode '0755'
-    variables(
-      user: app_name,
-      app_name: app_name,
-      binary_path: node['nodestack']['binary_path'],
-      app_dir: app_config['app_dir'],
-      entry: 'server.js',
-      app_name: app_name,
-      env: app_config['env']
-    )
-    only_if { node['platform_family'] == 'rhel' && node['platform_version'].to_f >= 7.0 }
     notifies 'reload', "service[#{app_name}]", 'immediately'
     notifies 'restart', "service[#{app_name}]", 'delayed'
   end
 
-  directory "#{app_config['app_dir']}/logs" do
-    owner app_name
-    group app_name
-    recursive true
-    mode 0755
-    action :create
-  end
-
-  directory "#{app_config['app_dir']}/pids" do
-    owner app_name
-    group app_name
-    mode 0755
-    action :create
+  # Setup Node environment
+  %w(logs pids).each do |dir|
+    directory "#{app_config['app_dir']}/#{dir}" do
+      owner app_name
+      group app_name
+      recursive true
+      mode 0755
+      action :create
+    end
   end
 
   app_config['env'].each_pair do |variable, value|
@@ -167,7 +144,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
   end
 
   template 'config.js' do
-    path app_config['app_dir'] + '/current/config.js'
+    path "#{app_deploy_dir}/config.js"
     source 'config.js.erb'
     owner app_name
     group app_name
@@ -178,24 +155,28 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     only_if { app_config['config_file'] }
   end
 
-  execute 'npm install retry' do
-    command 'npm -g install npm-install-retry'
+  # Install npm and dependencies
+  nodejs_npm 'npm-install-retry' do
+    retries 5
+    retry_delay 60
+    action :install
   end
 
-  execute 'Install npm packages from package.json' do
-    cwd "#{app_config['app_dir']}/current"
-    command 'npm-install-retry --wait 60 --attempts 5'
-    environment 'HOME' => "/home/#{ app_name }", 'USER' => app_name
+  nodejs_npm app_name do
+    path app_deploy_dir
+    json true
     user app_name
     group app_name
-    only_if { ::File.exist?("#{ app_config['app_dir'] }/current/package.json") && app_config['npm'] }
+    retries 5
+    retry_delay 30
+    only_if { ::File.exist?("#{ app_deploy_dir }/package.json") && app_config['npm'] }
   end
 
-  execute 'npm install forever' do
-    cwd app_config['app_dir']
+  nodejs_npm 'forever' do
+    path app_config['app_dir']
     user app_name
-    command 'npm install forever'
-    environment 'HOME' => "/home/#{ app_name }"
+    retries 5
+    retry_delay 30
   end
 
   template 'server.js for forever' do
@@ -210,23 +191,6 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
       entry_point: app_config['entry_point']
   )
     notifies 'restart', "service[#{app_name}]", 'delayed'
-  end
-
-  template "http-monitor-#{app_name}" do
-    cookbook 'nodestack'
-    source 'monitoring-remote-http.yaml.erb'
-    path "/etc/rackspace-monitoring-agent.conf.d/#{app_name}-http-monitor.yaml"
-    owner 'root'
-    group 'root'
-    mode '0644'
-    variables(
-      port: app_config['env']['PORT'],
-      app_name: app_name,
-      body: app_config['monitoring']['body']
-    )
-    notifies 'restart', 'service[rackspace-monitoring-agent]', 'delayed'
-    action 'create'
-    only_if { node.deep_fetch('platformstack', 'cloud_monitoring', 'enabled') }
   end
 
   service app_name do
@@ -248,3 +212,6 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
                     100, "Allow nodejs traffic for #{app_name}") if app_config['env']['PORT']
 
 end # end each app loop
+
+# Add monitoring
+include_recipe 'nodestack::cloudmonitoring' if node.deep_fetch('platformstack', 'cloud_monitoring', 'enabled')

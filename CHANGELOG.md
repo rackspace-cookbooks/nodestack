@@ -2,13 +2,16 @@ nodestack CHANGELOG
 ===================
 
 This file is used to list changes made in each version of the nodestack cookbook.
+0.8.15
+------
+- Sheppy Reno - Cleanup application_nodejs.rb
 
 0.8.14
-----
+------
 - Seandon Mooy - Added logic to cleanup child processes during code deployments https://github.com/AutomationSupport/nodestack/pull/119
 
 0.8.13
------
+------
 - Marco Morales - Added support for CentOS 7.
 
 0.8.12
