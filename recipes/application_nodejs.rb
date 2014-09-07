@@ -167,6 +167,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     json true
     user app_name
     group app_name
+    options ['--production']
     retries 5
     retry_delay 30
     only_if { ::File.exist?("#{ app_deploy_dir }/package.json") && app_config['npm'] }
