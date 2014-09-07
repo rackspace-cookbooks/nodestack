@@ -2,13 +2,20 @@
 
 require_relative 'spec_helper'
 
-describe 'nodestack::default' do
+describe 'nodestack::application_nodejs' do
   before { stub_resources }
-  describe 'ubuntu' do
-    let(:chef_run) { ChefSpec::Runner.new.converge(described_recipe) }
+  describe 'ubuntu 12.04' do
+    let(:chef_run) do
+      ChefSpec::Runner.new(UBUNTU_OPTS) do |node|
+        node_resources(node)
 
-    it 'writes some chefspec code' do
-      pending 'todo'
+        node.automatic['lsb']['codename'] = 'lucid'
+        node.automatic['platform_family'] = 'debian'
+      end.converge(described_recipe)
+    end
+
+    it 'installs package libcap2-bin' do
+      expect(chef_run).to install_package('libcap2-bin')
     end
 
   end
