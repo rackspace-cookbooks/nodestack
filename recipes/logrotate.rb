@@ -26,12 +26,12 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
   errfile = "#{app_config['app_dir']}/logs/forever.err"
 
   logrotate_app "#{app_name}" do
-	  cookbook	'logrotate'
-	  frequency	'daily'
-	  path		[logfile, outfile, errfile]
-	  template_mode	'0644'
-	  create	"644 #{app_name} #{app_name}"
-	  rotate	10
-	  compress	'True'
+    cookbook      'logrotate'
+    frequency     'daily'
+    path          [logfile, outfile, errfile]
+    template_mode '0644'
+    create        "644 #{app_name} #{app_name}"
+    rotate        10
+    compress      'True'
   end
 end

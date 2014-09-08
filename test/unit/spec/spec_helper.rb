@@ -41,6 +41,7 @@ def node_resources(node)
 
   # NodeJS app info
   node.set['nodestack']['apps_to_deploy'] = ['my_nodejs_app']
+  node.set['nodestack']['binary_path'] = '/usr/bin/nodejs'
   node.set['nodestack']['apps']['my_nodejs_app']['app_dir'] = '/var/app'
   node.set['nodestack']['apps']['my_nodejs_app']['git_repo'] = 'git@github.com:marcoamorales/node-hello-world.git'
   node.set['nodestack']['apps']['my_nodejs_app']['git_rev'] = 'HEAD'
