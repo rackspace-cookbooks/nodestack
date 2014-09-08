@@ -97,6 +97,9 @@ describe 'nodestack::application_nodejs' do
 
     # TODO
     # application[nodejs application]    nodestack/recipes/application_nodejs.rb:137
+    it 'deploys application' do
+      expect(chef_run).to application.deploy_application('nodejs application')
+    end
     # nodejs_npm[my_nodejs_app]          nodestack/recipes/application_nodejs.rb:165
     # sudo[my_nodejs_app]                nodestack/recipes/application_nodejs.rb:54
     # execute[grant permissions to bind to low ports if path is binary]   nodestack/recipes/setcap.rb:32
