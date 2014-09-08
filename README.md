@@ -57,6 +57,8 @@ Attributes
 
 `node['nodestack']['apps']['my_nodejs_app']['npm']` `true/false` - Wether we should run `npm install` during a deployment.
 
+`node['nodestack']['apps']['my_nodejs_app']['npm_options']` `Array` - NPM command line options to use for the application.  '--production' should usually be included unless development is being done on the server.
+
 `node['nodestack']['apps']['my_nodejs_app']['config_file']` `true/false` - Wether the coobook will write a config.js from the following config hash.
 
 `node['nodestack']['apps']['my_nodejs_app']['env']`= {} - This config hash contains environment variables that will be available to the application.
