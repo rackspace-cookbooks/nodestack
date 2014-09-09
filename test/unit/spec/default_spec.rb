@@ -14,9 +14,9 @@ describe 'nodestack::application_nodejs' do
       end.converge(described_recipe)
     end
 
-    # package[libcap2-bin]               nodestack/recipes/setcap.rb:28
-    it 'installs package libcap2-bin' do
-      expect(chef_run).to install_package('libcap2-bin')
+    # application[nodejs application]    nodestack/recipes/application_nodejs.rb:137
+    it 'deploys application' do
+      expect(chef_run).to deploy_application('nodejs application')
     end
 
     # directory[/home/my_nodejs_app/.npm]   nodestack/recipes/application_nodejs.rb:60
@@ -50,14 +50,21 @@ describe 'nodestack::application_nodejs' do
 
     # nodejs_npm[npm-install-retry]      nodestack/recipes/application_nodejs.rb:159
     # nodejs_npm[forever]                nodestack/recipes/application_nodejs.rb:176
+    # nodejs_npm[my_nodejs_app]          nodestack/recipes/application_nodejs.rb:165
     npm_packages = %w(
       npm-install-retry
       forever
+      my_nodejs_app
     )
     it 'installs npm package' do
       npm_packages.each do |npm_package|
         expect(chef_run).to install_nodejs_npm(npm_package)
       end
+    end
+
+    # package[libcap2-bin]               nodestack/recipes/setcap.rb:28
+    it 'installs package libcap2-bin' do
+      expect(chef_run).to install_package('libcap2-bin')
     end
 
     # service[my_nodejs_app]             nodestack/recipes/application_nodejs.rb:197
@@ -69,6 +76,13 @@ describe 'nodestack::application_nodejs' do
         restart_command: "/sbin/initctl stop #{app_name} && /sbin/initctl start #{app_name}",
         supports: { restart: false, reload: false, status: false }
       )
+    end
+    
+    # sudo[my_nodejs_app]                nodestack/recipes/application_nodejs.rb:54
+    # This test isn't really testing to see if the my_nodejs_app user
+    # is being added, its generically checking to see if sudo was installed  
+    it 'adds the my_nodejs_app user to /etc/sudoers' do
+      expect(chef_run).to install_sudo('my_nodejs_app')
     end
 
     # template[config.js]                nodestack/recipes/application_nodejs.rb:146
@@ -96,13 +110,15 @@ describe 'nodestack::application_nodejs' do
     end
 
     # TODO
-    # application[nodejs application]    nodestack/recipes/application_nodejs.rb:137
-    it 'deploys application' do
-      expect(chef_run).to application.deploy_application('nodejs application')
-    end
-    # nodejs_npm[my_nodejs_app]          nodestack/recipes/application_nodejs.rb:165
-    # sudo[my_nodejs_app]                nodestack/recipes/application_nodejs.rb:54
     # execute[grant permissions to bind to low ports if path is binary]   nodestack/recipes/setcap.rb:32
+    #stub_command('test -L /usr/bin/nodejs').and_return(false)
+    it 'binds low ports if path is binary' do
+      expect(chef_run).to run_execute("setcap cap_net_bind_service=+ep /usr/bin/nodejs")
+    end
+    it 'binds low ports if path is symlink' do
+      stub_command('test -L /usr/bin/nodejs').and_return(true)
+      expect(chef_run).to run_execute("setcap cap_net_bind_service=+ep $(readlink /usr/bin/nodejs)")
+    end
     # execute[grant permissions to bind to low ports if path is symlink]   nodestack/recipes/setcap.rb:38
 
   end

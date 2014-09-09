@@ -56,7 +56,10 @@ def node_resources(node)
 end
 
 def stub_resources
-  stub_command('test -L /usr/bin/nodejs').and_return('foo')
+  stub_command('test -L /usr/bin/nodejs').and_return(false)
+  #stub_command('test -L /usr/bin/nodejs').and_return(true)
+  allow(File).to receive(:exist?).and_call_original
+  allow(File).to receive(:exist?).with('/var/app/current/package.json').and_return(true)
 end
 
 at_exit { ChefSpec::Coverage.report! }
