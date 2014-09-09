@@ -215,7 +215,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
 end # end each app loop
 
 # Add monitoring
-include_recipe 'nodestack::cloudmonitoring' if node.deep_fetch('platformstack', 'cloud_monitoring', 'enabled')
+include_recipe 'nodestack::cloud_monitoring' if node.deep_fetch('platformstack', 'cloud_monitoring', 'enabled')
 
 # Add logrotate
 include_recipe 'nodestack::logrotate'
