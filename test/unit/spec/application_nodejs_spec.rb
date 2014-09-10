@@ -27,7 +27,6 @@ describe 'nodestack::application_nodejs' do
         /var/app/logs
         /var/app/pids
       )
-
       it 'creates a directory with the default action' do
         directories.each do |directory|
           expect(chef_run).to create_directory(directory)
