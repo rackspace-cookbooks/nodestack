@@ -8,16 +8,34 @@ require 'json'
 ::LOG_LEVEL = :fatal
 ::UBUNTU_OPTS = {
   platform: 'ubuntu',
+  platform_family: 'debian',
+  platform_version: '12.04',
   version: '12.04',
+  libcap_package: 'libcap2-bin',
+  service_command: '/etc/init/my_nodejs_app',
+  service_conf: '/etc/init/my_nodejs_app.conf',
+  lsb: {
+    codename: 'lucid'
+  },
   log_level: ::LOG_LEVEL
 }
 ::CENTOS_OPTS = {
   platform: 'centos',
+  platform_family: 'rhel',
+  platform_version: '6.5',
   version: '6.5',
+  libcap_package: 'libcap',
+  service_command: '/etc/init.d/my_nodejs_app',
+  service_conf: '/etc/init.d/my_nodejs_app',
   log_level: ::LOG_LEVEL
 }
 ::CHEFSPEC_OPTS = {
   log_level: ::LOG_LEVEL
+}
+
+::OS_OPTS = {
+  ubuntu: UBUNTU_OPTS,
+  centos: CENTOS_OPTS
 }
 
 # This can probably be moved to a more
