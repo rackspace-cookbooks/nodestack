@@ -17,12 +17,12 @@ details:
   hostname: <%= @app_name %>
   method: GET
   body: '<%= @body %>'
-  url: http://<%= "#{node['cloud']['public_ipv4']}:#{@port}" %>
+  url: http://<%= "#{node['cloud']['public_ipv4']}:#{@port}#{node['nodestack']['cloud_monitoring']['remote_http']['uri']}" %>
 <% if node['nodestack']['cloud_monitoring']['remote_http']['alarm'] == true %>
 alarms:
   http-check:
     label: Remote HTTP check on <%= "#{node['cloud']['public_ipv4']} port #{@port} for #{@app_name}" %>
-    notification_plan_id: npTechnicalContactsEmail
+    notification_plan_id: <%= node['platformstack']['cloud_monitoring']['notification_plan_id'] %>
     criteria: |
       if (metric['code'] regex '4[0-9][0-9]') {
         return new AlarmStatus(CRITICAL, 'HTTP server responding with 4xx status');
