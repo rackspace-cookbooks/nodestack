@@ -5,7 +5,7 @@ require 'chefspec/berkshelf'
 require 'chef/application'
 require 'json'
 
-Dir['./test/unit/spec/support/**/*.rb'].sort.each{ |f| require f }
+Dir['./test/unit/spec/support/**/*.rb'].sort.each { |f| require f }
 
 ::LOG_LEVEL = :fatal
 ::CHEFSPEC_OPTS = {

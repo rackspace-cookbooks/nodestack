@@ -4,17 +4,17 @@ require_relative 'spec_helper'
 
 describe 'nodestack::application_nodejs' do
   before { stub_resources }
-  
+
   supported_platforms.each do |platform, versions|
     versions.each do |version|
       context "on #{platform.capitalize} #{version}" do
         let(:chef_run) do
-          ChefSpec::Runner.new(:platform => platform, :version => version) do |node|
+          ChefSpec::Runner.new(platform: platform, version: version) do |node|
             node_resources(node)
           end.converge(described_recipe)
         end
 
-        property = load_platform_properties(:platform => platform, :platform_version => version)
+        property = load_platform_properties(platform: platform, platform_version: version)
         app_name = 'my_nodejs_app'
 
         # application[nodejs application]    nodestack/recipes/application_nodejs.rb:137
@@ -71,15 +71,15 @@ describe 'nodestack::application_nodejs' do
 
         # service[my_nodejs_app]             nodestack/recipes/application_nodejs.rb:197
         it "enables and starts the #{app_name} service" do
-            expect(chef_run).to enable_service(app_name).with(
-              service_name: app_name,
-              supports: { restart: false, reload: false, status: false }
-            )
+          expect(chef_run).to enable_service(app_name).with(
+            service_name: app_name,
+            supports: { restart: false, reload: false, status: false }
+          )
         end
-        
+
         # sudo[my_nodejs_app]                nodestack/recipes/application_nodejs.rb:54
         # This test isn't really testing to see if the my_nodejs_app user
-        # is being added, its generically checking to see if sudo was installed  
+        # is being added, its generically checking to see if sudo was installed
         it "adds the #{app_name} user to /etc/sudoers" do
           expect(chef_run).to install_sudo(app_name)
         end
@@ -92,7 +92,7 @@ describe 'nodestack::application_nodejs' do
           "/home/#{app_name}/.ssh/config",
           property[:service_conf],
           '/var/app/server.js',
-          '/var/app/current/config.js',
+          '/var/app/current/config.js'
         ]
         it 'creates a template with the default action' do
           templates.each do |template|
@@ -111,13 +111,13 @@ describe 'nodestack::application_nodejs' do
         # execute[grant permissions to bind to low ports if path is binary]   nodestack/recipes/setcap.rb:32
         it 'binds low ports if path is binary' do
           stub_command('test -L /usr/bin/nodejs').and_return(false)
-          expect(chef_run).to run_execute("setcap cap_net_bind_service=+ep /usr/bin/nodejs")
+          expect(chef_run).to run_execute('setcap cap_net_bind_service=+ep /usr/bin/nodejs')
         end
 
         # execute[grant permissions to bind to low ports if path is symlink]   nodestack/recipes/setcap.rb:38
         it 'binds low ports if path is symlink' do
           stub_command('test -L /usr/bin/nodejs').and_return(true)
-          expect(chef_run).to run_execute("setcap cap_net_bind_service=+ep $(readlink /usr/bin/nodejs)")
+          expect(chef_run).to run_execute('setcap cap_net_bind_service=+ep $(readlink /usr/bin/nodejs)')
         end
       end
     end
