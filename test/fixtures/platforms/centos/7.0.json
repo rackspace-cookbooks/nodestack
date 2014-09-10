@@ -1,0 +1,10 @@
+{
+  "platform": "centos",
+  "platform_family": "rhel",
+  "platform_version": "7.0",
+  "version": "7.0",
+  "libcap_package": "libcap",
+  "service_command": "/etc/init.d/my_nodejs_app",
+  "service_conf": "/etc/systemd/system/my_nodejs_app.service"
+}
+

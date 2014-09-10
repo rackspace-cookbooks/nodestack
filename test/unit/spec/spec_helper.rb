@@ -5,62 +5,11 @@ require 'chefspec/berkshelf'
 require 'chef/application'
 require 'json'
 
+Dir['./test/unit/spec/support/**/*.rb'].sort.each{ |f| require f }
+
 ::LOG_LEVEL = :fatal
-::UBUNTU_1204_OPTS = {
-  platform: 'ubuntu',
-  platform_family: 'debian',
-  platform_version: '12.04',
-  version: '12.04',
-  libcap_package: 'libcap2-bin',
-  service_command: '/etc/init/my_nodejs_app',
-  service_conf: '/etc/init/my_nodejs_app.conf',
-  lsb: {
-    codename: 'lucid'
-  },
-  log_level: ::LOG_LEVEL
-}
-::UBUNTU_1404_OPTS = {
-  platform: 'ubuntu',
-  platform_family: 'debian',
-  platform_version: '14.04',
-  version: '14.04',
-  libcap_package: 'libcap2-bin',
-  service_command: '/etc/init/my_nodejs_app',
-  service_conf: '/etc/init/my_nodejs_app.conf',
-  lsb: {
-    codename: 'trusty'
-  },
-  log_level: ::LOG_LEVEL
-}
-::CENTOS_65_OPTS = {
-  platform: 'centos',
-  platform_family: 'rhel',
-  platform_version: '6.5',
-  version: '6.5',
-  libcap_package: 'libcap',
-  service_command: '/etc/init.d/my_nodejs_app',
-  service_conf: '/etc/init.d/my_nodejs_app',
-  log_level: ::LOG_LEVEL
-}
-::CENTOS_70_OPTS = {
-  platform: 'centos',
-  platform_family: 'rhel',
-  platform_version: '7.0',
-  version: '7.0',
-  libcap_package: 'libcap',
-  service_command: '/etc/init.d/my_nodejs_app',
-  service_conf: '/etc/systemd/system/my_nodejs_app.service',
-  log_level: ::LOG_LEVEL
-}
 ::CHEFSPEC_OPTS = {
   log_level: ::LOG_LEVEL
-}
-
-::OS_OPTS = {
-  ubuntu_12: UBUNTU_1204_OPTS,
-  ubuntu_14: UBUNTU_1404_OPTS,
-  centos_65: CENTOS_65_OPTS,
-  centos_70: CENTOS_70_OPTS
 }
 
 # This can probably be moved to a more
@@ -99,9 +48,14 @@ def node_resources(node)
 end
 
 def stub_resources
+  # Even though this is set in the check itself for readibility
+  # I get all failures if I remove this stub_command from here
   stub_command('test -L /usr/bin/nodejs').and_return(false)
-  #stub_command('test -L /usr/bin/nodejs').and_return(true)
+
+  # Make sure that files not specifically mocked aren't included below
   allow(File).to receive(:exist?).and_call_original
+
+  # Mock to allow npm to install the application
   allow(File).to receive(:exist?).with('/var/app/current/package.json').and_return(true)
 end
 
