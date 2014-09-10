@@ -167,7 +167,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     json true
     user app_name
     group app_name
-    options ['--production']
+    options app_config['npm_options']
     retries 5
     retry_delay 30
     only_if { ::File.exist?("#{ app_deploy_dir }/package.json") && app_config['npm'] }
@@ -215,7 +215,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
 end # end each app loop
 
 # Add monitoring
-include_recipe 'nodestack::cloudmonitoring' if node.deep_fetch('platformstack', 'cloud_monitoring', 'enabled')
+include_recipe 'nodestack::cloud_monitoring' if node.deep_fetch('platformstack', 'cloud_monitoring', 'enabled')
 
 # Add logrotate
 include_recipe 'nodestack::logrotate'

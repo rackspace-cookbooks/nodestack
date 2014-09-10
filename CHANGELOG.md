@@ -3,6 +3,18 @@ nodestack CHANGELOG
 
 This file is used to list changes made in each version of the nodestack cookbook.
 
+0.9.4
+-----
+- Sheppy Reno - Added basic Chefspec for application_nodejs.rb
+
+0.9.3
+-----
+- John Schwinghammer - Updated cloud_monitoring recipe name
+
+0.9.2
+-----
+- Sheppy Reno - Make npm options an attribute
+
 0.9.1
 -----
 - Sheppy Reno - Set NPM to only pull in production dependencies for the application.
