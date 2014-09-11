@@ -29,6 +29,7 @@ def node_resources(node)
   node.set['cpu']['total'] = 2
 
   # Dummy mount point so cloud monitoring doesn't fail
+  node.set['platformstack']['cloud_monitoring']['enabled'] = true
   node.set['platformstack']['cloud_monitoring']['filesystem']['target']['mnt'] = 'foo'
 
   # NodeJS app info
