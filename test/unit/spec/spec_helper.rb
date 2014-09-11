@@ -46,6 +46,17 @@ def node_resources(node)
   node.set['nodestack']['apps']['my_nodejs_app']['env']['MONGO_PORT'] = '27017'
   node.set['nodestack']['apps']['my_nodejs_app']['monitoring']['body'] = 'Hello World!'
   node.set['nodestack']['cookbook'] = 'nodestack'
+
+  # Gluster info
+  node.set['rackspace_gluster']['config']['server']['glusters']['Gluster Cluster 1']['nodes']['gluster01']['ip'] = '33.33.33.10'
+  node.set['rackspace_gluster']['config']['server']['glusters']['Gluster Cluster 1']['nodes']['gluster01']['block_device'] = '/dev/sdb'
+  node.set['rackspace_gluster']['config']['server']['glusters']['Gluster Cluster 1']['nodes']['gluster01']['mount_point'] = '/mnt/brick0'
+  node.set['rackspace_gluster']['config']['server']['glusters']['Gluster Cluster 1']['nodes']['gluster01']['brick_dir'] = '/mnt/brick0/brick'
+
+  node.set['rackspace_gluster']['config']['server']['glusters']['Gluster Cluster 1']['nodes']['gluster02']['ip'] = '33.33.33.11'
+  node.set['rackspace_gluster']['config']['server']['glusters']['Gluster Cluster 1']['nodes']['gluster02']['block_device'] = '/dev/sdb'
+  node.set['rackspace_gluster']['config']['server']['glusters']['Gluster Cluster 1']['nodes']['gluster02']['mount_point'] = '/mnt/brick0'
+  node.set['rackspace_gluster']['config']['server']['glusters']['Gluster Cluster 1']['nodes']['gluster02']['brick_dir'] = '/mnt/brick0/brick'
 end
 
 def stub_resources
