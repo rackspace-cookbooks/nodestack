@@ -64,11 +64,6 @@ describe 'nodestack::application_nodejs' do
           end
         end
 
-        # package[libcap2-bin]               nodestack/recipes/setcap.rb:28
-        it "installs package #{property['libcap_package']}" do
-          expect(chef_run).to install_package("#{property[:libcap_package]}")
-        end
-
         # service[my_nodejs_app]             nodestack/recipes/application_nodejs.rb:197
         it "enables and starts the #{app_name} service" do
           expect(chef_run).to enable_service(app_name).with(
@@ -106,18 +101,6 @@ describe 'nodestack::application_nodejs' do
             home: "/home/#{app_name}",
             shell: '/bin/bash'
           )
-        end
-
-        # execute[grant permissions to bind to low ports if path is binary]   nodestack/recipes/setcap.rb:32
-        it 'binds low ports if path is binary' do
-          stub_command('test -L /usr/bin/nodejs').and_return(false)
-          expect(chef_run).to run_execute('setcap cap_net_bind_service=+ep /usr/bin/nodejs')
-        end
-
-        # execute[grant permissions to bind to low ports if path is symlink]   nodestack/recipes/setcap.rb:38
-        it 'binds low ports if path is symlink' do
-          stub_command('test -L /usr/bin/nodejs').and_return(true)
-          expect(chef_run).to run_execute('setcap cap_net_bind_service=+ep $(readlink /usr/bin/nodejs)')
         end
       end
     end

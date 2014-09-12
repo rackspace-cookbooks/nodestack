@@ -23,7 +23,7 @@ if node['newrelic']['license']
   node.override['newrelic']['application_monitoring']['daemon']['ssl'] = true
   node.override['newrelic']['server_monitoring']['ssl'] = true
   include_recipe 'platformstack::default'
-  include_recipe 'newrelic::nodejs-agent'
+  include_recipe 'newrelic::nodejs_agent'
 else
   Chef::Log.warn('The NewRelic license attribute is not set!')
 end

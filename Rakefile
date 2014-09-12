@@ -30,9 +30,7 @@ end
 desc 'Destroy test kitchen instances'
 task :destroy do
   Kitchen.logger = Kitchen.default_file_logger
-  Kitchen::Config.new.instances.each do |instance|
-    instance.destroy
-  end
+  Kitchen::Config.new.instances.each destroy
 end
 
 require 'rspec/core/rake_task'

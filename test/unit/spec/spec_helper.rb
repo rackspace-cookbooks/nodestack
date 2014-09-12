@@ -57,6 +57,15 @@ def node_resources(node)
   node.set['rackspace_gluster']['config']['server']['glusters']['Gluster Cluster 1']['nodes']['gluster02']['block_device'] = '/dev/sdb'
   node.set['rackspace_gluster']['config']['server']['glusters']['Gluster Cluster 1']['nodes']['gluster02']['mount_point'] = '/mnt/brick0'
   node.set['rackspace_gluster']['config']['server']['glusters']['Gluster Cluster 1']['nodes']['gluster02']['brick_dir'] = '/mnt/brick0/brick'
+
+  # MySQL
+  node.set['holland']['enabled'] = true
+
+  # NewRelic
+  node.set['newrelic']['license'] = 'foo'
+
+  # PostGreSQL
+  node.set['postgresql']['password']['postgres'] = 'randompasswordforpostgresql'
 end
 
 def stub_resources
@@ -69,6 +78,17 @@ def stub_resources
 
   # Mock to allow npm to install the application
   allow(File).to receive(:exist?).with('/var/app/current/package.json').and_return(true)
+
+  # MySQL Add Drive stubs/mocks
+  stub_command('mkfs -t ext3 /dev/xvde1').and_return(true)
+  allow(File).to receive(:blockdev?).with('/dev/xvde1').and_return(true)
+
+  shellout = double
+  allow(Mixlib::ShellOut).to receive(:new).and_return(shellout)
+  allow(shellout).to receive(:run_command).and_return('foo')
+  allow(shellout).to receive(:error!).and_return(false)
+
+  stub_command("psql -c \"SELECT rolname FROM pg_roles WHERE rolname='repl'\" | grep repl").and_return('foo')
 end
 
 at_exit { ChefSpec::Coverage.report! }
