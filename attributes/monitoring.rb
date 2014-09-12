@@ -23,6 +23,11 @@ default['nodestack']['cloud_monitoring']['remote_http']['alarm'] = false
 default['nodestack']['cloud_monitoring']['remote_http']['period'] = 60
 default['nodestack']['cloud_monitoring']['remote_http']['timeout'] = 15
 
+# This value is appended to the monitoring URL after the ip:port.
+# For that reason, we default to '/', although '' would work as well.
+# Most overrides would be: uri: '/some/uri'
+default['nodestack']['cloud_monitoring']['remote_http']['uri'] = '/'
+
 default['nodestack']['cloud_monitoring']['agent_mysql']['disabled'] = false
 default['nodestack']['cloud_monitoring']['agent_mysql']['alarm'] = false
 default['nodestack']['cloud_monitoring']['agent_mysql']['period'] = 60
