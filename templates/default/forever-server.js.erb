@@ -1,8 +1,9 @@
 var forever = require('forever');
 
 var child = new(forever.Monitor)('<%= @app_dir %>/current/<%= @entry_point %>', {
-		append: true,
-        silent: false,
+	append: true,
+	silent: false,
+	options: [<% @app_options.each do | option | %>'<%= option %>', <% end %>],
         pidFile: '<%= @app_dir %>/pids/app.pid',
         watch: true,
         watchDirectory: '<%= @app_dir %>/current',      // Top-level directory to watch from.
