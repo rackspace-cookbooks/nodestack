@@ -3,11 +3,16 @@ nodestack CHANGELOG
 
 This file is used to list changes made in each version of the nodestack cookbook.
 
+0.9.7
+---
+- Marco Morales - Removed platformstack from Berksfile and fixed the new serverspec syntax.
+
 0.9.5
 -----
 - Sheppy Reno - Added basic Chefspec for application_nodejs.rb
 
 0.9.4
+---
 - Marco Morales - Allow options to be passed to apps via forevers 'options'
 
 0.9.3
