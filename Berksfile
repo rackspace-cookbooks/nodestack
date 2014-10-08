@@ -1,6 +1,5 @@
 source "https://api.berkshelf.com"
 
-cookbook 'platformstack', git: 'git@github.com:AutomationSupport/platformstack.git'
 cookbook 'logstash_stack', git: 'git@github.com:rackspace-cookbooks/logstash_stack.git'
 cookbook 'rackspacecloud', git: 'git@github.com:rackspace-cookbooks/rackspacecloud.git'
 cookbook 'rackspace_cloudbackup', git: 'git@github.com:rackspace-cookbooks/rackspace_cloudbackup.git'
