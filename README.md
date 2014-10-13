@@ -69,11 +69,19 @@ Attributes
 
 `node['nodestack']['forever']['watch_ignore_patterns'] = ['*.log', '*.logs']` This is a list of patterns that will be ignored and not watched by forever-monitor. Forever-monitor watches the code directory (in the demo app `/var/app/current`) and will reload the application if it notices any changes in the files.
 
+`node['nodestack']['code_deployment']` This enables or disabled code deployment.
+
 How to deploy an Node.js application with Nodestack
 ----
 
 There's a couple of things that need to be considered when deploying an application with this cookbook, in other words, the app must be setup in a specific way.
 This cookbook will deploy an application by running a simple server.js Node.js app, which in turn will run the Node.js application that is going to be deployed. This server.js application will monitor any changes on the application files and reload itself if it finds any changes. There's also other options that can be implemented in the future, like the amount of child processes.
+
+#### Code deployment is optional.
+
+Nodestack can be deployed on a server without the deploying an application. Please note that the deployment strategy used will need to consider installing dependencies through NPM and starting/stopping the application. Some of these could be handled on a wrapper cookbook if so desired.
+
+To make code deployment optional you need to set the following attribute `node['nodestack']['code_deployment'] = false`
 
 ## Encrypted Data Bags
 
