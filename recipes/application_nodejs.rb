@@ -138,6 +138,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     path app_config['app_dir']
     owner app_name
     group app_name
+    enable_submodules app_config['enable_submodules']
     deploy_key encrypted_environment['ssh_deployment_key']
     repository app_config['git_repo']
     revision app_config['git_rev']

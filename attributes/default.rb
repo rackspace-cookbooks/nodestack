@@ -15,6 +15,7 @@ if node['demo']
   default['nodestack']['apps']['my_nodejs_app']['git_repo'] = 'git@github.com:marcoamorales/node-hello-world.git'
   default['nodestack']['apps']['my_nodejs_app']['git_rev'] = 'HEAD'
   default['nodestack']['apps']['my_nodejs_app']['git_repo_domain'] = 'github.com'
+  default['nodestack']['apps']['my_nodejs_app']['enable_submodules'] = false
   default['nodestack']['apps']['my_nodejs_app']['entry_point'] = 'app.js'
   default['nodestack']['apps']['my_nodejs_app']['npm'] = true
   default['nodestack']['apps']['my_nodejs_app']['config_file'] = true
