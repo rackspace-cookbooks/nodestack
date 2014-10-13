@@ -55,7 +55,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
     action :create
   end
 
-  # 
+  # Disable strict host checking for the git repo.
   template 'ssh config with strict host check disabled' do
     source 'ssh_config.erb'
     path "/home/#{app_name}/.ssh/config"
