@@ -1,7 +1,7 @@
 # Encoding: utf-8
 #
 # Cookbook Name:: nodestack
-# Recipe:: default
+# Recipe:: application_nodejs
 #
 # Copyright 2014, Rackspace Hosting
 #
@@ -44,43 +44,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
   encrypted_databag = Chef::EncryptedDataBagItem.load("#{app_name}_databag", 'config')
   encrypted_environment = encrypted_databag[node.chef_environment]
 
-  # Setup User
-  user app_name do
-    supports manage_home: true
-    shell '/bin/bash'
-    home "/home/#{app_name}"
-  end
-
-  sudo app_name do
-    user app_name
-    nopasswd true
-    commands ["/sbin/restart #{app_name}", "/sbin/start #{app_name}", "/sbin/stop #{app_name}"]
-  end
-
-  directory "/home/#{app_name}/.npm" do
-    owner app_name
-    group app_name
-    mode 0755
-    action :create
-  end
-
-  directory "/home/#{app_name}/.ssh" do
-    owner app_name
-    group app_name
-    mode 0700
-    action :create
-  end
-
-  template 'ssh config with strict host check disabled' do
-    source 'ssh_config.erb'
-    path "/home/#{app_name}/.ssh/config"
-    mode 0700
-    owner app_name
-    group app_name
-    variables(
-      git_repo_domain: app_config['git_repo_domain']
-    )
-  end
+  include_recipe 'nodestack::_user'
 
   # Setup Service
   # Service resources vary by platform
