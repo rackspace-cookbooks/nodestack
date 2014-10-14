@@ -25,5 +25,3 @@ if node['demo']
   default['nodestack']['apps']['my_nodejs_app']['npm_options'] = ['--production']
   default['nodestack']['cookbook'] = 'nodestack'
 end
-
-default['nodestack']['forever']['watch_ignore_patterns'] = ['*.log', '*.logs']
