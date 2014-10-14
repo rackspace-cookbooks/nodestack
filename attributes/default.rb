@@ -27,3 +27,4 @@ if node['demo']
 end
 
 default['nodestack']['forever']['watch_ignore_patterns'] = ['*.log', '*.logs']
+default['nodestack']['code_deployment'] = true

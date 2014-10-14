@@ -3,6 +3,10 @@ nodestack CHANGELOG
 
 This file is used to list changes made in each version of the nodestack cookbook.
 
+0.10.0
+---
+- Marco Morales - Code deployment is now optional
+
 0.9.8
 ---
 - Jacob Dearing - Expose git_submodule attribute for application resource call.

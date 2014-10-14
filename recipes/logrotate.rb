@@ -25,7 +25,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
   outfile = "#{app_config['app_dir']}/logs/forever.out"
   errfile = "#{app_config['app_dir']}/logs/forever.err"
 
-  logrotate_app "#{app_name}" do
+  logrotate_app app_name do
     cookbook 'logrotate'
     frequency 'daily'
     path [logfile, outfile, errfile]
