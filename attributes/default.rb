@@ -26,5 +26,4 @@ if node['demo']
   default['nodestack']['cookbook'] = 'nodestack'
 end
 
-default['nodestack']['forever']['watch_ignore_patterns'] = ['*.log', '*.logs']
 default['nodestack']['code_deployment'] = true

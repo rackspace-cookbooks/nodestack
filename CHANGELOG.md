@@ -3,6 +3,10 @@ nodestack CHANGELOG
 
 This file is used to list changes made in each version of the nodestack cookbook.
 
+0.11.0
+---
+- Martin Smith - Added ELK stack logging customization for node and forever logs, if ELK stack is available through platformstack.
+
 0.10.0
 ---
 - Marco Morales - Code deployment is now optional

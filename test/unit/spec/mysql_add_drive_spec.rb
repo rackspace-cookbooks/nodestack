@@ -14,7 +14,7 @@ describe 'nodestack::mysql_add_drive' do
         end
 
         it 'performs a mkfs' do
-          expect(chef_run).to run_execute('mkfs -t ext3 /dev/xvde1')
+          expect(chef_run).to run_execute('mkfs -t ext4 /dev/xvde1')
         end
 
         # user[mysql]                        nodestack/recipes/mysql_add_drive.rb:45

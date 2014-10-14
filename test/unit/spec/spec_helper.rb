@@ -66,6 +66,9 @@ def node_resources(node)
 
   # PostGreSQL
   node.set['postgresql']['password']['postgres'] = 'randompasswordforpostgresql'
+
+  # no need to converge elkstack agent for this
+  node.set['platformstack']['elkstack_logging']['enabled'] = false
 end
 
 def stub_resources
@@ -84,9 +87,10 @@ def stub_resources
   allow(File).to receive(:blockdev?).with('/dev/xvde1').and_return(true)
 
   shellout = double
-  allow(Mixlib::ShellOut).to receive(:new).and_return(shellout)
-  allow(shellout).to receive(:run_command).and_return('foo')
-  allow(shellout).to receive(:error!).and_return(false)
+  allow(Mixlib::ShellOut).to receive(:new).with('blkid -s TYPE -o value /dev/xvde1').and_return(shellout)
+  allow(shellout).to receive(:run_command).and_return(shellout)
+  allow(shellout).to receive(:error!).and_return(true) # true so it runs the format command
+  allow(shellout).to receive(:error?).and_return(true)
 
   stub_command("psql -c \"SELECT rolname FROM pg_roles WHERE rolname='repl'\" | grep repl").and_return('foo')
 end

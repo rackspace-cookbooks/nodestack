@@ -24,8 +24,7 @@
 device = node['disk']['name']
 fs = node['disk']['fs']
 
-execute 'mkfs' do
-  command "mkfs -t #{fs} #{device}"
+execute "mkfs -t #{fs} #{device}" do
   only_if do
     loop do
       if File.blockdev?(device)

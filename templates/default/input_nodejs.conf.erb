@@ -1,0 +1,20 @@
+input {
+  <% @paths.each do |path| %>
+  file {
+    path => "<%= path %>"
+    type => "nodejs"
+  }
+  <% end %>
+}
+
+filter {
+  if [type] == "nodejs" {
+    if [path] =~ "forever" {
+      mutate { replace => { type => "nodejs_forever" } }
+    } else if [path] =~ "node" {
+      mutate { replace => { type => "nodejs_node" } }
+    } else {
+      mutate { replace => { type => "nodejs_other" } }
+    }
+  }
+}

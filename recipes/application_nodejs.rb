@@ -33,6 +33,7 @@ end
   include_recipe recipe
 end
 
+logging_paths = []
 node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
 
   app_config = node['nodestack']['apps'][app_name]
@@ -184,6 +185,8 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
   add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{app_config['env']['PORT']} -j ACCEPT",
                     100, "Allow nodejs traffic for #{app_name}") if app_config['env']['PORT']
 
+  logging_paths.push("#{app_config['app_dir']}/logs/*")
+
 end # end each app loop
 
 # Add monitoring
@@ -191,3 +194,16 @@ include_recipe 'nodestack::cloud_monitoring' if node.deep_fetch('platformstack',
 
 # Add logrotate
 include_recipe 'nodestack::logrotate'
+
+# Add ELK stack logging, if we are logging to elkstack
+if node.deep_fetch('platformstack', 'elkstack_logging', 'enabled')
+  # ensure platformstack's logging is already done
+  include_recipe 'platformstack::logging'
+
+  # add one more config for our additional logs
+  logstash_commons_config 'input_nodejs' do
+    template_source_file 'input_nodejs.conf.erb'
+    template_source_cookbook 'nodestack'
+    variables(paths: logging_paths)
+  end
+end

@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 group :lint do
   gem 'foodcritic', '~> 3.0'
-  gem 'foodcritic-rackspace-rules', 'git' => 'git@github.com:AutomationSupport/foodcritic-rackspace-rules.git'
+  gem 'foodcritic-rackspace-rules'
   gem 'rubocop', '~> 0.24'
 end
 
@@ -14,7 +14,6 @@ end
 
 group :kitchen_common do
   gem 'test-kitchen'
-  gem 'kitchen-rackspace'
 end
 
 group :kitchen_vagrant do
