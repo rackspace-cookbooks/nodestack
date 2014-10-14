@@ -201,7 +201,7 @@ if node.deep_fetch('platformstack', 'elkstack_logging', 'enabled')
   include_recipe 'platformstack::logging'
 
   # add one more config for our additional logs
-  logstash_commons_config "input_nodejs" do
+  logstash_commons_config 'input_nodejs' do
     template_source_file 'input_nodejs.conf.erb'
     template_source_cookbook 'nodestack'
     variables(paths: logging_paths)
