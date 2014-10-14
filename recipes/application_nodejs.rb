@@ -112,7 +112,7 @@ node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
       deploy_key encrypted_environment['ssh_deployment_key']
       repository app_config['git_repo']
       revision app_config['git_rev']
-      before_symlink app_config['deployment']['before_symlink'].nil? ? nil : app_config['deployment']['before_symlink']
+      before_symlink app_config['deployment']['before_symlink']
     end
 
     template 'config.js' do
