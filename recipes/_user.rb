@@ -21,8 +21,9 @@
 # This recipe creates the user that the application will run as, as well as setting up all the directories
 # that we must ensure are created under the user and with the correct permissions
 
-node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
+node['nodestack']['apps'].each do |app| # each app loop
 
+  app_name = app[0]
   app_config = node['nodestack']['apps'][app_name]
 
   # Setup User

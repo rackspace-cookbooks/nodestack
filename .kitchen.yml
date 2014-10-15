@@ -13,7 +13,6 @@ provisioner:
   client_rb:
     environment: demo
   attributes:
-    demo: true
     holland:
       enabled: false
     mysql-multi:
@@ -62,4 +61,5 @@ suites:
     data_bags_path: 'test/integration/default/data_bags'
     encrypted_data_bag_secret_key_path: 'test/integration/default/encrypted_data_bag_secret'
     run_list:
+      - recipe[nodestack::demo]
       - recipe[nodestack::application_nodejs]

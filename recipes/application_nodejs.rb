@@ -34,8 +34,9 @@ end
 end
 
 logging_paths = []
-node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
+node['nodestack']['apps'].each do |app| # each app loop
 
+  app_name = app[0]
   app_config = node['nodestack']['apps'][app_name]
 
   # Cleanup multiple strings referring to
