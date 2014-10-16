@@ -19,8 +19,11 @@
 #
 include_recipe 'logrotate::default'
 
-node['nodestack']['apps_to_deploy'].each do |app_name| # each app loop
+node['nodestack']['apps'].each do |app| # each app loop
+
+  app_name = app[0]
   app_config = node['nodestack']['apps'][app_name]
+
   logfile = "#{app_config['app_dir']}/logs/forever.log"
   outfile = "#{app_config['app_dir']}/logs/forever.out"
   errfile = "#{app_config['app_dir']}/logs/forever.err"

@@ -43,8 +43,6 @@ Attributes
 
 ####Note: the 'my_nodejs_app' defines the name of the app, please change this to something more relevant to the customer.
 
-`node['nodestack']['apps_to_deploy']` - This array defines the application names to deploy.
-
 `node['nodestack']['apps']['my_nodejs_app']['app_dir']` path where the application will be deployed
 
 `node['nodestack']['apps']['my_nodejs_app']['git_repo']` Git repository where the code lives.
