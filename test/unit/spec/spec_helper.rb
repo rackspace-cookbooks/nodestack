@@ -45,7 +45,8 @@ def node_resources(node)
   node.set['nodestack']['apps']['my_nodejs_app']['env']['PORT'] = '80'
   node.set['nodestack']['apps']['my_nodejs_app']['env']['MONGO_PORT'] = '27017'
   node.set['nodestack']['apps']['my_nodejs_app']['monitoring']['body'] = 'Hello World!'
-  node.set['nodestack']['apps']['my_nodejs_app']['deployment']['before_symlink'] = nil
+  node.set['nodestack']['apps']['my_nodejs_app']['deployment']['before_symlink'] = 'test_before_symlink.rb'
+  node.set['nodestack']['apps']['my_nodejs_app']['deployment']['before_symlink_template'] = 'before_symlink_test.rb.erb'
   node.set['nodestack']['cookbook'] = 'nodestack'
 
   # Gluster info
