@@ -65,7 +65,9 @@ Attributes
 
 `node['nodestack']['apps']['my_nodejs_app']['monitoring']['body']` Text that will be matched from the GET request
 
-`node['nodestack']['apps']['my_nodejs_app']['deployment']['before_symlink']` Exposes the before_symlink attribute for the application resource.
+`node['nodestack']['apps']['my_nodejs_app']['deployment']['before_symlink']` Exposes the before_symlink attribute for the application resource. Set this to `nil` if you're not planning on using it.
+
+`node['nodestack']['apps']['my_nodejs_app']['deployment']['before_symlink_template']` Template file that will be dropped on the revision folder that will be ran by the before_symlink callback. Set this to `nil` if you're not planning on using it.
 
 `node['nodestack']['forever']['watch_ignore_patterns'] = ['*.log', '*.logs']` This is a list of patterns that will be ignored and not watched by forever-monitor. Forever-monitor watches the code directory (in the demo app `/var/app/current`) and will reload the application if it notices any changes in the files.
 

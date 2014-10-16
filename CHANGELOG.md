@@ -3,10 +3,13 @@ nodestack CHANGELOG
 
 This file is used to list changes made in each version of the nodestack cookbook.
 
-0.11.2
+1.0.1
 ---
-- Marco Morales - Moved the demo attributes to recipes/demo.rb
-                  `default['nodestack']['apps_to_deploy']` is no longer needed. It will deploy all the apps in the apps hash.
+- Marco Morales - Added attribute `app_config['deployment']['before_symlink_template']` that should have a template name to be called by the the before_symlink callback.
+
+1.0.0
+---
+- Marco Morales - Moved the demo attributes to recipes/demo.rb `default['nodestack']['apps_to_deploy']` is no longer needed. It will deploy all the apps in the apps hash.
 
 0.11.1
 ---

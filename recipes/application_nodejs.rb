@@ -113,6 +113,17 @@ node['nodestack']['apps'].each do |app| # each app loop
       deploy_key encrypted_environment['ssh_deployment_key']
       repository app_config['git_repo']
       revision app_config['git_rev']
+      before_migrate do
+        current_release = release_path
+        template "#{current_release}/#{app_config['deployment']['before_symlink']}" do
+          source app_config['deployment']['before_symlink_template']
+          owner app_name
+          group app_name
+          mode '0744'
+          cookbook node['nodestack']['cookbook']
+          only_if { !app_config['deployment']['before_symlink'].nil? }
+        end
+      end
       before_symlink app_config['deployment']['before_symlink']
     end
 
