@@ -105,6 +105,16 @@ node['nodestack']['apps'].each do |app| # each app loop
       end
     end
 
+    # If we've enabled the git_branch_hack, we'll send 'HEAD' down to the git resource
+    # and take the requested branch variable in 'git_rev_hack', which we'll use after the
+    # "application" block to manually change to the target.
+    if node['nodestack']['git_branch_hack'] == true
+      git_rev_hack = app_config['git_rev']
+      git_rev = 'HEAD'
+    else
+      git_rev = app_config['git_rev']
+    end
+
     application 'nodejs application' do
       path app_config['app_dir']
       owner app_name
@@ -112,7 +122,7 @@ node['nodestack']['apps'].each do |app| # each app loop
       enable_submodules app_config['enable_submodules']
       deploy_key encrypted_environment['ssh_deployment_key']
       repository app_config['git_repo']
-      revision app_config['git_rev']
+      revision git_rev
       before_migrate do
         current_release = release_path
         template "#{current_release}/#{app_config['deployment']['before_symlink']}" do
@@ -126,6 +136,16 @@ node['nodestack']['apps'].each do |app| # each app loop
       end
       before_symlink app_config['deployment']['before_symlink']
     end
+
+    # Manually pull the latest release from the target branch
+    if node['nodestack']['git_branch_hack'] == true
+      execute "git fetch origin #{git_rev_hack} && git reset --hard FETCH_HEAD" do
+        cwd "#{app_config['app_dir']}/current"
+        user app_name
+        group app_name
+      end
+    end
+
 
     template 'config.js' do
       path "#{app_deploy_dir}/config.js"
