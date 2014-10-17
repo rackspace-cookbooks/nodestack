@@ -203,7 +203,7 @@ node['nodestack']['apps'].each do |app| # each app loop
       case node['platform']
       when 'ubuntu'
         provider Chef::Provider::Service::Upstart
-        restart_command "/sbin/initctl stop #{app_name} && /sbin/initctl start #{app_name}"
+        restart_command "/sbin/initctl stop #{app_name}; /sbin/initctl start #{app_name}"
         init_command "/etc/init/#{app_name}"
       when 'redhat', 'centos'
         if node['init_package'] == 'systemd'
