@@ -54,7 +54,6 @@ describe 'nodestack::application_nodejs' do
         # nodejs_npm[forever]                nodestack/recipes/application_nodejs.rb:176
         # nodejs_npm[my_nodejs_app]          nodestack/recipes/application_nodejs.rb:165
         npm_packages = %w(
-          npm-install-retry
           forever
           my_nodejs_app
         )
