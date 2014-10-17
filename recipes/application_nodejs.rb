@@ -55,55 +55,21 @@ node['nodestack']['apps'].each do |app| # each app loop
     end
   end
 
+  # Setup Node environment
+  %w(logs pids).each do |dir|
+    directory "#{app_config['app_dir']}/#{dir}" do
+      owner app_name
+      group app_name
+      recursive true
+      mode 0755
+      action :create
+    end
+  end
+
   # Code deployment can be an optional step.
   # Be aware that npm dependencies will need to be handled by the code deployment strategy of your choosing
   # as well as starting/stopping and keeping Node.js applications running.
   if node['nodestack']['code_deployment'] == true
-
-    # Setup Service
-    # Service resources vary by platform
-    case node['platform_family']
-    when 'debian'
-      init_path = "/etc/init/#{app_name}.conf"
-      init_source = 'nodejs.upstart.conf.erb'
-    when 'rhel'
-      # RHEL/CentOS has a new service system in 7+
-      if node['platform_version'].to_f < 7.0
-        init_path = "/etc/init.d/#{app_name}"
-        init_source = 'nodejs.initd.erb'
-      else
-        init_path = "/etc/systemd/system/#{app_name}.service"
-        init_source = 'nodejs.service.erb'
-      end
-    end
-
-    template app_name do
-      path init_path
-      source init_source
-      mode '0755'
-      variables(
-        user: app_name,
-        app_name: app_name,
-        binary_path: node['nodestack']['binary_path'],
-        app_dir: app_config['app_dir'],
-        entry: 'server.js',
-        app_name: app_name,
-        env: app_config['env']
-      )
-      notifies 'reload', "service[#{app_name}]", 'immediately'
-      notifies 'restart', "service[#{app_name}]", 'delayed'
-    end
-
-    # Setup Node environment
-    %w(logs pids).each do |dir|
-      directory "#{app_config['app_dir']}/#{dir}" do
-        owner app_name
-        group app_name
-        recursive true
-        mode 0755
-        action :create
-      end
-    end
 
     application 'nodejs application' do
       path app_config['app_dir']
@@ -150,49 +116,17 @@ node['nodestack']['apps'].each do |app| # each app loop
       retry_delay 30
       only_if { ::File.exist?("#{ app_deploy_dir }/package.json") && app_config['npm'] }
     end
-
-    nodejs_npm 'forever' do
-      path app_config['app_dir']
-      user app_name
-      retries 5
-      retry_delay 30
-    end
-
-    template 'server.js for forever' do
-      path "#{app_config['app_dir']}/server.js"
-      source 'forever-server.js.erb'
-      owner app_name
-      group app_name
-      mode '0644'
-      variables(
-        app_dir: app_config['app_dir'],
-        app_options: app_config['app_options'],
-        ignore_patterns: node['nodestack']['forever']['watch_ignore_patterns'],
-        entry_point: app_config['entry_point']
-      )
-      notifies 'restart', "service[#{app_name}]", 'delayed'
-    end
-
-    service app_name do
-      case node['platform']
-      when 'ubuntu'
-        provider Chef::Provider::Service::Upstart
-        restart_command "/sbin/initctl stop #{app_name} && /sbin/initctl start #{app_name}"
-        init_command "/etc/init/#{app_name}"
-      when 'redhat', 'centos'
-        if node['init_package'] == 'systemd'
-          provider Chef::Provider::Service::Systemd
-          reload_command 'systemctl daemon-reload'
-        end
-      end
-      action ['enable', 'start']
-    end
-  end
+  end # ends app deployment
 
   add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{app_config['env']['PORT']} -j ACCEPT",
                     100, "Allow nodejs traffic for #{app_name}") if app_config['env']['PORT']
 
   logging_paths.push("#{app_config['app_dir']}/logs/*")
+
+  case app_config['deployment']['strategy']
+  when 'forever'
+    include_recipe 'nodestack::forever'
+  end
 
 end # end each app loop
 
