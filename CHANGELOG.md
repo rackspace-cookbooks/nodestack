@@ -3,6 +3,10 @@ nodestack CHANGELOG
 
 This file is used to list changes made in each version of the nodestack cookbook.
 
+1.0.2
+---
+- Marco Morales - Removed npm-install-retry since it's no longer being used. Resource `nodejs_npm` is used now.
+
 1.0.1
 ---
 - Marco Morales - Added attribute `app_config['deployment']['before_symlink_template']` that should have a template name to be called by the the before_symlink callback.

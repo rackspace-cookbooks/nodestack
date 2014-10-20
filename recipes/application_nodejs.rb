@@ -140,12 +140,6 @@ node['nodestack']['apps'].each do |app| # each app loop
     end
 
     # Install npm and dependencies
-    nodejs_npm 'npm-install-retry' do
-      retries 5
-      retry_delay 60
-      action :install
-    end
-
     nodejs_npm app_name do
       path app_deploy_dir
       json true
