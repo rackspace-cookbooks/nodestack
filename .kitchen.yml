@@ -20,6 +20,8 @@ provisioner:
     cloud:
       public_ipv4: '127.0.0.1'
     platformstack:
+      elkstack_logging:
+        enabled: false
       cloud_backup:
         enabled: false
       cloud_monitoring:
