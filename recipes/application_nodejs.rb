@@ -87,6 +87,10 @@ node['nodestack']['apps'].each do |app| # each app loop
           group app_name
           mode '0744'
           cookbook node['nodestack']['cookbook']
+          variables(
+            app_config: app_config,
+            templates_options: app_config['deployment']['template_options']
+          )
           only_if { !app_config['deployment']['before_symlink'].nil? }
         end
       end
