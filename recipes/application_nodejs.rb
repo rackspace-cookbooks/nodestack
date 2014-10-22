@@ -28,7 +28,7 @@ else
   include_recipe 'apt'
 end
 
-%w(chef-sugar nodejs nodejs::npm git build-essential platformstack::monitors platformstack::iptables nodestack::setcap
+%w(chef-sugar nodejs nodejs::npm git build-essential nodestack::setcap
 ).each do |recipe|
   include_recipe recipe
 end
