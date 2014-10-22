@@ -124,8 +124,13 @@ node['nodestack']['apps'].each do |app| # each app loop
   logging_paths.push("#{app_config['app_dir']}/logs/*")
 
   case app_config['deployment']['strategy']
+  when nil
+    Chef::Log.info("You have not set the attribute for ['deployment']['strategy'], forever will be used as a default")
+    include_recipe 'nodestack::forever'
   when 'forever'
     include_recipe 'nodestack::forever'
+  else
+    Chef::Log.warn("#{app_config['deployment']['strategy']} isn't a deployment strategy this cookbook is familiar with. This is not necessarily an error.")
   end
 
 end # end each app loop
