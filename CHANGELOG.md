@@ -5,7 +5,7 @@ This file is used to list changes made in each version of the nodestack cookbook
 
 2.0.0
 ---
-- Marco Morales - Decoupled forever from `application_nodejs` recipe to make nodestack more modular and add more deployment strategies in the future. The attribute node['nodestack']['apps']['my_nodejs_app']['deployment']['strategy'] = 'forever'` will need to be set when updating.
+- Marco Morales - Decoupled forever from `application_nodejs` recipe to make nodestack more modular and add more deployment strategies in the future. The attribute `node['nodestack']['apps']['my_nodejs_app']['deployment']['strategy'] = 'forever'` will need to be set when updating to 2.0.0.
 
 1.0.2
 ---
