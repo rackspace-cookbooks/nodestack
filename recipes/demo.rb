@@ -33,4 +33,5 @@ node.set['nodestack']['apps']['my_nodejs_app']['monitoring']['body'] = 'Hello Wo
 node.set['nodestack']['apps']['my_nodejs_app']['npm_options'] = ['--production']
 node.set['nodestack']['apps']['my_nodejs_app']['deployment']['before_symlink'] = 'test_before_symlink.rb'
 node.set['nodestack']['apps']['my_nodejs_app']['deployment']['before_symlink_template'] = 'before_symlink_test.rb.erb'
+node.set['nodestack']['apps']['my_nodejs_app']['deployment']['strategy'] = 'forever'
 node.set['nodestack']['cookbook'] = 'nodestack'

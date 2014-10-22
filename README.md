@@ -2,8 +2,6 @@ nodestack Cookbook
 ==================
 This cookbook deploys a NodeJS applitcation stack.
 
-The NodeJS app will be deployed using [forever](https://github.com/nodejitsu/forever) to keep the app running in case it crashes, but we actually use init/upstart scripts to call forever and start/stop the NodeJS app.
-
 Requirements
 ------------
 
@@ -69,15 +67,22 @@ Attributes
 
 `node['nodestack']['apps']['my_nodejs_app']['deployment']['before_symlink_template']` Template file that will be dropped on the revision folder that will be ran by the before_symlink callback. Set this to `nil` if you're not planning on using it.
 
+`node['nodestack']['apps']['my_nodejs_app']['deployment']['strategy']` This is the strategy that will be used to run the Node.js application. Currently Nodestack only supports `forever`. Scroll further down to the deployment strategy section to read more about this.
+
 `node['nodestack']['forever']['watch_ignore_patterns'] = ['*.log', '*.logs']` This is a list of patterns that will be ignored and not watched by forever-monitor. Forever-monitor watches the code directory (in the demo app `/var/app/current`) and will reload the application if it notices any changes in the files.
 
 `node['nodestack']['code_deployment']` This enables or disabled code deployment.
 
-How to deploy an Node.js application with Nodestack
+Deployment strategy
 ----
 
-There's a couple of things that need to be considered when deploying an application with this cookbook, in other words, the app must be setup in a specific way.
-This cookbook will deploy an application by running a simple server.js Node.js app, which in turn will run the Node.js application that is going to be deployed. This server.js application will monitor any changes on the application files and reload itself if it finds any changes. There's also other options that can be implemented in the future, like the amount of child processes.
+In the near future, nodestack may support more than one deployment strategy, for now it only supports forever.
+
+### Forever
+
+With this deployment strategy, we use whatever init system is running on the OS to start/stop a service that starts a very simple Node.js app that starts [forever-monitor](https://github.com/nodejitsu/forever-monitor).
+
+This application will monitor and supervise the Node.js application the application being deployed. Forever-monitor will monitor any changes on the application files and reload itself if it finds any changes. It will also control the logging and the pids for the child process. There's also other options that can be implemented in the future, like the amount of child processes.
 
 #### Code deployment is optional.
 
