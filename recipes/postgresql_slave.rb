@@ -5,6 +5,5 @@
 # Copyright 2014, Rackspace
 #
 
-include_recipe 'nodestack::postgresql_base'
-
-include_recipe 'pg-multi::pg_slave'
+include_recipe 'chef-sugar'
+include_recipe 'stack_commons::postgresql_slave'
