@@ -3,6 +3,11 @@ nodestack CHANGELOG
 
 This file is used to list changes made in each version of the nodestack cookbook.
 
+2.2.0
+---
+
+- @martinb3 - Move away from logstash_commons, just set attributes in case elkstack is present.
+
 2.1.0
 ---
 - Marco Morales - Adding template variables to be available for the before_symlink_template.
