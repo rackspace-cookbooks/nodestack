@@ -142,18 +142,8 @@ end # end each app loop
 # Add monitoring
 include_recipe 'nodestack::cloud_monitoring' if node.deep_fetch('platformstack', 'cloud_monitoring', 'enabled')
 
+# set this attribute so logstash can watch the logs
+node.set['nodestack']['logstash']['logging_paths'] = logging_paths
+
 # Add logrotate
 include_recipe 'nodestack::logrotate'
-
-# Add ELK stack logging, if we are logging to elkstack
-if node.deep_fetch('platformstack', 'elkstack_logging', 'enabled')
-  # ensure platformstack's logging is already done
-  include_recipe 'platformstack::logging'
-
-  # add one more config for our additional logs
-  logstash_commons_config 'input_nodejs' do
-    template_source_file 'input_nodejs.conf.erb'
-    template_source_cookbook 'nodestack'
-    variables(paths: logging_paths)
-  end
-end
