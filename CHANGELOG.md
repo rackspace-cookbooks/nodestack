@@ -11,6 +11,11 @@ This file is used to list changes made in each version of the nodestack cookbook
 2.2.0
 ---
 
+- Marco Morales - Removed recipe import from platformstack.
+
+2.2.0
+---
+
 - @martinb3 - Move away from logstash_commons, just set attributes in case elkstack is present.
 
 2.1.0
