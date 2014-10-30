@@ -146,6 +146,32 @@ node['nodestack']['apps'].each do |app| # each app loop
       end
     end
 
+    # Run a git checkout against any linked sub repos.
+    # Note that this is essentially the same as a "git submodule" (see application's enable_submodules).
+    # However, there are times where having a customer set up git sub modules is a lot more complex
+    # Than simply defining them in a hash here.
+    # This hash takes the form of ['nodestack'][apps]['my_app']['dependant_repos'] = {
+    #   "/models" => {
+    #     "repository" => "", "revision" => ""
+    #   }
+    # }
+    # Although it should be smart enough for this as well:
+    # "/models" => "git@github.com..."
+    unless app_config['dependant_repos'].nil?
+      app_config['dependant_repos'].each |repo_path, repo|
+        if repo.instance_of? String
+          repo = { 'repository' => repo }
+        end
+        if repo.revision.nil?
+          repo.revision = "HEAD"
+        end
+        git "#{app_deploy_dir}/#{repo_path}" do
+          repository repo.repository
+          revision repo.revision
+          action :sync
+        end
+      end
+    end
 
     template 'config.js' do
       path "#{app_deploy_dir}/config.js"
