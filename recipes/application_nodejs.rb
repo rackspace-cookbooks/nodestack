@@ -155,13 +155,8 @@ node['nodestack']['apps'].each do |app| # each app loop
     #     "repository" => "", "revision" => ""
     #   }
     # }
-    # Although it should be smart enough for this as well:
-    # "/models" => "git@github.com..."
     unless app_config['dependant_repos'].nil?
       app_config['dependant_repos'].each do |repo_path, repo|
-        if repo.instance_of? String
-          repo = { 'repository' => repo }
-        end
         if repo.revision.nil?
           repo.revision = "HEAD"
         end
