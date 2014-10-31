@@ -3,6 +3,11 @@ nodestack CHANGELOG
 
 This file is used to list changes made in each version of the nodestack cookbook.
 
+2.2.1
+---
+
+- Marco Morales - Pin the version of forever, 0.12.0 was causing restarts in CentOS 6.5 to fail.
+
 2.2.0
 ---
 

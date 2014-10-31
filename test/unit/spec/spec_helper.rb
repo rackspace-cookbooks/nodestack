@@ -15,6 +15,8 @@ Dir['./test/unit/spec/support/**/*.rb'].sort.each { |f| require f }
 # This can probably be moved to a more
 # elegant call to an external file at
 # some point
+
+# rubocop:disable AbcSize
 def node_resources(node)
   # Setup databag
   env = Chef::Environment.new
@@ -73,7 +75,9 @@ def node_resources(node)
   # no need to converge elkstack agent for this
   node.set['platformstack']['elkstack_logging']['enabled'] = false
 end
+# rubocop:enable AbcSize
 
+# rubocop:disable AbcSize
 def stub_resources
   # Even though this is set in the check itself for readibility
   # I get all failures if I remove this stub_command from here
@@ -97,5 +101,6 @@ def stub_resources
 
   stub_command("psql -c \"SELECT rolname FROM pg_roles WHERE rolname='repl'\" | grep repl").and_return('foo')
 end
+# rubocop:enable AbcSize
 
 at_exit { ChefSpec::Coverage.report! }
