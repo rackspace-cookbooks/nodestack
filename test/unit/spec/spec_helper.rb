@@ -15,6 +15,7 @@ Dir['./test/unit/spec/support/**/*.rb'].sort.each { |f| require f }
 # This can probably be moved to a more
 # elegant call to an external file at
 # some point
+# rubocop:disable AbcSize
 def node_resources(node)
   # Setup databag
   env = Chef::Environment.new
@@ -74,6 +75,7 @@ def node_resources(node)
   node.set['platformstack']['elkstack_logging']['enabled'] = false
 end
 
+# rubocop:disable AbcSize
 def stub_resources
   # Even though this is set in the check itself for readibility
   # I get all failures if I remove this stub_command from here
