@@ -139,9 +139,6 @@ node['nodestack']['apps'].each do |app| # each app loop
 
 end # end each app loop
 
-# Add monitoring
-include_recipe 'nodestack::cloud_monitoring' if node.deep_fetch('platformstack', 'cloud_monitoring', 'enabled')
-
 # set this attribute so logstash can watch the logs
 node.set['nodestack']['logstash']['logging_paths'] = logging_paths
 
