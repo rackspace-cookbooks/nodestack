@@ -35,3 +35,19 @@ node.set['nodestack']['apps']['my_nodejs_app']['deployment']['before_symlink'] =
 node.set['nodestack']['apps']['my_nodejs_app']['deployment']['before_symlink_template'] = 'before_symlink_test.rb.erb'
 node.set['nodestack']['apps']['my_nodejs_app']['deployment']['strategy'] = 'forever'
 node.set['nodestack']['cookbook'] = 'nodestack'
+
+node.set_unless['platformstack']['cloud_monitoring']['remote_http']['name'] = []
+node.set['platformstack']['cloud_monitoring']['remote_http']['name'].push('my_nodejs_app')
+node.set['platformstack']['cloud_monitoring']['remote_http']['my_nodejs_app']['source'] = 'monitoring-remote-http.yaml.erb'
+node.set['platformstack']['cloud_monitoring']['remote_http']['my_nodejs_app']['cookbook'] = 'platformstack'
+node.set['platformstack']['cloud_monitoring']['remote_http']['my_nodejs_app']['variables'] = {
+  disabled: false,
+  period: 60,
+  timeout: 15,
+  alarm: true,
+  port: node['nodestack']['apps']['my_nodejs_app']['env']['PORT'],
+  uri: '/',
+  name: 'my_nodejs_app'
+}
+
+puts node['platformstack']['cloud_monitoring']['remote_http']

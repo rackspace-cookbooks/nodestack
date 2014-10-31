@@ -17,27 +17,3 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-include_recipe 'platformstack::monitors'
-
-node['nodestack']['apps'].each do |app| # each app loop
-
-  app_name = app[0]
-  app_config = node['nodestack']['apps'][app_name]
-
-  # Setup monitor
-  template "http-monitor-#{app_name}" do
-    cookbook 'nodestack'
-    source 'monitoring-remote-http.yaml.erb'
-    path "/etc/rackspace-monitoring-agent.conf.d/#{app_name}-http-monitor.yaml"
-    owner 'root'
-    group 'root'
-    mode '0644'
-    variables(
-      port: app_config['env']['PORT'],
-      app_name: app_name,
-      body: app_config['monitoring']['body']
-    )
-    notifies 'restart', 'service[rackspace-monitoring-agent]', 'delayed'
-    action 'create'
-  end
-end
