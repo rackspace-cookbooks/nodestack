@@ -3,6 +3,11 @@ nodestack CHANGELOG
 
 This file is used to list changes made in each version of the nodestack cookbook.
 
+2.3.0
+---
+
+- Marco Morales - Removed recipe import from platformstack.
+
 2.2.1
 ---
 

@@ -28,7 +28,7 @@ else
   include_recipe 'apt'
 end
 
-%w(chef-sugar nodejs nodejs::npm git build-essential platformstack::monitors platformstack::iptables nodestack::setcap
+%w(chef-sugar nodejs nodejs::npm git build-essential nodestack::setcap
 ).each do |recipe|
   include_recipe recipe
 end
@@ -138,9 +138,6 @@ node['nodestack']['apps'].each do |app| # each app loop
   end
 
 end # end each app loop
-
-# Add monitoring
-include_recipe 'nodestack::cloud_monitoring' if node.deep_fetch('platformstack', 'cloud_monitoring', 'enabled')
 
 # set this attribute so logstash can watch the logs
 node.set['nodestack']['logstash']['logging_paths'] = logging_paths
