@@ -71,6 +71,8 @@ Attributes
 
 `node['nodestack']['apps']['my_nodejs_app']['deployment']['strategy']` This is the strategy that will be used to run the Node.js application. Currently Nodestack only supports `forever`. Scroll further down to the deployment strategy section to read more about this.
 
+`node['nodestack']['apps']['my_nodejs_app']['open_files']` This sets the application user's file open limit (ulimit -n) - this is useful for upping the total number of concurrent websockets.
+
 `node['nodestack']['forever']['watch_ignore_patterns'] = ['*.log', '*.logs']` This is a list of patterns that will be ignored and not watched by forever-monitor. Forever-monitor watches the code directory (in the demo app `/var/app/current`) and will reload the application if it notices any changes in the files.
 
 `node['nodestack']['code_deployment']` This enables or disabled code deployment.
@@ -337,7 +339,7 @@ and [here](https://github.com/MeetMe/newrelic-plugin-agent#configuration-example
 Logrotate
 ---------
 logrotate is now enabled, by default, for customer app(forever.[log|out|err]) log files.
-The logrotate recipe iterates over every item(app_name) in the node['nodestack']['apps_to_deploy'] list 
+The logrotate recipe iterates over every item(app_name) in the node['nodestack']['apps_to_deploy'] list
 and creates a configuration file. i.e /etc/logrotate.d/my_nodejs_app
 
 NOTE: The logrotate recipe does not rotate custom log files, so make sure the customer's app uses STDOUT and STDERR.
