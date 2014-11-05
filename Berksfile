@@ -10,6 +10,8 @@ cookbook 'rackspace_gluster', git: 'git@github.com:rackspace-cookbooks/rackspace
 cookbook 'logrotate', git: 'git@github.com:stevendanna/logrotate.git'
 cookbook 'kibana', '~> 1.3', git: 'git@github.com:lusis/chef-kibana.git'
 
+cookbook 'ulimit', git: 'git@github.com:bmhatfield/chef-ulimit.git'
+
 # until https://github.com/lusis/chef-logstash/pull/336
 cookbook 'logstash', git:'git@github.com:racker/chef-logstash.git'
 

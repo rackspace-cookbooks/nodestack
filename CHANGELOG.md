@@ -3,6 +3,11 @@ nodestack CHANGELOG
 
 This file is used to list changes made in each version of the nodestack cookbook.
 
+2.3.1
+---
+
+- Seandon Mooy - Added "open_files" option per-app to allow setting the "ulimit -n" value per application.
+
 2.3.0
 ---
 

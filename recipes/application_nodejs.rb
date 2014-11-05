@@ -66,6 +66,15 @@ node['nodestack']['apps'].each do |app| # each app loop
     end
   end
 
+  # With NodeJS, web-sockets are common. Web sockets are just like Unix sockets - they are a file!
+  # Therefore, many customers ask us to up the open file limit (ulimit -n) per application
+  # This is not only good to allow more than 1024 connections (common default ulimit -n),
+  # But can also be used to limit the number of connections the application can accept.
+  user_ulimit app_name do
+    filehandle_limit app_config['open_files']
+    only_if { !app_config['open_files'].nil? }
+  end
+
   # Code deployment can be an optional step.
   # Be aware that npm dependencies will need to be handled by the code deployment strategy of your choosing
   # as well as starting/stopping and keeping Node.js applications running.
