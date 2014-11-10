@@ -136,6 +136,12 @@ node['nodestack']['apps'].each do |app| # each app loop
 
   logging_paths.push("#{app_config['app_dir']}/logs/*")
 
+  # set this attribute so logstash can watch the logs
+  node.set['nodestack']['logstash']['logging_paths'] = logging_paths
+
+  # Add logrotate
+  include_recipe 'nodestack::logrotate'
+
   case app_config['deployment']['strategy']
   when nil
     Chef::Log.info("You have not set the attribute for ['deployment']['strategy'], forever will be used as a default")
@@ -148,8 +154,3 @@ node['nodestack']['apps'].each do |app| # each app loop
 
 end # end each app loop
 
-# set this attribute so logstash can watch the logs
-node.set['nodestack']['logstash']['logging_paths'] = logging_paths
-
-# Add logrotate
-include_recipe 'nodestack::logrotate'
