@@ -1,72 +1,146 @@
 #!/bin/sh
 
 #
-# chkconfig: 35 99 99
-# description: Node.js /home/nodejs/sample/app.js
-#
-
-. /etc/rc.d/init.d/functions
+# description: Node.js init based from: https://github.com/chovy/node-startup
+# chkconfig: - 58 74
+### BEGIN INIT INFO
+# Provides: node
+# Required-Start:    $network $remote_fs $local_fs
+# Required-Stop:     $network $remote_fs $local_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: start and stop node
+# Description: Node process for app
+### END INIT INFO
 
 USER="<%= @user %>"
 GROUP="<%= @group %>"
+NODE_EXEC="<%= @binary_path %>"
+APP_DIR="<%= @app_dir %>"
+CONFIG_DIR="$APP_DIR"
+NODE_APP="<%= @entry %>"
+PID_DIR="$APP_DIR/pids"
+PID_FILE="$PID_DIR/app.pid"
+LOG_DIR="<%= @app_dir %>/logs"
+LOG_FILE="$LOG_DIR/node.log"
 
-BINARY="<%= @binary_path %>"
+USAGE="Usage: $0 {start|stop|restart|status}"
 
-ROOT_DIR="<%= @app_dir %>"
-
-SERVER="$ROOT_DIR/<%= @entry %>"
-LOG_FILE="<%= @app_dir %>/logs/node.log"
-
-LOCK_FILE="/var/lock/subsys/<%= @app_name %>"
-
-env_variables(){
-<% @env.each_pair do | variable, value | %>
-source /etc/profile.d/<%= variable %>.sh
-<% end %>
+pid_file_exists() {
+    [ -f "$PID_FILE" ]
 }
 
-do_start()
-{
-        export HOME=$ROOT_DIR
-        if [ ! -f "$LOCK_FILE" ] ; then
-                echo -n $"Starting $SERVER: "
-                daemon --user "$USER" "$BINARY $SERVER >> $LOG_FILE &" && echo_success || echo_failure
-                RETVAL=$?
-                echo
-                [ $RETVAL -eq 0 ] && touch $LOCK_FILE
+get_pid() {
+    echo "$(cat "$PID_FILE")"
+}
+
+is_running() {
+    PID=$(get_pid)
+    ! [ -z "$(ps aux | awk '{print $2}' | grep "^$PID$")" ]
+}
+
+start_it() {
+    mkdir -p "$PID_DIR"
+    mkdir -p "$LOG_DIR"
+
+    echo "Starting node app ..."
+    <% @env.each_pair do | variable, value | %><%= variable %>=<%= value %> <% end %>$NODE_EXEC "$APP_DIR/$NODE_APP"  1>"$LOG_FILE" 2>&1 &
+    echo $! > "$PID_FILE"
+    echo "Node app started with pid $!"
+}
+
+stop_process() {
+    PID=$(get_pid)
+    echo "Killing process $PID"
+    kill $PID
+}
+
+remove_pid_file() {
+    echo "Removing pid file"
+    rm -rf "$PID_FILE"
+}
+
+start_app() {
+    if pid_file_exists
+    then
+        if is_running
+        then
+            PID=$(get_pid)
+            echo "Node app already running with pid $PID"
+            exit 1
         else
-                echo "$SERVER is locked. Remove $LOCK_FILE if you think this is wrong."
-                RETVAL=1
+            echo "Node app stopped, but pid file exists"
         fi
-}
-do_stop()
-{
-        echo -n $"Stopping $SERVER: "
-        pid=`ps -aefw | grep "$DAEMON $SERVER" | grep -v " grep " | awk '{print $2}'`
-        pkill -TERM -P $pid > /dev/null 2>&1 && echo_success || echo_failure
-        RETVAL=$?
-        echo
-        [ $RETVAL -eq 0 ] && rm -f $LOCK_FILE
+    else
+        start_it
+    fi
 }
 
-case "$1" in
-        start)
-                env_variables
-                do_start
-                ;;
-        stop)
-                do_stop
-                ;;
-        restart)
-                do_stop
-                do_start
-                ;;
-        status)
-                status $BINARY
-                ;;
-        *)
-                echo "Usage: $0 {start|stop|restart}"
-                RETVAL=1
+
+stop_app() {
+    if pid_file_exists
+    then
+        if is_running
+        then
+            echo "Stopping node app ..."
+            stop_process
+            remove_pid_file
+            echo "Node app stopped"
+        else
+            echo "Node app already stopped, but pid file exists"
+            exit 1
+        fi
+    else
+        echo "Node app already stopped, pid file does not exist"
+#        exit 1
+    fi
+}
+
+status_app() {
+    if pid_file_exists
+    then
+        if is_running
+        then
+            PID=$(get_pid)
+            echo "Node app running with pid $PID"
+        else
+            echo "Node app stopped, but pid file exists"
+        fi
+    else
+        echo "Node app stopped"
+    fi
+}
+
+case "$2" in
+    "")
+    ;;
+
+    *)
+        echo $USAGE
+        exit 1
+    ;;
 esac
 
-exit $RETVAL
+case "$1" in
+    start)
+        start_app
+    ;;
+
+    stop)
+        stop_app
+    ;;
+
+    restart)
+        stop_app
+        start_app
+    ;;
+
+    status)
+        status_app
+    ;;
+
+    *)
+        echo $USAGE
+        exit 1
+    ;;
+esac
