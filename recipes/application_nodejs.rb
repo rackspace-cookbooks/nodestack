@@ -153,4 +153,3 @@ node['nodestack']['apps'].each do |app| # each app loop
   end
 
 end # end each app loop
-
