@@ -3,6 +3,11 @@ nodestack CHANGELOG
 
 This file is used to list changes made in each version of the nodestack cookbook.
 
+2.3.2
+---
+
+- Marco Morales - Rewrote the init script for CentOS 6, which was causing problems when stopping/restarting an app. Issue 164
+
 2.3.1
 ---
 
