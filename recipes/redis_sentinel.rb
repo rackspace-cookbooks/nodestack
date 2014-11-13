@@ -18,6 +18,6 @@
 # limitations under the License.
 #
 
-stackname = 'phpstack'
+stackname = 'nodestack'
 include_recipe 'stack_commons::redis_sentinel'
 tag("#{stackname}-redis_sentinel")
