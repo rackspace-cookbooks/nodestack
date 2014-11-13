@@ -20,15 +20,5 @@
 
 include_recipe 'nodestack::mysql_base'
 
-include_recipe 'mysql-multi::mysql_master'
+include_recipe 'stack_commons::mysql_master'
 
-template 'mysql-monitor' do
-  cookbook 'nodestack'
-  source 'monitoring-agent-mysql.yaml.erb'
-  path '/etc/rackspace-monitoring-agent.conf.d/agent-mysql-monitor.yaml'
-  owner 'root'
-  group 'root'
-  mode '00600'
-  notifies 'restart', 'service[rackspace-monitoring-agent]', 'delayed'
-  action 'create'
-end
