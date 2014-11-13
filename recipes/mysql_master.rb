@@ -21,4 +21,3 @@
 include_recipe 'nodestack::mysql_base'
 
 include_recipe 'stack_commons::mysql_master'
-

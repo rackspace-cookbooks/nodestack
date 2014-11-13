@@ -1,7 +1,7 @@
 # Encoding: utf-8
 # attributes/default.rb
 
-stackname = 'nodestack'
+# stackname = 'nodestack'
 default['stack_commons']['stackname'] = 'nodestack'
 
 case node['platform_family']
