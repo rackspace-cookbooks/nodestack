@@ -20,4 +20,4 @@
 
 include_recipe 'nodestack::mysql_base'
 
-include_recipe 'mysql-multi::mysql_slave'
+include_recipe 'stack_commons::mysql_slave'

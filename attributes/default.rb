@@ -1,5 +1,9 @@
 # Encoding: utf-8
 # attributes/default.rb
+
+# stackname = 'nodestack'
+default['stack_commons']['stackname'] = 'nodestack'
+
 case node['platform_family']
 when 'rhel', 'fedora'
   default['nodejs']['install_method'] = 'binary'
