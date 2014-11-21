@@ -18,38 +18,4 @@
 # limitations under the License.
 #
 
-include_recipe 'chef-sugar'
-
-cluster = node['rackspace_gluster']['config']['server']['glusters'].values[0]
-
-# set the replica count to the number of gluster nodes
-if cluster['nodes'].values.count == 2
-  replica_count = 2
-elsif cluster['nodes'].values.count >= 3
-  replica_count = 3
-else
-  Chef::Application.fatal!('gluster node count is not 2 or greater', 1)
-end
-node.default['rackspace_gluster']['config']['server']['glusters'].values[0]['replica'] = replica_count
-
-# allow application_nodejs nodes to connect
-search_add_iptables_rules('recipes:nodestack\:\:application_nodejs', 'INPUT', '-j ACCEPT', 70, 'web nodes access to gluster')
-
-# dynamically generate the authorized clients
-if Chef::Config[:solo]
-  Chef::Log.warn('This recipe uses search. Chef Solo does not support search.')
-else
-  gluster_servers = search('node', 'recipes:nodestack\:\:gluster OR recipes:nodestack\:\:application_nodejs')
-  gluster_ips = ['127.0.0.1']
-  gluster_servers.each do |gluster_server|
-    gluster_ips.push best_ip_for(gluster_server)
-  end
-  node.default['rackspace_gluster']['config']['server']['glusters'].values[0]['auth_clients'] = gluster_ips.join(',')
-end
-
-# allow the gluster nodes to connect to eachother
-cluster['nodes'].values.each do |gluster_node|
-  add_iptables_rule('INPUT', "-s #{gluster_node['ip']} -j ACCEPT", 50, 'allow gluster')
-end
-
-include_recipe 'rackspace_gluster'
+include_recipe 'stack_commons::gluster'

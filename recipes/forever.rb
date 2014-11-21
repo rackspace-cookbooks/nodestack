@@ -40,7 +40,7 @@ node['nodestack']['apps'].each do |app| # each app loop
     end
   end
 
-  template app_name do
+  template init_path do
     path init_path
     source init_source
     mode '0755'
