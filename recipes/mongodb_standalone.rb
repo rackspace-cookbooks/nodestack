@@ -17,13 +17,4 @@
 # limitations under the License.
 #
 
-include_recipe 'mongodb::10gen_repo'
-include_recipe 'mongodb::default'
-
-search_add_iptables_rules(
-  "recipes:nodestack\\:\\:application_nodejs AND chef_environment:#{node.chef_environment}",
-  'INPUT',
-  '-p tcp --dport 27017 -j ACCEPT',
-  9998,
-  'allow app nodes to connect'
-)
+include_recipe 'stack_commons::mongodb_standalone' # ~RACK002

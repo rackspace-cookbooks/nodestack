@@ -5,6 +5,10 @@ require 'chefspec/berkshelf'
 require 'chef/application'
 require 'json'
 
+RSpec.configure do |config|
+  config.extend(ChefSpec::Cacher)
+end
+
 Dir['./test/unit/spec/support/**/*.rb'].sort.each { |f| require f }
 
 ::LOG_LEVEL = :fatal
@@ -16,13 +20,20 @@ Dir['./test/unit/spec/support/**/*.rb'].sort.each { |f| require f }
 # elegant call to an external file at
 # some point
 
+def server_resources(server)
+  # for chef-zero
+  server.create_environment('demo', JSON.parse(File.read('test/integration/environments/demo.json')))
+end
+
 # rubocop:disable AbcSize
 def node_resources(node)
+  fail 'Spec Helper was passed a nil/false node object' unless node
   # Setup databag
   env = Chef::Environment.new
   env.name 'demo'
   allow(node).to receive(:chef_environment).and_return(env.name)
   allow(Chef::Environment).to receive(:load).and_return(env)
+
   data_bag = JSON.parse(File.read('test/integration/default/data_bags/my_nodejs_app_databag/config.json'))
   allow(Chef::EncryptedDataBagItem).to receive(:load).with('my_nodejs_app_databag', 'config').and_return(data_bag)
 
@@ -104,3 +115,47 @@ end
 # rubocop:enable AbcSize
 
 at_exit { ChefSpec::Coverage.report! }
+
+# Memoized runner
+module RackspaceChefSpec
+  # Memoized runner
+  module SpecHelper
+    # rubocop:disable Style/ClassVars
+    @@runner = {}
+
+    def memoized_runner(options = {})
+      platform = options['platform']
+      version = options['version']
+
+      # inflate the platform key so we can check for a version
+      @@runner[platform] = {} if @@runner[platform].nil?
+
+      unless @@runner[platform][version]
+        puts "new serverrunner #{platform}#{version}"
+        @@runner[platform][version] = ChefSpec::ServerRunner.new(options) do |node, server|
+          yield node, server if block_given?
+        end
+      end
+      @@runner[platform][version]
+    end
+  end
+end
+
+# give a way to clean out / kill off the node data from a previous run
+module ChefSpec
+  # clean the node
+  class SoloRunner
+    def clean_node
+      @node = nil
+      # rubocop:disable Style/RedundantSelf
+      self.node
+    end
+  end
+end
+
+RSpec.configure do |config|
+  config.include RackspaceChefSpec::SpecHelper
+
+  # change to :info or :debug for walls of text
+  config.log_level = :warn
+end
