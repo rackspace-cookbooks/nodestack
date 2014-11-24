@@ -27,7 +27,7 @@ end
 
 # rubocop:disable AbcSize
 def node_resources(node)
-  raise 'Spec Helper was passed a nil/false node object' unless node
+  fail 'Spec Helper was passed a nil/false node object' unless node
   # Setup databag
   env = Chef::Environment.new
   env.name 'demo'
@@ -116,12 +116,14 @@ end
 
 at_exit { ChefSpec::Coverage.report! }
 
+# Memoized runner
 module RackspaceChefSpec
+  # Memoized runner
   module SpecHelper
-
+    # rubocop:disable Style/ClassVars
     @@runner = {}
 
-    def memoized_runner(options={})
+    def memoized_runner(options = {})
       platform = options['platform']
       version = options['version']
 
@@ -136,15 +138,16 @@ module RackspaceChefSpec
       end
       @@runner[platform][version]
     end
-
   end
 end
 
 # give a way to clean out / kill off the node data from a previous run
 module ChefSpec
+  # clean the node
   class SoloRunner
     def clean_node
       @node = nil
+      # rubocop:disable Style/RedundantSelf
       self.node
     end
   end

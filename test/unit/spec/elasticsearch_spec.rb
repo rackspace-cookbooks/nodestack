@@ -15,33 +15,18 @@ describe 'nodestack::elasticsearch' do
     end
   end
 
-
-  #let(:chef_run) do
-  #  node_resources(runner.clean_node)
-  #  recipes.each do |recipe|
-  #    runner.converge(recipe)
-  #  end
-  #end
-
   let(:chef_run) do
     node_resources(runner.clean_node)
     runner.converge('nodestack::elasticsearch')
   end
 
-
   %w(
-          java::default
-          elasticsearch::default
+    java::default
+    elasticsearch::default
   ).each do |recipe|
 
     it "includes the #{recipe} recipe" do
       expect(chef_run).to include_recipe(recipe)
     end
   end
-  #it 'includes the java recipe' do
-  #  expect(chef_run).to include_recipe('java::default')
-  #end
-  #it 'includes the java recipe' do
-  #  expect(chef_run).to include_recipe('elasticsearch::default')
-  #end
 end

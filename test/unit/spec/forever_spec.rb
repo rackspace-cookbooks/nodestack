@@ -3,7 +3,7 @@
 require_relative 'spec_helper'
 
 describe 'nodestack::forever' do
-  before { stub_resources}
+  before { stub_resources }
 
   platform = 'ubuntu'
   version = '12.04'
@@ -25,7 +25,7 @@ describe 'nodestack::forever' do
   end
 
   # service[my_nodejs_app]             nodestack/recipes/application_nodejs.rb:197
-  it "enables and starts the my_nodejs_app service" do
+  it 'enables and starts the my_nodejs_app service' do
     expect(chef_run).to enable_service('my_nodejs_app').with(
       service_name: 'my_nodejs_app',
       supports: { restart: false, reload: false, status: false }

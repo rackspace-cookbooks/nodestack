@@ -24,8 +24,8 @@ describe 'nodestack::memcache' do
   end
 
   recipes = %w(
-          platformstack::iptables
-          memcached
+    platformstack::iptables
+    memcached
   )
 
   it 'includes recipes' do

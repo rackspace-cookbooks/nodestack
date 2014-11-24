@@ -21,7 +21,6 @@ describe 'nodestack application_nodejs recipes' do
     runner.converge('nodestack::application_nodejs')
   end
 
-  #property = load_platform_properties(platform: platform, platform_version: version)
   app_name = 'my_nodejs_app'
 
   # application[nodejs application]    nodestack/recipes/application_nodejs.rb:137
@@ -37,7 +36,7 @@ describe 'nodestack application_nodejs recipes' do
     "/home/#{app_name}/.npm",
     "/home/#{app_name}/.ssh",
     '/var/app/logs',
-      '/var/app/pids'
+    '/var/app/pids'
   ]
   it 'creates a directory with the default action' do
     directories.each do |directory|
@@ -48,8 +47,8 @@ describe 'nodestack application_nodejs recipes' do
   # magic_shell_environment[PORT]      nodestack/recipes/application_nodejs.rb:131
   # magic_shell_environment[MONGO_PORT]   nodestack/recipes/application_nodejs.rb:131
   magic_shell_environments = %w(
-          PORT
-          MONGO_PORT
+    PORT
+    MONGO_PORT
   )
   it 'adds a new magic_shell_environment' do
     magic_shell_environments.each do |msenv|
@@ -61,8 +60,8 @@ describe 'nodestack application_nodejs recipes' do
   # nodejs_npm[forever]                nodestack/recipes/application_nodejs.rb:176
   # nodejs_npm[my_nodejs_app]          nodestack/recipes/application_nodejs.rb:165
   npm_packages = %w(
-          forever
-          my_nodejs_app
+    forever
+    my_nodejs_app
   )
   it 'installs npm package' do
     npm_packages.each do |npm_package|
@@ -81,12 +80,10 @@ describe 'nodestack application_nodejs recipes' do
   # template[my_nodejs_app]            nodestack/recipes/application_nodejs.rb:102
   # template[server.js for forever]    nodestack/recipes/application_nodejs.rb:183
   # template[ssh config with strict host check disabled]   nodestack/recipes/application_nodejs.rb:74
-  templates = [
-    "/home/#{app_name}/.ssh/config",
-    #property[:service_conf],
-      '/var/app/server.js',
-      '/var/app/current/config.js'
-  ]
+  templates = ["/home/#{app_name}/.ssh/config",
+               '/var/app/server.js',
+               '/var/app/current/config.js'
+              ]
   it 'creates a template with the default action' do
     templates.each do |template|
       expect(chef_run).to create_template(template)
