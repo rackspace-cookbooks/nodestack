@@ -35,7 +35,6 @@ end
 
 logging_paths = []
 node['nodestack']['apps'].each do |app| # each app loop
-
   app_name = app[0]
   app_config = node['nodestack']['apps'][app_name]
 
@@ -151,5 +150,4 @@ node['nodestack']['apps'].each do |app| # each app loop
   else
     Chef::Log.warn("#{app_config['deployment']['strategy']} isn't a deployment strategy this cookbook is familiar with. This is not necessarily an error.")
   end
-
 end # end each app loop
