@@ -20,7 +20,6 @@
 include_recipe 'logrotate::default'
 
 node['nodestack']['apps'].each do |app| # each app loop
-
   app_name = app[0]
   app_config = node['nodestack']['apps'][app_name]
 

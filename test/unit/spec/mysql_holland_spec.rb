@@ -42,7 +42,6 @@ describe 'nodestack::mysql_holland' do
         it 'creates the holland cron' do
           expect(chef_run).to create_cron('backup')
         end
-
       end
     end
   end

@@ -22,7 +22,6 @@
 # that we must ensure are created under the user and with the correct permissions
 
 node['nodestack']['apps'].each do |app| # each app loop
-
   app_name = app[0]
   app_config = node['nodestack']['apps'][app_name]
 
