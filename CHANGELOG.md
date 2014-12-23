@@ -3,6 +3,11 @@ nodestack CHANGELOG
 
 This file is used to list changes made in each version of the nodestack cookbook.
 
+2.3.3
+---
+
+- Marco Morales - Unpinned apache2 cookbook
+
 2.3.2
 ---
 
