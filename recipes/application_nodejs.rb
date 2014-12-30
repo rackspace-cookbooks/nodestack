@@ -28,9 +28,13 @@ else
   include_recipe 'apt'
 end
 
-%w(chef-sugar nodejs nodejs::npm git build-essential nodestack::setcap
+%w(chef-sugar nodejs nodejs::npm git build-essential
 ).each do |recipe|
   include_recipe recipe
+end
+
+if node.deep_fetch('nodestack', 'bind_low_ports')
+  include_recipe 'nodestack::setcap'
 end
 
 logging_paths = []
