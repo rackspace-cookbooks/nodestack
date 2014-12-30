@@ -8,7 +8,7 @@ cookbook 'cron', git: 'git@github.com:rackspace-cookbooks/cron.git'
 cookbook 'pg-multi', git: 'git@github.com:rackspace-cookbooks/pg-multi.git'
 cookbook 'rackspace_gluster', git: 'git@github.com:rackspace-cookbooks/rackspace_gluster.git'
 cookbook 'logrotate', git: 'git@github.com:stevendanna/logrotate.git'
-cookbook 'kibana', '~> 1.3', git: 'git@github.com:lusis/chef-kibana.git'
+cookbook 'kibana', '~> 1.3', git: 'git@github.com:lusis/chef-kibana.git', branch: 'KIBANA3'
 
 cookbook 'ulimit', git: 'git@github.com:bmhatfield/chef-ulimit.git'
 
