@@ -14,4 +14,4 @@ when 'debian'
 end
 
 default['nodestack']['code_deployment'] = true
-default['nodestack']['bind_low_ports'] = true
+default['nodestack']['bind_low_ports'] = false
