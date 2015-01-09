@@ -18,6 +18,9 @@
 # limitations under the License.
 #
 
+# There's no web server setup as a reverse proxy in the demo, so we still
+# want to use setcap to be able to bind low ports.
+node.set['nodestack']['bind_low_ports'] = true
 node.set['nodestack']['apps']['my_nodejs_app']['app_dir'] = '/var/app'
 node.set['nodestack']['apps']['my_nodejs_app']['app_options'] = []
 node.set['nodestack']['apps']['my_nodejs_app']['git_repo'] = 'git@github.com:marcoamorales/node-hello-world.git'
