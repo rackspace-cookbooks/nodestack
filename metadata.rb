@@ -5,7 +5,7 @@ maintainer_email 'rackspace-cookbooks@rackspace.com'
 license 'Apache 2.0'
 description 'Installs/Configures nodestack'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version '2.3.3'
+version '2.3.4'
 supports 'ubuntu', '= 12.04'
 supports 'ubuntu', '= 14.04'
 supports 'rhel', '>= 6.0'
