@@ -6,7 +6,11 @@ This file is used to list changes made in each version of the nodestack cookbook
 2.3.3
 ---
 
-- Marco Morales - Unpinned apache2 cookbook
+- @marcoamorales - Unpinned apache2 cookbook
+- @marcoamorales - Specify Kiabana branch
+- @mattjbarlow - Make setcap optional via attribute
+- @marcoamorales - Disable setcap by default.
+- @marcoamorales - Support Chef 12
 
 2.3.2
 ---
