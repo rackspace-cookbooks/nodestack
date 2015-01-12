@@ -15,4 +15,7 @@ cookbook 'ulimit', git: 'git@github.com:bmhatfield/chef-ulimit.git'
 # until https://github.com/lusis/chef-logstash/pull/336
 cookbook 'logstash', git:'git@github.com:racker/chef-logstash.git'
 
+# until https://github.com/poise/application/issues/53 gets fixed
+cookbook 'application', git: 'git@github.com:kangguru/application.git', ref: 'f7fc8797d789856a389adbe6f33647e3f5ad4ca9'
+
 metadata
