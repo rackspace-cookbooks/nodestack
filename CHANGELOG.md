@@ -8,14 +8,18 @@ This file is used to list changes made in each version of the nodestack cookbook
 
 - Seandon Mooy - Added "cwd" option for forever-monitor to enter the applications actual directory
 
+2.3.4
+---
+
+- @marcoamorales - Disable setcap by default.
+- @marcoamorales - Support Chef 12
+
 2.3.3
 ---
 
 - @marcoamorales - Unpinned apache2 cookbook
 - @marcoamorales - Specify Kiabana branch
 - @mattjbarlow - Make setcap optional via attribute
-- @marcoamorales - Disable setcap by default.
-- @marcoamorales - Support Chef 12
 
 2.3.2
 ---
