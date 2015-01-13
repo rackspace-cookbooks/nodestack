@@ -3,6 +3,11 @@ nodestack CHANGELOG
 
 This file is used to list changes made in each version of the nodestack cookbook.
 
+2.3.5
+---
+
+- Seandon Mooy - Added "cwd" option for forever-monitor to enter the applications actual directory
+
 2.3.3
 ---
 
