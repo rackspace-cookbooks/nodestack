@@ -37,7 +37,7 @@ node.set['nodestack']['apps']['my_nodejs_app']['deployment']['before_symlink_tem
 node.set['nodestack']['apps']['my_nodejs_app']['deployment']['strategy'] = 'forever'
 node.set['nodestack']['cookbook'] = 'nodestack'
 
-# nginx
+# nginx reverse proxy
 node.set['nginx']['source']['modules'] = %w(
   nginx::http_ssl_module
   nginx::http_gzip_static_module
