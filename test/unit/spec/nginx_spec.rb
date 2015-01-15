@@ -45,7 +45,6 @@ describe 'nodestack::nginx' do
           expect(chef_run).to create_template('/etc/nginx/sites-available/nodestack-demo-80.conf')
           expect(chef_run).to create_template('/etc/rackspace-monitoring-agent.conf.d/nodestack-demo.com-80-http-monitor.yaml') # cloud monitoring disabled
         end
-
       end
     end
   end

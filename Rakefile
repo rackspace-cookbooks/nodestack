@@ -23,7 +23,7 @@ namespace :style do
     # rubocop:disable Style/HashSyntax
     t.options = { :search_gems => true,
                   :fail_tags => ['correctness','rackspace'],
-                  :chef_version => '11.6.0'
+                  :chef_version => '12.0'
                 }
     # rubocop:enable Style/HashSyntax
   end

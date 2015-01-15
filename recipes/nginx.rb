@@ -78,7 +78,6 @@ node[stackname]['nginx']['sites'].each do |port, sites|
   listen_ports |= [port]
   add_iptables_rule('INPUT', "-m tcp -p tcp --dport #{port} -j ACCEPT", 100, 'Allow access to nginx')
   sites.each do |site_name, site_opts|
-
     # site set up
     template "#{site_name}-#{port}" do
       cookbook site_opts['cookbook']
