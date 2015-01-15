@@ -17,7 +17,7 @@ describe file('/home/my_nodejs_app/.ssh/config') do
   its('content') { should match 'StrictHostKeyChecking false' }
 end
 
-describe port(80) do
+describe port(8000) do
   it { should be_listening }
 end
 
@@ -40,4 +40,13 @@ describe file('/etc/logrotate.d/my_nodejs_app') do
   it { should be_owned_by 'root' }
   it { should be_grouped_into 'root' }
   it { should be_file }
+end
+
+describe service('nginx') do
+  it { should be_enabled }
+  it { should be_running }
+end
+
+describe port(80) do
+  it { should be_listening }
 end

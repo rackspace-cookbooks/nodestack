@@ -18,6 +18,7 @@
 # limitations under the License.
 #
 
+# nodejs
 node.set['nodestack']['apps']['my_nodejs_app']['app_dir'] = '/var/app'
 node.set['nodestack']['apps']['my_nodejs_app']['app_options'] = []
 node.set['nodestack']['apps']['my_nodejs_app']['git_repo'] = 'git@github.com:marcoamorales/node-hello-world.git'
@@ -27,7 +28,7 @@ node.set['nodestack']['apps']['my_nodejs_app']['enable_submodules'] = false
 node.set['nodestack']['apps']['my_nodejs_app']['entry_point'] = 'app.js'
 node.set['nodestack']['apps']['my_nodejs_app']['npm'] = true
 node.set['nodestack']['apps']['my_nodejs_app']['config_file'] = true
-node.set['nodestack']['apps']['my_nodejs_app']['env']['PORT'] = '80'
+node.set['nodestack']['apps']['my_nodejs_app']['env']['PORT'] = '8000'
 node.set['nodestack']['apps']['my_nodejs_app']['env']['MONGO_PORT'] = '27017'
 node.set['nodestack']['apps']['my_nodejs_app']['monitoring']['body'] = 'Hello World!'
 node.set['nodestack']['apps']['my_nodejs_app']['npm_options'] = ['--production']
@@ -36,6 +37,28 @@ node.set['nodestack']['apps']['my_nodejs_app']['deployment']['before_symlink_tem
 node.set['nodestack']['apps']['my_nodejs_app']['deployment']['strategy'] = 'forever'
 node.set['nodestack']['cookbook'] = 'nodestack'
 
+# nginx
+node.set['nginx']['source']['modules'] = %w(
+  nginx::http_ssl_module
+  nginx::http_gzip_static_module
+)
+node.set['nodestack']['nginx']['confd']['http_directives']['cookbook']     = 'nodestack'
+node.set['nodestack']['nginx']['confd']['http_directives']['template']     = 'nginx/nodestack_http_directives.erb'
+node.set['nodestack']['nginx']['confd']['http_directives']['variables'] = {}
+
+site = 'nodestack-demo'
+port = '80'
+node.set['nodestack']['nginx']['sites'][port][site]['cookbook']     = 'nodestack'
+node.set['nodestack']['nginx']['sites'][port][site]['template']     = 'nginx/nodestack-demo.conf.erb'
+node.set['nodestack']['nginx']['sites'][port][site]['variables'] = {
+  server_name: 'nodestack-demo.com',
+  server_aliases: [''],
+  proxy_pass: 'http://127.0.0.1:8000',
+  errorlog: "#{node['nginx']['log_dir']}/#{site}-error.log debug",
+  accesslog: "#{node['nginx']['log_dir']}/#{site}-access.log combined"
+}
+
+# monitoring. nodestack::nginx also add's monitoring for the nginx site.
 node.set_unless['platformstack']['cloud_monitoring']['remote_http']['name'] = []
 node.set['platformstack']['cloud_monitoring']['remote_http']['name'].push('my_nodejs_app')
 node.set['platformstack']['cloud_monitoring']['remote_http']['my_nodejs_app']['source'] = 'monitoring-remote-http.yaml.erb'
