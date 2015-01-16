@@ -25,7 +25,7 @@ def server_resources(server)
   server.create_environment('demo', JSON.parse(File.read('test/integration/environments/demo.json')))
 end
 
-# rubocop:disable AbcSize
+# rubocop:disable AbcSize, Metrics/MethodLength
 def node_resources(node)
   fail 'Spec Helper was passed a nil/false node object' unless node
   # Setup databag
@@ -83,9 +83,8 @@ def node_resources(node)
     errorlog: "#{node['nginx']['log_dir']}/#{site}-error.log debug",
     accesslog: "#{node['nginx']['log_dir']}/#{site}-access.log combined"
   }
-
   # Gluster info
-  node.set['rackspace_gluster']['config']['server']['glusterrubocop s']['Gluster Cluster 1']['nodes']['gluster01']['ip'] = '33.33.33.10'
+  node.set['rackspace_gluster']['config']['server']['glusters']['Gluster Cluster 1']['nodes']['gluster01']['ip'] = '33.33.33.10'
   node.set['rackspace_gluster']['config']['server']['glusters']['Gluster Cluster 1']['nodes']['gluster01']['block_device'] = '/dev/sdb'
   node.set['rackspace_gluster']['config']['server']['glusters']['Gluster Cluster 1']['nodes']['gluster01']['mount_point'] = '/mnt/brick0'
   node.set['rackspace_gluster']['config']['server']['glusters']['Gluster Cluster 1']['nodes']['gluster01']['brick_dir'] = '/mnt/brick0/brick'
@@ -107,7 +106,7 @@ def node_resources(node)
   # no need to converge elkstack agent for this
   node.set['platformstack']['elkstack_logging']['enabled'] = false
 end
-# rubocop:enable AbcSize
+# rubocop:enable AbcSize, Metrics/MethodLength
 
 # rubocop:disable AbcSize
 def stub_resources
