@@ -73,7 +73,6 @@ node['nodestack']['apps'].each do |app| # each app loop
 
   nodejs_npm 'forever' do
     path app_config['app_dir']
-    version '0.11.1'
     user app_name
     retries 5
     retry_delay 30
