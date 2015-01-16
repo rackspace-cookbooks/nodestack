@@ -60,3 +60,4 @@ suites:
     run_list:
       - recipe[nodestack::demo]
       - recipe[nodestack::application_nodejs]
+      - recipe[nodestack::nginx]

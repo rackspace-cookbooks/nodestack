@@ -12,4 +12,4 @@ default['elkstack']['config']['custom_logstash']['name'].push('nodejs')
 default['elkstack']['config']['custom_logstash']['nodejs']['name'] = 'input_nodejs'
 default['elkstack']['config']['custom_logstash']['nodejs']['cookbook'] = 'nodestack'
 default['elkstack']['config']['custom_logstash']['nodejs']['source'] = 'input_nodejs.conf.erb'
-default['elkstack']['config']['custom_logstash']['nodejs']['variables'] = { paths: lazy { node['nodestack']['logstash']['logging_paths'] } }
+default['elkstack']['config']['custom_logstash']['nodejs']['variables'] = { paths: node['nodestack']['logstash']['logging_paths'] }

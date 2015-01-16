@@ -25,7 +25,7 @@ def server_resources(server)
   server.create_environment('demo', JSON.parse(File.read('test/integration/environments/demo.json')))
 end
 
-# rubocop:disable AbcSize
+# rubocop:disable AbcSize, Metrics/MethodLength
 def node_resources(node)
   fail 'Spec Helper was passed a nil/false node object' unless node
   # Setup databag
@@ -63,6 +63,26 @@ def node_resources(node)
   node.set['nodestack']['apps']['my_nodejs_app']['deployment']['strategy'] = 'forever'
   node.set['nodestack']['cookbook'] = 'nodestack'
 
+  # nginx
+  node.set['nginx']['source']['modules'] = %w(
+    nginx::http_ssl_module
+    nginx::http_gzip_static_module
+  )
+  node.set['nodestack']['nginx']['confd']['http_directives']['cookbook']     = 'nodestack'
+  node.set['nodestack']['nginx']['confd']['http_directives']['template']     = 'nginx/nodestack_http_directives.erb'
+  node.set['nodestack']['nginx']['confd']['http_directives']['variables'] = {}
+
+  site = 'nodestack-demo'
+  port = '80'
+  node.set['nodestack']['nginx']['sites'][port][site]['cookbook']     = 'nodestack'
+  node.set['nodestack']['nginx']['sites'][port][site]['template']     = 'nginx/nodestack-demo.conf.erb'
+  node.set['nodestack']['nginx']['sites'][port][site]['variables'] = {
+    server_name: 'nodestack-demo.com',
+    server_aliases: [''],
+    proxy_pass: 'http://127.0.0.1:8000',
+    errorlog: "#{node['nginx']['log_dir']}/#{site}-error.log debug",
+    accesslog: "#{node['nginx']['log_dir']}/#{site}-access.log combined"
+  }
   # Gluster info
   node.set['rackspace_gluster']['config']['server']['glusters']['Gluster Cluster 1']['nodes']['gluster01']['ip'] = '33.33.33.10'
   node.set['rackspace_gluster']['config']['server']['glusters']['Gluster Cluster 1']['nodes']['gluster01']['block_device'] = '/dev/sdb'
@@ -86,7 +106,7 @@ def node_resources(node)
   # no need to converge elkstack agent for this
   node.set['platformstack']['elkstack_logging']['enabled'] = false
 end
-# rubocop:enable AbcSize
+# rubocop:enable AbcSize, Metrics/MethodLength
 
 # rubocop:disable AbcSize
 def stub_resources
@@ -111,6 +131,9 @@ def stub_resources
   allow(shellout).to receive(:error?).and_return(true)
 
   stub_command("psql -c \"SELECT rolname FROM pg_roles WHERE rolname='repl'\" | grep repl").and_return('foo')
+
+  # nginx stubs
+  stub_command('which nginx').and_return('/usr/sbin/nginx')
 end
 # rubocop:enable AbcSize
 

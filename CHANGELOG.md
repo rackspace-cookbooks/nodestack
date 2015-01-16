@@ -3,6 +3,10 @@ nodestack CHANGELOG
 
 This file is used to list changes made in each version of the nodestack cookbook.
 
+2.4.0
+---
+- @lmunro - Added nginx reverse proxy with tests. Fixed logstash log path.
+
 2.3.5
 ---
 

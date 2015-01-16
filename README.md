@@ -296,6 +296,52 @@ run_list:
   recipe[nodestack::postgresql_slave]
 ```
 
+* Adding an Nginx proxy in front of your Nodejs App.
+
+See nodestack::demo.rb for an example of the attributes. Simply set the attributes similar to below, and then include nodestack::nginx
+
+Here is a realistic scenario:
+
+```
+['nginx']['source']['modules'] = %w(
+  nginx::http_ssl_module
+  nginx::http_gzip_static_module
+)
+['nodestack']['nginx']['confd']['http_directives']['cookbook']     = 'nodestack'
+['nodestack']['nginx']['confd']['http_directives']['template']     = "nginx/nodestack_http_directives.erb"
+['nodestack']['nginx']['confd']['http_directives']['variables'] = {}
+
+site = 'nodestack-demo'
+port = '80'
+['nodestack']['nginx']['sites']['80']['my_proxy_site']['cookbook']     = 'nodestack'
+['nodestack']['nginx']['sites']['80']['my_proxy_site']['template']     = 'nginx/nodestack-demo.conf.erb'
+['nodestack']['nginx']['sites']['80']['my_proxy_site']['variables'] = {
+  server_name: 'nginx_proxy.nodejs.com',
+  server_aliases: [''],
+  proxy_pass: 'http://127.0.0.1:8000'
+}
+
+indlude 'nodestack::nginx'
+
+
+PostgreSQL Master node:
+```text
+$ knife role show nodejs_postgresql_master
+chef_type:           role
+default_attributes:
+description:
+env_run_lists:
+json_class:          Chef::Role
+name:                nodejs_postgresql_master
+override_attributes:
+run_list:
+  recipe[platformstack::default]
+  recipe[rackops_rolebook::default]
+  recipe[nodestack::postgresql_master]
+```
+
+
+
 Cloud Monitoring
 -----------
 
