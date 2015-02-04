@@ -59,16 +59,18 @@ directory "#{node['nginx']['dir']}/conf.d" do
   mode  '0644'
 end
 
-node[stackname]['nginx']['confd'].each do |config, options|
-  template "additional config file #{config}" do
-    cookbook options['cookbook']
-    source options['template']
-    path "#{node['nginx']['dir']}/conf.d/#{config}.conf"
-    owner 'root'
-    group 'root'
-    mode '0644'
-    variables(options['variables'])
-    notifies :reload, 'service[nginx]'
+unless node[stackname]['nginx']['confd'].nil?
+  node[stackname]['nginx']['confd'].each do |config, options|
+    template "additional config file #{config}" do
+      cookbook options['cookbook']
+      source options['template']
+      path "#{node['nginx']['dir']}/conf.d/#{config}.conf"
+      owner 'root'
+      group 'root'
+      mode '0644'
+      variables(options['variables'])
+      notifies :reload, 'service[nginx]'
+    end
   end
 end
 
