@@ -26,9 +26,12 @@ describe 'nodestack::mysql_add_drive' do
           )
         end
 
-        # directory[/var/lib/mysql]          nodestack/recipes/mysql_add_drive.rb:51
         it 'creates the /var/lib/mysql directory' do
-          expect(chef_run).to create_directory('/var/lib/mysql')
+          if File.directory?('/var/lib/mysql')
+            expect(chef_run).to_not create_directory('/var/lib/mysql')
+          else
+            expect(chef_run).to create_directory('/var/lib/mysql')
+          end
         end
 
         # mount[/var/lib/mysql]              nodestack/recipes/mysql_add_drive.rb:61
