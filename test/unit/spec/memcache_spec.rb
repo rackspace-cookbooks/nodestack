@@ -18,7 +18,7 @@ describe 'nodestack::memcache' do
   end
 
   let(:chef_run) do
-    ChefSpec::ServerRunner.new(platform: platform, version: version) do |node|
+    ChefSpec::SoloRunner.new(platform: platform, version: version) do |node|
       node_resources(node)
     end.converge(described_recipe)
   end
