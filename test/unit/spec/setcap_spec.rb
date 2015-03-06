@@ -8,7 +8,7 @@ describe 'nodestack::setcap' do
     versions.each do |version|
       context "on #{platform.capitalize} #{version}" do
         let(:chef_run) do
-          ChefSpec::ServerRunner.new(platform: platform, version: version) do |node|
+          ChefSpec::Runner.new(platform: platform, version: version) do |node|
             node_resources(node)
           end.converge(described_recipe)
         end
