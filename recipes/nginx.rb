@@ -113,7 +113,7 @@ node[stackname]['nginx']['sites'].each do |port, sites|
         server_name: site_opts['variables']['server_name']
       )
       notifies 'restart', 'service[rackspace-monitoring-agent]', 'delayed'
-      action 'create'
+      action :create
       only_if { node.deep_fetch('platformstack', 'cloud_monitoring', 'enabled') }
     end
   end

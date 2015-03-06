@@ -90,6 +90,6 @@ node['nodestack']['apps'].each do |app| # each app loop
         reload_command 'systemctl daemon-reload'
       end
     end
-    action ['enable', 'start']
+    action [:enable, :start]
   end
 end

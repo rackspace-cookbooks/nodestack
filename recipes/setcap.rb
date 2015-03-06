@@ -26,7 +26,7 @@ when 'debian'
 end
 
 package package_name do
-  action 'install'
+  action :install
 end
 
 execute 'grant permissions to bind to low ports if path is binary' do
