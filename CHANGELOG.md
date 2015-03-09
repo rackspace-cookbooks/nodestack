@@ -3,6 +3,14 @@ nodestack CHANGELOG
 
 This file is used to list changes made in each version of the nodestack cookbook.
 
+2.4.1
+---
+- Forever cookbook unpinned.
+- Removed old ELK attributes.
+- Added unless to nginx confd hash.
+- Fix Chefspec test for mysql_add_drive.
+- Removed all ocurrences of action parameters as strings.
+
 2.4.0
 ---
 - @lmunro - Added nginx reverse proxy with tests. Fixed logstash log path.
