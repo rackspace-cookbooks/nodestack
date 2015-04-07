@@ -17,8 +17,6 @@ describe 'nodestack::nginx' do
           expect(chef_run).to create_directory('/etc/nginx/conf.d')
         end
 
-        puts "rax-platform #{platform} #{version}"
-
         if platform == 'centos'
           it 'includes rhel recipes' do
             expect(chef_run).to include_recipe('yum-epel')

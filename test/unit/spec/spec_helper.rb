@@ -154,7 +154,6 @@ module RackspaceChefSpec
       @@runner[platform] = {} if @@runner[platform].nil?
 
       unless @@runner[platform][version]
-        puts "new serverrunner #{platform}#{version}"
         @@runner[platform][version] = ChefSpec::ServerRunner.new(options) do |node, server|
           yield node, server if block_given?
         end
