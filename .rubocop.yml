@@ -13,6 +13,9 @@ LineLength:
 MethodLength:
   Max: 60
 
+Metrics/AbcSize:
+  Max: 250
+
 # Favor explicit over implicit code: don't complain of "redundant returns"
 RedundantReturn:
   Enabled: false
